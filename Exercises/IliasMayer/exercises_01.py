@@ -51,9 +51,9 @@ print("6) Common elements:", common, "-> Count:", len(common))
 
 # 7)
 # how often does the character 'a' occur in each of the lists above?
-a_count_first = sum(word.count('a') for word in first_list)
-a_count_second = sum(word.count('a') for word in second_list)
-print("7) 'a' count: first list:", a_count_first, "| second list:", a_count_second)
+a_count_first_list = sum(word.count('a') for word in first_list)
+a_count_second_list = sum(word.count('a') for word in second_list)
+print("7) 'a' count: first list:", a_count_first_list, "| second list:", a_count_second_list)
 
 # 8)
 # Bonus question (voluntary):
