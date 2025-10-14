@@ -14,6 +14,7 @@ print("Aufgabe 1:\n","Quitient: ", quotient, "\nRemainder: ", remainder)
 t_fahrenheit = 451
 t_celsius= (t_fahrenheit-32)/1.8
 print("\nAufgabe 2:\n","Temperatur in °C: ",t_celsius) 
+print("\nAufgabe 2:\n","Temperatur in °C: ",t_celsius)
 
 # 3)
 # Given the string 
