@@ -7,13 +7,13 @@
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
 quotient = 2711274328912/23369245575
 remainder = 2711274328912%23369245575
-print("Aufgabe 1:\n","Quitient: ", quotient, "\nRemainder: ", remainder)sdfhsd
+print("Aufgabe 1:\n","Quitient: ", quotient, "\nRemainder: ", remainder)
 
 # 2)
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
 t_celsius= (t_fahrenheit-32)/1.8
-print("\nAufgabe 2:\n","Temperatur in °C: ",t_celsius)
+print("\nAufgabe 2:\n","Temperatur in °C: ",t_celsius) 
 
 # 3)
 # Given the string 
