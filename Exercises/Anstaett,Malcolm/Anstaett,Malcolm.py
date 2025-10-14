@@ -1,3 +1,4 @@
+#git Test
 # use this template for completing todays exercises
 # make a copy of the file, in a folder with your own name
 # add code below to answer the questions; for each question there should be
@@ -8,6 +9,7 @@
 remainder = 2711274328912%23369245575
 quotient = 2711274328912//23369245575
 print("Der Quotient lautet",quotient,"mit Rest",remainder)
+
 
 # 2)
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
