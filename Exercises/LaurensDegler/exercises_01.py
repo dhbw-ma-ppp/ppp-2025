@@ -65,7 +65,7 @@ print(f"Der Buchstabe 'a' kommt in der zweiten Liste {anzahl_a_second_list} mal 
 # Bonus question (voluntary):
 # 5 & 3, 5 | 3, 5 ^ 3, ~5, 5 << 1, 5 >> 1
 # Predict the result of each of these operations, then execute them and check whether your prediction was correct
-print(f"5 & 3 = {5 & 3}")   # bitwise AND: 0101 & 0011 = 0001 -> 1
+print(f"5 & 3 = {5 & 3}")   # Modulo rest = 2
 print(f"5 | 3 = {5 | 3}")   # kein plan
 print(f"5 ^ 3 = {5 ^ 3}")   # kein plan
 print(f"~5 = {~5}")         # kein plan
