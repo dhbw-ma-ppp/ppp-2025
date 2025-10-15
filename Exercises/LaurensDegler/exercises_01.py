@@ -66,8 +66,8 @@ print(f"Der Buchstabe 'a' kommt in der zweiten Liste {anzahl_a_second_list} mal 
 # 5 & 3, 5 | 3, 5 ^ 3, ~5, 5 << 1, 5 >> 1
 # Predict the result of each of these operations, then execute them and check whether your prediction was correct
 print(f"5 & 3 = {5 & 3}")   # Modulo rest = 2
-print(f"5 | 3 = {5 | 3}")   # kein plan
-print(f"5 ^ 3 = {5 ^ 3}")   # kein plan
-print(f"~5 = {~5}")         # kein plan
+print(f"5 | 3 = {5 | 3}")   # bitweise oder 5 = 0101, 3 = 0011 -> 0111 = 7
+print(f"5 ^ 3 = {5 ^ 3}")   # bitweise exklusives oder 5 = 0101, 3 = 0011 -> 0110 = 6
+print(f"~5 = {~5}")         # bitweises invertieren also 5 = 0101 -> 1010 = -6 (Warum genau weiß ich leider nicht)
 print(f"5 << 1 = {5 << 1}") # bitshift nach links also 0101 -> 1010 = 10
 print(f"5 >> 1 = {5 >> 1}") # bitshift nach rechts also 0101 -> 0010 = 2
