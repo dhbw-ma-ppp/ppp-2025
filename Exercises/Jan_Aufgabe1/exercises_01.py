@@ -15,7 +15,7 @@ t_fahrenheit = 451
 t_celsius = (t_fahrenheit - 32) * 5.0/9.0
 print("Lösung der Umrechnung:", t_celsius)
 
-
+#Test
 
 # 3)
 # Given the string 
@@ -55,6 +55,7 @@ print("Lösung der gemeinsamen Elemente:", common_elements, "   Anzahl der gemei
 # how often does the character 'a' occur in each of the lists above?
 count_a_first = sum(s.count('a') for s in first_list)
 count_a_second = sum(s.count('a') for s in second_list)
+
 
 
 # 8)
