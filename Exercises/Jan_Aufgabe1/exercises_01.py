@@ -15,7 +15,7 @@ print("Lösung der Division:", quotient // remainder, "    Rest:", quotient % re
 t_fahrenheit = 451
 t_celsius = (t_fahrenheit - 32) * 5.0/9.0
 print("\nAufgabe 2:")
-print("Lösung der Umrechnung:", t_celsius)
+print("Lösung der Umrechnung:", t_celsius, "° Celsius")
 
 
 # 3)
@@ -70,11 +70,11 @@ print("Lösung der 'a' in der ersten Liste:", count_a_first, "   Lösung der 'a'
 # Bonus question (voluntary):
 # 5 & 3, 5 | 3, 5 ^ 3, ~5, 5 << 1, 5 >> 1
 # Predict the result of each of these operations, then execute them and check whether your prediction was correct
-print("Lösung der Bonusfrage:")
-print("5 & 3 =", 5 & 3)   # bitwise AND
-print("5 | 3 =", 5 | 3)   # bitwise OR
-print("5 ^ 3 =", 5 ^ 3)   # bitwise XOR
-print("~5 =", ~5)         # bitwise NOT
-print("5 << 1 =", 5 << 1) # left shift
-print("5 >> 1 =", 5 >> 1) # right shift
+print("\nLösung der Bonusfrage:")
+print("5 & 3 =", 5 & 3)   # Und Operator
+print("5 | 3 =", 5 | 3)   # Oder Operator
+print("5 ^ 3 =", 5 ^ 3)   # Nicht Gleich Operator
+print("~5 =", ~5)         # Negation
+print("5 << 1 =", 5 << 1) # bits nach links schieben
+print("5 >> 1 =", 5 >> 1) # bits nach rechts schieben
 
