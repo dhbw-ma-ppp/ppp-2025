@@ -6,13 +6,19 @@
 # 1)
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
 print(
-    f"1)\nResult of integer division of 2711274328912 by 23369245575 - quotient: {2711274328912 / 23369245575}, quotient_floor: {2711274328912 // 23369245575}, remainder: {2711274328912 % 23369245575}"
+    f"1)\n"
+    f"Result of integer division of 2711274328912 by 23369245575\n"
+    f"quotient: {2711274328912 / 23369245575},\n"
+    f"quotient_floor: {2711274328912 // 23369245575},\n"
+    f"remainder: {2711274328912 % 23369245575}"
 )
 
 # 2)
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
-print(f"\n2)\n{t_fahrenheit} degree fahrenheit equals to {(t_fahrenheit-32)*(5/9)}")
+print(
+    f"\n2)\n{t_fahrenheit} degree fahrenheit equals to ~{(t_fahrenheit-32)*(5/9):.2f} degree Celsius"
+)
 
 # 3)
 # Given the string
