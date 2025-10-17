@@ -1,3 +1,5 @@
+from utils.test import test_function
+
 # Write a function that takes as input a list of integers and returns a single integer number.
 # the numbers passed as argument form the working memory of a simulated computer.
 # this computer will start by looking at the first value in the list passed to the function.
@@ -29,7 +31,7 @@ print("1)")
 
 
 def calculate_number_through_memory_list(
-    memory_integer_list: list[int], opcode_index=0
+    memory_integer_list: list[int], opcode_index: int = 0
 ) -> int:
     # expecting list with correct values, else runtime error when accessing items through outbound indices
     opcode = memory_integer_list[opcode_index]
@@ -54,12 +56,13 @@ def calculate_number_through_memory_list(
     return calculate_number_through_memory_list(memory_integer_list, opcode_index + 4)
 
 
-test_case = [1, 1, 1, 4, 99, 5, 6, 0, 99]
-expected = 30
-print(
-    f"Testing number-calculation: {test_case=}, {expected=}, result: {calculate_number_through_memory_list(test_case)}"
+test_function(
+    calculate_number_through_memory_list,
+    params=(
+        [1, 1, 1, 4, 99, 5, 6, 0, 99],
+    ),  # to be able to keep list as such & dont unpack the list itself!
+    expected=30,
 )
-
 
 # print out which value is returned by your function for the following list:
 # fmt: off
@@ -80,3 +83,83 @@ print(
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
+
+print("\n2)")
+
+
+def split_numbers_and_single_chars(*args: str) -> tuple[list[str], list[str]]:
+    numbers = []
+    chars = []
+    for arg in args:
+        # case number
+        try:  # alternatively check instead of error-proofing "EAFP" -> "Easier to ask for forgiveness than permission" or "European Association of Fish Pathologists e.V."
+            float(arg)  # to support fractions (operations) -> e.g. use Fraction(arg)
+            numbers.append(arg)
+        except (
+            ValueError
+        ):  # ValueError is the only type of error that could happen and the one we are interested in
+            pass
+
+        # case char, can also be a one-digit number
+        if len(arg) == 1:
+            chars.append(arg)
+    return (numbers, chars)
+
+
+# test if arg can be in both lists
+test_function(
+    split_numbers_and_single_chars,
+    params=("1", "2", "3"),
+    expected=(["1", "2", "3"], ["1", "2", "3"]),
+)
+
+# test for floats
+test_function(
+    split_numbers_and_single_chars,
+    params=("1.3", "2", "1.5", "1.8e+308", "1.8e+3321321321312321"),
+    expected=(["1.3", "2", "1.5", "1.8e+308", "1.8e+3321321321312321"], ["2"]),
+)
+
+# test for letters and other unicodes
+test_function(
+    split_numbers_and_single_chars,
+    params=("ab", "a", "d", "z", "🐈", "🌳"),
+    expected=([], ["a", "d", "z", "🐈", "🌳"]),
+)
+
+# expected special cases
+
+## test for whitespaces
+test_function(
+    split_numbers_and_single_chars,
+    params=("         3.14 ", " ", "           "),
+    expected=(["         3.14 "], [" "]),
+)
+
+## test for \
+test_function(
+    split_numbers_and_single_chars,
+    params=("\n", "\t"),
+    expected=([], ["\n", "\t"]),
+)
+
+## test for keywords or fractions (operations & names not supported)
+test_function(
+    split_numbers_and_single_chars,
+    params=("1/3", "pi"),
+    expected=([], []),
+)
+
+# test for infinity
+test_function(
+    split_numbers_and_single_chars,
+    params=("infinity", "inf", "-inf"),
+    expected=(["infinity", "inf", "-inf"], []),
+)
+
+# test for NaN (can be **interpreted** as "number" by float)
+test_function(
+    split_numbers_and_single_chars,
+    params=("nan", "NAN", "NaN"),
+    expected=(["nan", "NAN", "NaN"], []),
+)
