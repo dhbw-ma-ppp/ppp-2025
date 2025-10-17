@@ -22,7 +22,7 @@ ds = "DataScience"
 # Replace "Science" with "Analytics"; `print(ds)` should result in the output 'DataAnalytics'
 print("Task3: ")
 print(ds[:3])
-print(ds[-3:])
+print(ds[-4:])
 
 print(ds[::-1])
 ds:str = ds.replace("Science", "Analytics")
