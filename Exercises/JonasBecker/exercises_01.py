@@ -71,7 +71,7 @@ second_list = ['dlz', 'akw', 'bry', 'eyz', 'bny', 'kst', 'elw', 'ekl', 'djm', 'a
 # fmt: on
 
 print(
-    f"\n5)\nFirst_list has {len(first_list)} elements, second_list has {len(second_list)} elements"
+    f"\n5)\nfirst_list has {len(first_list)} elements, second_list has {len(second_list)} elements"
 )
 
 # 6)
