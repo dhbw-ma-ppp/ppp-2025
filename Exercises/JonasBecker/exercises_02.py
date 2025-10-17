@@ -1,4 +1,4 @@
-from utils.test import test_function
+from utils.test import test_function  # imports a function to simplify testing
 
 # Write a function that takes as input a list of integers and returns a single integer number.
 # the numbers passed as argument form the working memory of a simulated computer.
@@ -33,6 +33,23 @@ print("1)")
 def calculate_number_through_memory_list(
     memory_integer_list: list[int], opcode_index: int = 0
 ) -> int:
+    """Process a list of integers through opcodes (1: add, 2: multiply, 99: halt).
+
+    Recursively executes the program stored in `memory_integer_list` until opcode 99 is reached.
+
+    Parameters
+    ----------
+    memory_integer_list : list[int]
+        Program "memory" containing opcodes and parameters.
+    opcode_index : int, optional
+        Current opcode position (default 0).
+
+    Returns
+    -------
+    int
+        Value at position 0 after execution.
+    """
+
     # expecting list with correct values, else runtime error when accessing items through outbound indices
     opcode = memory_integer_list[opcode_index]
 
@@ -51,7 +68,7 @@ def calculate_number_through_memory_list(
 
     memory_integer_list[write_index] = (
         (read_1 + read_2) if opcode == 1 else (read_1 * read_2)
-    )  # () for better structure, alternatively to ternary use if else compound statement
+    )  # () for better structure, alternatively to ternary you could use if else compound statement
 
     return calculate_number_through_memory_list(memory_integer_list, opcode_index + 4)
 
@@ -88,6 +105,20 @@ print("\n2)")
 
 
 def split_numbers_and_single_chars(*args: str) -> tuple[list[str], list[str]]:
+    """
+    Returns numbers and signle chars as two seperate arrays
+
+    Parameters
+    ----------
+    *args: str
+        Variable amount of paramters of type string.
+
+    Returns
+    -------
+    tuple[list[str], list[str]]
+        Tuple with two lists. First one listing the numbers, second one listing single characters.
+    """
+
     numbers = []
     chars = []
     for arg in args:
