@@ -5,15 +5,15 @@
 
 # 1)
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
-quotient = 2711274328912
-remainder = 23369245575
+dividend = 2711274328912
+divisor = 23369245575
 print("Aufgabe 1:")
-print("Lösung der Division:", quotient // remainder, "    Rest:", quotient % remainder)
+print("Lösung der Division:", dividend // divisor, "    Rest:", dividend % divisor)
 
 # 2)
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
-t_celsius = (t_fahrenheit - 32) * 5.0/9.0
+t_celsius = round((t_fahrenheit - 32) * 5.0/9.0, 2)
 print("\nAufgabe 2:")
 print("Lösung der Umrechnung:", t_celsius, "° Celsius")
 
@@ -37,7 +37,7 @@ input_string = '()()(()()()(()()((()((()))((()((((()()((((()))()((((())(((((((()
 count_open = input_string.count('(')
 count_close = input_string.count(')')
 print("\nAufgabe 4:")
-print("Lösung der Differenz:", count_open - count_close)  
+print("Es gibt:", count_open - count_close, "mehr '(' als ')' Symbole.")  
 
 # 5)
 # how may elements are in each of the following lists?
