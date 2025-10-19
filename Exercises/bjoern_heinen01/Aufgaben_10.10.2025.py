@@ -91,10 +91,7 @@ print("\n")
 # 7)
 # how often does the character 'a' occur in each of the lists above?
 
-a_count:int = 0
-for i in first_list + second_list:
-    a_count += i.count("a")
-print(f"Task 7: The letter \"a\" occures {a_count} times in the lists.\n\n")
+print(f"Task 7: \nThe letter \"a\" occures {str(first_list).count("a")} times in the first list and {str(second_list).count("a")} in the second list.\n\n")
 
 # 8)
 # Bonus question (voluntary):
