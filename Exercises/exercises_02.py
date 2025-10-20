@@ -31,16 +31,16 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 
 def simple_virtual_machine(commands_list:list[int]) -> int:
     """
-    This simple vitrual machine just takes an command list
+    This simple vitrual machine just takes a command list
     and does operation as described in the task
     it uses a idiomatic match case logic
-    to choose which operation should be executed
+    to choose which operation should be executed.
     """
     # The function_pointer is the index 
-    # to the current instruction value in teh command list
+    # to the current instruction value in the command list
     function_pointer:int = 0
 
-    # run as long there is no break command
+    # runs as long there is no break command
     while (commands_list[function_pointer] != 99):
         # Get the 2 values to operate on
         index_of_value_1:int    = commands_list[function_pointer+1]
@@ -54,21 +54,21 @@ def simple_virtual_machine(commands_list:list[int]) -> int:
         indexToWrite:int            = commands_list[function_pointer+3]
 
         match commands_list[function_pointer]:
-            # Add numbers:
+            # add numbers:
             case 1:
                 commands_list[indexToWrite] = value_1 + value_2
-            # Multiply numbers:
+            # multiply numbers:
             case 2:
                 commands_list[indexToWrite] = value_1 * value_2
-            # Invalid command:
+            # invalid command:
             case _:
                 print(f"Error! opcode: {commands_list[function_pointer]} is not valid!")
                 return None
             
-        # finally increment the function pointer
+        # finally increment the function pointer by 4
         function_pointer += 4
     
-    # Return result
+    # return the result of the virtual machine
     return commands_list[0]
 
 def virtual_machine(data:list[int]) -> int:
@@ -94,9 +94,13 @@ def virtual_machine(data:list[int]) -> int:
          elif instruction == 2:
          ...
          elif instruction == n: 
-    has a time complexity of O(n).
+    has a time complexity of O(n) 
+    because the computer has to iterate
+    threw them until it found a true if statement.
 
-    But the function lookup has a time complexity of O(1).
+    But the function lookup has a time complexity of O(1) 
+    because its directly choosing the correct function by
+    calculating its index position in the function_field!
     Its a direct look up.
     """
     # function pointer
@@ -107,11 +111,13 @@ def virtual_machine(data:list[int]) -> int:
     # its access time complexity is O(1) while n are the number of instructions
     # index 0 -> addition
     # index 1 -> multiplication
-    function_field = [lambda a, b: a + b,
-                      lambda a, b: a * b]
+    function_field:list = [lambda a, b: a + b,
+                           lambda a, b: a * b]
     
     # if an invalid operation occures 
-    # the except block will get an IndexError
+    # the except block will get an 
+    # IndexError (IndexErrors occure if you try to 
+    # access a value which is not in the range of a list)
     try:
         while (data[func_ptr] != 99):
             # Get values to compute
@@ -128,9 +134,10 @@ def virtual_machine(data:list[int]) -> int:
             # select function, execute function with the values v1 and v2 and store the value
             data[data[func_ptr + 3]] = function_field[func_indx](v1, v2)
 
+            # increment function pointer by 4
             func_ptr += 4
         
-        # Return value
+        # return the result of the virtual machine
         return data[0]
     except IndexError:
         try:
@@ -167,13 +174,22 @@ def isStringCat(string:str):
         just for demonstration purpose."""
     return string == "Cat"
 
+def f(x:float):
+    """
+    My quadratic function.
+
+    I named it f(x) to show the similarities 
+    of mathematical functions and code functions. 
+    """
+    return x*x
+
 def split_number_convertable_strings(*args:str):
     """
     Takes an arbriatry number of string arguments
-    these strings get seperated into to different lists
+    these strings get seperated into to different lists.
 
-    strings which are convertable into numbers are returned in a first list
-    and the other strings are returned in a second list
+    Strings which are convertable into numbers are returned in the first list
+    and the other strings are returned in the second list.
     """
     # the underscore of this inner function emphasizes
     # that it is a private function
@@ -182,15 +198,15 @@ def split_number_convertable_strings(*args:str):
         The function takes an string and checks 
         if the string is convertable 
         into a complex number
-        and if the number is not nan.
+        and if the number is not (partly) nan.
 
         If this conversion is possible and
         the number is not nan it returns true
         else false.
         """
         try:
-            # you have to use eval to transform expressions 
-            # into values
+            # you have to use eval to transform strings 
+            # into python code
             # Examples:
             # 1. complex("math.inf") -> error
             #    complex(eval("math.inf")) -> complex(math.inf) -> return true
@@ -198,7 +214,7 @@ def split_number_convertable_strings(*args:str):
             #    complex(eval("0b0001")) -> complex(0b0001) -> return true
             # Additionally, you have to use the 
             # complex function instead of the float function
-            # to cover complex NUMBERS
+            # to cover complex numbers to
             
             num_value = complex(eval(string))
             # check if parts of the number are NaN (Not a Number)
@@ -217,8 +233,8 @@ def split_number_convertable_strings(*args:str):
         except:
             return False
     
-    numbers = []
-    not_numbers = []
+    numbers:list[str]       = []
+    not_numbers:list[str]   = []
     for string in args:
         if _is_string_convertible_to_number(string):
             numbers += [string]
@@ -229,7 +245,7 @@ def split_number_convertable_strings(*args:str):
 
 # I wrote the arguments for the function in this way
 # to make them more readable
-args = (
+args:tuple[str] = (
     # This elements are - obviously - not numbers:
     "myString", 
     "One", 
@@ -257,13 +273,16 @@ args = (
     "False",
     "'test' == 'test'",
 
-    # these values return numbers, so they are numbers:
+    # its mathematically no problem to write instead of a number
+    # a function with a parameter:
+    # e.g. 4 = 2^2 = f(2) while f(x) = x*x
     "int(1)",
     "float(2)",
     "eval(hex(42))",
     "eval(bin(37))",
     "complex(1,-700)",
 
+    "f(4)",
     "isStringCat('Cat')",
     "7**3",
     "7**0b001",
@@ -280,19 +299,17 @@ for string in not_numbers:
     print(f"\t   *\t{string}")
 print("\n\n")
 
-print("The following strings ARE numbers:")
 
 
 def ComplexNumberToNiceString(num:complex) -> str:
     """
     This function takes a complex number
-    and returns an easy to read string 
+    and returns a more readable string 
     representation of the number by
-    canceling zeros.
+    canceling unecessary zeros.
     """
     try:
-        # cancel disturbing information
-        # check if its a complex number
+        # check if its not a complex number
         if num.imag == 0:
             num = value.real
             # check if its a whole number
@@ -302,7 +319,9 @@ def ComplexNumberToNiceString(num:complex) -> str:
         pass
     return str(num)
 
+print("The following strings are numbers:")
+
 for string in numbers:
-    value = complex(eval(string))
+    value:complex = complex(eval(string))
     
     print(f"{string:>45}  =>  {ComplexNumberToNiceString(value)}")
