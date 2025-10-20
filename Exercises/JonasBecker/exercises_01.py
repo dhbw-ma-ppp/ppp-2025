@@ -5,12 +5,13 @@
 
 # 1)
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
-print(
-    f"1)\n"
-    f"Result of integer division of 2711274328912 by 23369245575\n"
-    f"quotient: {2711274328912 / 23369245575},\n"
-    f"quotient_floor: {2711274328912 // 23369245575},\n"
-    f"remainder: {2711274328912 % 23369245575}"
+print(f"""
+1)
+Result of integer division of 2711274328912 by 23369245575
+quotient: {2711274328912 / 23369245575},
+quotient_floor: {2711274328912 // 23369245575},
+remainder: {2711274328912 % 23369245575}
+"""
 )
 
 # 2)
