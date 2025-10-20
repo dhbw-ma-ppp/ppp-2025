@@ -52,7 +52,8 @@ def reversed_string_2(str):
 print(
     f"Backwards: {reversed_string_2(ds)}"
 )  # alternatively **use slice** by adding a second : => ::-1 = 0:len(arr):-1 (start:stop:step) (or theoretically by array cast and reverse and join or reversed)
-print(f"Replaced: {ds.replace('Science', 'Analytics')}")
+ds_replaced = ds.replace('Science', 'Analytics')
+print(f"Replaced: {ds_replaced}")
 
 # 4)
 # determine how many more '(' than ')' symbols occur in the following string:
