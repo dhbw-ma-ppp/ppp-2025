@@ -32,17 +32,17 @@ print("\n3)")
 print(f"First three: {ds[0:3]}, Last four: {ds[-4:]}")
 
 
-def reversed_string_1(str):
+def reversed_string_1(s):
     reversed_string = ""
     for i in range(
-        len(str) - 1, -1, -1
+        len(s) - 1, -1, -1
     ):  # (start, stop (exclusive), step), 1 param => start = 0, stop = 1.param, step = 1
-        reversed_string += str[i]
+        reversed_string += s[i]
     return reversed_string
 
 
-def reversed_string_2(str):
-    reversed_string_arr = list(str)
+def reversed_string_2(s):
+    reversed_string_arr = list(s)
     reversed_string_arr.reverse()  # modifies mutable reversed_string_arr
     reversed_string = ""
     for item in reversed_string_arr:
