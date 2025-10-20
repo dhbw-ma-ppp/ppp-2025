@@ -195,7 +195,7 @@ def split_number_convertable_strings(*args:str):
     # that it is a private function
     def _is_string_convertible_to_number(string:str) -> bool:
         """
-        The function takes an string and checks 
+        The function takes a string and checks 
         if the string is convertable 
         into a complex number
         and if the number is not (partly) nan.
@@ -287,9 +287,10 @@ args:tuple[str] = (
     "7**3",
     "7**0b001",
 
-    # Slowly its getting weird:
+    # slowly its getting weird:
     "0x123**0b001+1j+(eval(\"'cat'=='cat'\"))+1e10",
-    "4&1%0x7&0b0|13"
+    "4&1%0x7&0b0|13",
+    "(x := 2) * x - 1 * math.e**(2*math.pi*math.cos(x))"
     )
 
 numbers, not_numbers = split_number_convertable_strings(*args)
@@ -306,7 +307,7 @@ def ComplexNumberToNiceString(num:complex) -> str:
     This function takes a complex number
     and returns a more readable string 
     representation of the number by
-    canceling unecessary zeros.
+    canceling unnecessary zeros.
     """
     try:
         # check if its not a complex number
