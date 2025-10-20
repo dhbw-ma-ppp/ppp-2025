@@ -6,13 +6,21 @@
 # 1)
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
 print(
-    f"1)\nResult of integer division of 2711274328912 by 23369245575 - quotient: {2711274328912 / 23369245575}, quotient_floor: {2711274328912 // 23369245575}, remainder: {2711274328912 % 23369245575}"
+    f"""
+1)
+Result of integer division of 2711274328912 by 23369245575
+quotient: {2711274328912 / 23369245575},
+quotient_floor: {2711274328912 // 23369245575},
+remainder: {2711274328912 % 23369245575}
+"""
 )
 
 # 2)
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
-print(f"\n2)\n{t_fahrenheit} degree fahrenheit equals to {(t_fahrenheit-32)*(5/9)}")
+print(
+    f"\n2)\n{t_fahrenheit} degree fahrenheit equals to ~{(t_fahrenheit-32)*(5/9):.2f} degree Celsius"
+)
 
 # 3)
 # Given the string
@@ -24,17 +32,17 @@ print("\n3)")
 print(f"First three: {ds[0:3]}, Last four: {ds[-4:]}")
 
 
-def reversed_string_1(str):
+def reversed_string_1(s):
     reversed_string = ""
     for i in range(
-        len(str) - 1, -1, -1
+        len(s) - 1, -1, -1
     ):  # (start, stop (exclusive), step), 1 param => start = 0, stop = 1.param, step = 1
-        reversed_string += str[i]
+        reversed_string += s[i]
     return reversed_string
 
 
-def reversed_string_2(str):
-    reversed_string_arr = list(str)
+def reversed_string_2(s):
+    reversed_string_arr = list(s)
     reversed_string_arr.reverse()  # modifies mutable reversed_string_arr
     reversed_string = ""
     for item in reversed_string_arr:
@@ -45,7 +53,8 @@ def reversed_string_2(str):
 print(
     f"Backwards: {reversed_string_2(ds)}"
 )  # alternatively **use slice** by adding a second : => ::-1 = 0:len(arr):-1 (start:stop:step) (or theoretically by array cast and reverse and join or reversed)
-print(f"Replaced: {ds.replace('Science', 'Analytics')}")
+ds_replaced = ds.replace("Science", "Analytics")
+print(f"Replaced: {ds_replaced}")
 
 # 4)
 # determine how many more '(' than ')' symbols occur in the following string:
@@ -65,7 +74,7 @@ second_list = ['dlz', 'akw', 'bry', 'eyz', 'bny', 'kst', 'elw', 'ekl', 'djm', 'a
 # fmt: on
 
 print(
-    f"\n5)\nFirst_list has {len(first_list)} elements, second_list has {len(second_list)} elements"
+    f"\n5)\nfirst_list has {len(first_list)} elements, second_list has {len(second_list)} elements"
 )
 
 # 6)
