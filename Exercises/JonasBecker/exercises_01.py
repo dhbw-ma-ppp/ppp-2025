@@ -5,7 +5,8 @@
 
 # 1)
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
-print(f"""
+print(
+    f"""
 1)
 Result of integer division of 2711274328912 by 23369245575
 quotient: {2711274328912 / 23369245575},
@@ -52,7 +53,7 @@ def reversed_string_2(str):
 print(
     f"Backwards: {reversed_string_2(ds)}"
 )  # alternatively **use slice** by adding a second : => ::-1 = 0:len(arr):-1 (start:stop:step) (or theoretically by array cast and reverse and join or reversed)
-ds_replaced = ds.replace('Science', 'Analytics')
+ds_replaced = ds.replace("Science", "Analytics")
 print(f"Replaced: {ds_replaced}")
 
 # 4)
