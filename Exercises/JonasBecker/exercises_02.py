@@ -124,7 +124,7 @@ def split_numbers_and_single_chars(*args: str) -> tuple[list[str], list[str]]:
     for arg in args:
         # case number
         try:  # alternatively check instead of error-proofing "EAFP" -> "Easier to ask for forgiveness than permission" or "European Association of Fish Pathologists e.V."
-            float(arg)  # to support fractions (operations) -> e.g. use Fraction(arg)
+            complex(arg.replace(" ", ""))  # to support fractions (operations) -> e.g. use Fraction(arg)
             numbers.append(arg)
         except (
             ValueError
@@ -137,18 +137,33 @@ def split_numbers_and_single_chars(*args: str) -> tuple[list[str], list[str]]:
     return (numbers, chars)
 
 
-# test if arg can be in both lists
+# test for ints and if arg can be in both lists
 test_function(
     split_numbers_and_single_chars,
     params=("1", "2", "3"),
     expected=(["1", "2", "3"], ["1", "2", "3"]),
 )
 
+
 # test for floats
 test_function(
     split_numbers_and_single_chars,
     params=("1.3", "2", "1.5", "1.8e+308", "1.8e+3321321321312321"),
     expected=(["1.3", "2", "1.5", "1.8e+308", "1.8e+3321321321312321"], ["2"]),
+)
+
+# test for complex numbers
+test_function(
+    split_numbers_and_single_chars,
+    params=("0.3+3j", "15+j", "inf+j"),
+    expected=(["0.3+3j", "15+j", "inf+j"], []),
+)
+
+# test for spaces --> cant be interpreted natively, but does not add operations
+test_function(
+    split_numbers_and_single_chars,
+    params=("0.   3+3  j", "15 +j", "inf + j"),
+    expected=(["0.   3+3  j", "15 +j", "inf + j"], []),
 )
 
 # test for letters and other unicodes
