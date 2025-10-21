@@ -25,7 +25,8 @@ print(f"Die letzten vier Buchstaben sind: {" ".join(ds[-4:])}")
 # Print the string backwards
 print(f"Der String rückwärts lautet: {ds[::-1]}")
 # Replace "Science" with "Analytics"; `print(ds)` should result in the output 'DataAnalytics'
-print(f"Ersetze 'Science' durch 'Analytics': {ds.replace('Science', 'Analytics')}")
+ds = ds.replace('Science', 'Analytics')
+print(f"Ersetze 'Science' durch 'Analytics': {ds}")
 
 # 4)
 # determine how many more '(' than ')' symbols occur in the following string:
@@ -65,7 +66,7 @@ print(f"Der Buchstabe 'a' kommt in der zweiten Liste {anzahl_a_second_list} mal 
 # Bonus question (voluntary):
 # 5 & 3, 5 | 3, 5 ^ 3, ~5, 5 << 1, 5 >> 1
 # Predict the result of each of these operations, then execute them and check whether your prediction was correct
-print(f"5 & 3 = {5 & 3}")   # Modulo rest = 2
+print(f"5 & 3 = {5 & 3}")   # bitweise und 5 = 0101, 3 = 0011 -> 0001 = 1
 print(f"5 | 3 = {5 | 3}")   # bitweise oder 5 = 0101, 3 = 0011 -> 0111 = 7
 print(f"5 ^ 3 = {5 ^ 3}")   # bitweise exklusives oder 5 = 0101, 3 = 0011 -> 0110 = 6
 print(f"~5 = {~5}")         # bitweises invertieren also 5 = 0101 -> 1010 = -6 (Warum genau weiß ich leider nicht)
