@@ -217,10 +217,18 @@ def split_number_convertable_strings(*args:str):
             # to cover complex numbers to
             
             num_value = complex(eval(string))
+
+            ## Check if the calculated complex value is a special value which is not a number
+            # (I could write this without if statements but i think it would be less readable)
+            
             # check if parts of the number are NaN (Not a Number)
             # this check is neccessary because python is able
             # to "calculate" with "not a number" values... 
-            return  not math.isnan(num_value.real) and not math.isnan(num_value.imag)
+            if math.isnan(num_value.real) or math.isnan(num_value.imag):
+                return False
+            if not math.isfinite(num_value.real) or not math.isfinite(num_value.imag):
+                return False
+            return True
             
             # Explanation: Why I don't use a simple operator but a cast:
             # you can NOT use operators like
@@ -238,6 +246,9 @@ def split_number_convertable_strings(*args:str):
     for string in args:
         if _is_string_convertible_to_number(string):
             numbers += [string]
+            # this line saves "letters" as not_numbers
+            if (len(string) == 1):
+                not_numbers += [string]
         else:
             not_numbers += [string]
     
@@ -253,7 +264,8 @@ args:tuple[str] = (
 
     # Numbers in different formats:
     "42",        
-    "0",        
+    "0",       
+    "1", 
     "-37",
     "0.0", 
     "0.5", 
@@ -265,8 +277,9 @@ args:tuple[str] = (
     # special "numbers" and not numbers are from the math lib:
     "math.nan", # NotANumber
     "nan + 1j",
-    "math.inf", # infinity (is handled as a number in python)
+    "math.inf", # infinity is not a number
     "-math.inf",
+    "complex(math.inf, math.nan)",
 
     # Booleans are numbers:
     "True",
