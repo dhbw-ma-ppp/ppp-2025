@@ -124,7 +124,9 @@ def split_numbers_and_single_chars(*args: str) -> tuple[list[str], list[str]]:
     for arg in args:
         # case number
         try:  # alternatively check instead of error-proofing "EAFP" -> "Easier to ask for forgiveness than permission" or "European Association of Fish Pathologists e.V."
-            complex(arg.replace(" ", ""))  # to support fractions (operations) -> e.g. use Fraction(arg)
+            complex(
+                arg.replace(" ", "")
+            )  # to support fractions (operations) -> e.g. use Fraction(arg)
             numbers.append(arg)
         except (
             ValueError
@@ -144,6 +146,12 @@ test_function(
     expected=(["1", "2", "3"], ["1", "2", "3"]),
 )
 
+# test for negative number
+test_function(
+    split_numbers_and_single_chars,
+    params=("-1", "-2.5", "-3"),
+    expected=(["-1", "-2.5", "-3"], []),
+)
 
 # test for floats
 test_function(
