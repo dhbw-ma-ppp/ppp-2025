@@ -171,8 +171,8 @@ test_function(
 # test for other bases
 test_function(
     split_numbers_and_single_chars,
-    params=("101","0b101","77","0o77","1f","0x1f"),
-    expected=({"101", "0b101", "77", "0o77", "1f", "0x1f"},set()),
+    params=("101", "0b101", "77", "0o77", "1f", "0x1f"),
+    expected=({"101", "0b101", "77", "0o77", "1f", "0x1f"}, set()),
 )
 
 

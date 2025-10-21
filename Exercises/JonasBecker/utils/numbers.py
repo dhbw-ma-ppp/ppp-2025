@@ -19,8 +19,10 @@ def can_be_interpreted_as_number(arg: str) -> bool:
     bool
         True if the string represents a number according to above's definition, False otherwise.
     """
-    arg = arg.replace(" ", "") # debatable, irl you would discuss exact behaviour before hand, kept it in for demonstration because you could argue spaces are just for decoration and no new operations were added
-    arg.strip() # \t etc.
+    arg = arg.replace(
+        " ", ""
+    )  # debatable, irl you would discuss exact behaviour before hand, kept it in for demonstration because you could argue spaces are just for decoration and no new operations were added
+    arg.strip()  # \t etc.
     try:  # alternatively check instead of error-proofing "EAFP" -> "Easier to ask for forgiveness than permission" or "European Association of Fish Pathologists e.V."
         complex(
             arg  # remove leading and trailing spaces \t etc
