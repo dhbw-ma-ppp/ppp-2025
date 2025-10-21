@@ -37,9 +37,9 @@ def klassifiziere_strings(*args):
         
         if ist_zahl:
             zahlen_liste.append(text)
-        else:
-            if len(text) == 1 :
-                einzelzeichen_liste.append(text)
+
+        if len(text) == 1 :
+            einzelzeichen_liste.append(text)
     
     return zahlen_liste, einzelzeichen_liste
 
