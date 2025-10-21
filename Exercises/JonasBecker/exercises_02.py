@@ -1,4 +1,5 @@
-from utils.test import test_function  # imports a function to simplify testing
+from utils.test import test_function
+from utils.numbers import can_be_interpreted_as_number
 
 # Write a function that takes as input a list of integers and returns a single integer number.
 # the numbers passed as argument form the working memory of a simulated computer.
@@ -104,7 +105,7 @@ print(
 print("\n2)")
 
 
-def split_numbers_and_single_chars(*args: str) -> tuple[list[str], list[str]]:
+def split_numbers_and_single_chars(*args: str) -> tuple[set[str], set[str]]:
     """
     Returns numbers and signle chars as two seperate arrays
 
@@ -119,101 +120,102 @@ def split_numbers_and_single_chars(*args: str) -> tuple[list[str], list[str]]:
         Tuple with two lists. First one listing the numbers, second one listing single characters.
     """
 
-    numbers = []
-    chars = []
+    numbers: set[str] = set()
+    chars: set[str] = set()
     for arg in args:
         # case number
-        try:  # alternatively check instead of error-proofing "EAFP" -> "Easier to ask for forgiveness than permission" or "European Association of Fish Pathologists e.V."
-            complex(
-                arg.replace(" ", "")
-            )  # to support fractions (operations) -> e.g. use Fraction(arg)
-            numbers.append(arg)
-        except (
-            ValueError
-        ):  # ValueError is the only type of error that could happen and the one we are interested in
-            pass
+        if can_be_interpreted_as_number(arg):
+            numbers.add(arg)
 
         # case char, can also be a one-digit number
         if len(arg) == 1:
-            chars.append(arg)
-    return (numbers, chars)
+            chars.add(arg)
+    return numbers, chars
 
 
 # test for ints and if arg can be in both lists
 test_function(
     split_numbers_and_single_chars,
     params=("1", "2", "3"),
-    expected=(["1", "2", "3"], ["1", "2", "3"]),
+    expected=({"1", "3", "2"}, {"1", "2", "3"}),
 )
 
 # test for negative number
 test_function(
     split_numbers_and_single_chars,
     params=("-1", "-2.5", "-3"),
-    expected=(["-1", "-2.5", "-3"], []),
+    expected=({"-1", "-2.5", "-3"}, set()),
 )
 
 # test for floats
 test_function(
     split_numbers_and_single_chars,
     params=("1.3", "2", "1.5", "1.8e+308", "1.8e+3321321321312321"),
-    expected=(["1.3", "2", "1.5", "1.8e+308", "1.8e+3321321321312321"], ["2"]),
+    expected=({"1.3", "2", "1.5", "1.8e+308", "1.8e+3321321321312321"}, {"2"}),
 )
 
 # test for complex numbers
 test_function(
     split_numbers_and_single_chars,
     params=("0.3+3j", "15+j", "inf+j"),
-    expected=(["0.3+3j", "15+j", "inf+j"], []),
-)
-
-# test for spaces --> cant be interpreted natively, but does not add operations
-test_function(
-    split_numbers_and_single_chars,
-    params=("0.   3+3  j", "15 +j", "inf + j"),
-    expected=(["0.   3+3  j", "15 +j", "inf + j"], []),
+    expected=({"0.3+3j", "15+j", "inf+j"}, set()),
 )
 
 # test for letters and other unicodes
 test_function(
     split_numbers_and_single_chars,
-    params=("ab", "a", "d", "z", "🐈", "🌳"),
-    expected=([], ["a", "d", "z", "🐈", "🌳"]),
+    params=("z", "ö", "g", "h", "🐈", "🌳"),
+    expected=(set(), {"z", "ö", "g", "h", "🐈", "🌳"}),
 )
+
+# test for other bases
+test_function(
+    split_numbers_and_single_chars,
+    params=("101","0b101","77","0o77","1f","0x1f"),
+    expected=({"101", "0b101", "77", "0o77", "1f", "0x1f"},set()),
+)
+
 
 # expected special cases
 
-## test for whitespaces
+## test for general whitespaces
+test_function(
+    split_numbers_and_single_chars,
+    params=(" 0.3+3j ", "15 + j ", "inf + j"),
+    expected=({" 0.3+3j ", "15 + j ", "inf + j"}, set()),
+)
+
+## test for trailing and leading whitespaces
 test_function(
     split_numbers_and_single_chars,
     params=("         3.14 ", " ", "           "),
-    expected=(["         3.14 "], [" "]),
+    expected=({"         3.14 "}, {" "}),
 )
 
 ## test for \
 test_function(
     split_numbers_and_single_chars,
     params=("\n", "\t"),
-    expected=([], ["\n", "\t"]),
+    expected=(set(), {"\n", "\t"}),
 )
 
 ## test for keywords or fractions (operations & names not supported)
 test_function(
     split_numbers_and_single_chars,
     params=("1/3", "pi"),
-    expected=([], []),
+    expected=(set(), set()),
 )
 
 # test for infinity
 test_function(
     split_numbers_and_single_chars,
     params=("infinity", "inf", "-inf"),
-    expected=(["infinity", "inf", "-inf"], []),
+    expected=({"infinity", "inf", "-inf"}, set()),
 )
 
 # test for NaN (can be **interpreted** as "number" by float)
 test_function(
     split_numbers_and_single_chars,
     params=("nan", "NAN", "NaN"),
-    expected=(["nan", "NAN", "NaN"], []),
+    expected=({"nan", "NAN", "NaN"}, set()),
 )
