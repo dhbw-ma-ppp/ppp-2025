@@ -72,16 +72,19 @@ def sortieren_funktion(*args):
     liste_laenge = []
     for element in args:
         wert = element
-        try: #kann der wert als Zahl dargestellt werden
+        try: #kann der Wert als Dezimalzahl dargestellt werden?
              wert1=float(wert)   
-        except ValueError as exception: #falls Umwandlung nicht möglich
-            print("Keine Zahl.")
-        else: #falls Umwandlung möglich, Zahl zu liste_zahl hinzufügen
+        except ValueError as exception: #falls Typecast nicht möglich
+            try: #kann der Wert als Hexadezimalzahl dargestellt werden?
+                wert1=int(wert,16) 
+            except ValueError as exception: #falls Typecast nicht möglich: nächster Schleifendurchlauf
+                continue
+            else:
+                add_to_list(wert,liste_zahl)
+        else: #falls Umwandlung möglich: Zahl zu liste_zahl hinzufügen
             add_to_list(wert,liste_zahl)
-            #print(liste_zahl)
-        if len(wert)==1: #wenn nur ein character, character zu liste_laenge hinzufügen
+        if len(wert)==1: #wenn nur ein Character: Character zu liste_laenge hinzufügen
             add_to_list(wert,liste_laenge)
-            #print(liste_laenge)
     return liste_laenge, liste_zahl
 
 def add_to_list(wert,liste): #Wert an Liste anhängen 
@@ -91,7 +94,6 @@ def add_to_list(wert,liste): #Wert an Liste anhängen
 # examples and verify that the output for these examples is correct.
 
 print("Teil 2:") #Ausgabe der 3 sortierten Beispiele
-print("1) ",sortieren_funktion("32","r","3","ghvi","12234","einhundert"),"\n")
+print("1) ",sortieren_funktion("34382","r","3","ghvi","10010","0"),"\n")
 print("2) ",sortieren_funktion("fünf","h","14-3","2*3",",","5"),"\n")
-
-print("3) ",sortieren_funktion("2134.65","12,5","hfd","?","0.6"),"\n")
+print("3) ",sortieren_funktion("2134.65","12,5","2^2","?","1A5"),"\n")
