@@ -13,22 +13,32 @@
 # 99 indicates halt. the program should stop after encountering the opcode 99.
 # After the program stops, the function should return the value in the first location (address 0) 
 # of your working memory.
+
 import math
 import ast 
 
 def simulate_computer(lst):
+    '''
+    This function simulates a simple computer that processes a list of integers as its working memory.
+    It interprets opcodes for addition, multiplication, and halting the program.
+    Parameters:
+    lst: A list of integers representing the working memory of the computer.
+    Returns:
+    int: The value at the first position of the working memory after processing.
+    '''
     for i in range(0, len(lst)-1, 4):
         opcode = lst[i]
         match opcode:
-            case 1:
+            case 1: # addition
                 lst[lst[i+3]] = lst[lst[i+1]] + lst[lst[i+2]]
-            case 2:
+            case 2: # multiplication
                 lst[lst[i+3]] = lst[lst[i+1]] * lst[lst[i+2]]
-            case 99:
+            case 99: # halt
                 break
-            case _:
+            case _: # invalid opcode
                 raise Exception("Invalid opcode")  
     return lst[0]
+
 # As an example, if the lst of integers passed to your function is 
 # [1, 0, 0, 0, 99] the 1 in the first position indicates you should read the values
 # at position given by the second and third entries. Both of these indicate position 0, so you should read the value
@@ -40,12 +50,11 @@ def simulate_computer(lst):
 # [1, 1, 1, 4, 99, 5, 6, 0, 99] should become [30, 1, 1, 4, 2, 5, 6, 0, 99]
 # Your function should return 30.
 
-
 # print out which value is returned by your function for the following lst:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
-# test = [1, 1, 1, 4, 99, 5, 6, 0, 99]
 print(simulate_computer(commands))
+
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
 # All inputs will be of type string.
@@ -55,15 +64,27 @@ print(simulate_computer(commands))
 #   The second lst should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
+
 def categorize_string_inputs(*args):
+    '''
+    This function takes an arbitrary number of string arguments and categorizes them into two lists:
+    1. A list of strings that can be interpreted as numbers. (INCLUDES: integers, floats, scientific notation, 
+    hex, binary, octal, booleans->True/False, EXCLUDES: complex numbers, infinity, constants, algebraic expressions and non-numeric strings)
+    2. A list of strings that contain just one character.(also incluedes number characters of length 1)
+    Parameters:
+    *args: Arbitrary number of string arguments.
+    Returns:
+    tuple: A tuple containing two lists - (number_lst, char_lst)
+    '''
     number_lst = []
     char_lst = []
     for arg in args:
-        if len(arg) == 1 :
-            char_lst.append(arg)
+
+        if len(arg) == 1 : # Checking for single character strings
+            char_lst.append(arg) # Adding to char_lst
         try:
-            float(ast.literal_eval(arg))
-            number_lst.append(arg)
+            float(ast.literal_eval(arg)) # Checking if the argument can be evaluated to a number
+            number_lst.append(arg) # Adding to number_lst
         except:
             pass
 
@@ -72,6 +93,12 @@ def categorize_string_inputs(*args):
 print(categorize_string_inputs("2.5e-2", "a", "Katze","5"))      #example1
 print(categorize_string_inputs("3.0", "True", "4,4", "4/2", "H"))      #example2
 print(categorize_string_inputs("!", "4*2", "*", " ", "math.pi", "math.e"))      #example3
-print(categorize_string_inputs("0xff", "0b1011","0o812", "math.sqrt(2)"))      #example4
-print(categorize_string_inputs("π", "∞","", "'hello'", "-6"))      #example5
+print(categorize_string_inputs("0xff", "0b1011","0o712", "math.sqrt(2)"))      #example4
+print(categorize_string_inputs("π", "∞","", "'hello'", "-6", "5+2j", "None"))      #example5
+
+# In this a programm a number is defined as any string that can be converted to a float
+# using the ast.literal_eval function from the ast module. -> Literals include strings, bytes, numbers, tuples, lists, dicts, sets, booleans, and None.
+# Single character strings are defined as strings of length one, including numeric characters.
+# Note that a string can be in both lsts if it meets both criteria.
+
 
