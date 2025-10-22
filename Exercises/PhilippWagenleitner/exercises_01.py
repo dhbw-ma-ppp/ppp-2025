@@ -33,22 +33,21 @@ count1=input_string.count("(")
 print(f"Anzahl von '(': {count1}") 
 count2=input_string.count(")")
 print(f"Anzahl von ')': {count2}")
+print(f"Differenz: {count1-count2}")
 
 # 5)
 # how may elements are in each of the following lists?
 first_list = ['drs', 'clt', 'iny', 'alv', 'nvy', 'bpt', 'gkw', 'fkm', 'jrz', 'hov', 'bqu', 'bov', 'eju', 'eiz', 'fjm', 'bek', 'abj', 'hov', 'coq', 'iox', 'efs', 'krw', 'evy', 'elw', 'gil', 'ajq', 'cek', 'fkm', 'mnu', 'adf']
 second_list = ['dlz', 'akw', 'bry', 'eyz', 'bny', 'kst', 'elw', 'ekl', 'djm', 'aft', 'gkw', 'krw', 'coq', 'evy', 'bov', 'bkl', 'bov', 'afs', 'hov', 'fjq', 'cqu', 'ahq', 'beh', 'ijz', 'ksy', 'ilx', 'htu', 'epz', 'ekl', 'ajq']
 length1 = len(first_list)
-elements1 = length1 +1
-print(f"Elemente in erster Liste: {elements1}")
+print(f"Elemente in erster Liste: {lenght1}")
 length2 = len(second_list)
-elements2 = length2 +1
-print(f"Elemente in zweiter Liste: {elements2}")
+print(f"Elemente in zweiter Liste: {lenght2}")
 
 # 6)
 # which and how many elements are common to the two lists above? 
 common_elements = list(set(first_list) & set(second_list))
-print(f"Die gemeinsamen Elemte: {common_elements}")
+print(f"Die gemeinsamen Elemente: {common_elements}")
 quantity_common = len(common_elements)
 print (f"Anzahl der gemeinsamen Elemente: {quantity_common}")
 
