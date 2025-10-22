@@ -42,10 +42,10 @@ def simple_virtual_machine(commands_list:list[int]):
     # I use a var to store the length of the list
     # so that the while loop doesn't have to call
     # every cicle the len function
-    length_of_list:int = len(commands_list)
+    length_of_commmand_list:int = len(commands_list)
 
     # runs as long there is no break command
-    while (function_pointer < length_of_list):
+    while (function_pointer < length_of_commmand_list):
         # Get the 2 values to operate on
         index_of_value_1:int    = commands_list[function_pointer+1]
         index_of_value_2:int   = commands_list[function_pointer+2]
@@ -72,7 +72,7 @@ def simple_virtual_machine(commands_list:list[int]):
                 print(f"Error! opcode: {commands_list[function_pointer]} is not valid!")
                 return None
             
-        # finally increment the function pointer by 4
+        # increment the function pointer by 4 after the exectution of the command
         function_pointer += 4
 
     # Return None if the machine failed
@@ -110,7 +110,6 @@ def virtual_machine(data:list[int]) -> int:
     calculating its index position in the function_field!
     Its a direct look up.
     """
-    # function pointer
     func_ptr:int = 0
     
     
@@ -128,8 +127,8 @@ def virtual_machine(data:list[int]) -> int:
     try:
         while (data[func_ptr] != 99):
             # Get values to compute
-            v1 = data[data[func_ptr+1]]
-            v2 = data[data[func_ptr+2]]
+            v1:int = data[data[func_ptr+1]]
+            v2:int = data[data[func_ptr+2]]
 
             # The function index is the task value -1
             # For example:
@@ -141,16 +140,15 @@ def virtual_machine(data:list[int]) -> int:
             # select function, execute function with the values v1 and v2 and store the value
             data[data[func_ptr + 3]] = function_field[func_indx](v1, v2)
 
-            # increment function pointer by 4
             func_ptr += 4
         
-        # return the result of the virtual machine
         return data[0]
     except IndexError:
+        error_message_start:str = f"Error: A wrong function index was tried to use!\nData: n{data}\nfunction pointer: {func_ptr}\n"
         try:
-            raise IndexError(f"Error: A wrong function index was tried to use!\nData: n{data}\nfunction pointer: {func_ptr}\nfunction index: {data[func_ptr]-1}")
+            raise IndexError(error_message_start + f"function index: {data[func_ptr]-1}")
         except IndexError:
-            raise IndexError(f"Error: A wrong function index was tried to use!\nData: n{data}\nfunction pointer: {func_ptr}\n\n\nIn addition to this error, the index to the index of the function pointer is out of range!")
+            raise IndexError(error_message_start + f"In addition to this error, the index to the index of the function pointer is out of range!")
 
 # I use commands.copy() to keep an unchanged list of commands 
 # to be able to use it in the virtual_machine function again.
@@ -205,10 +203,10 @@ def split_number_convertable_strings(*args:str):
         The function takes a string and checks 
         if the string is convertable 
         into a complex number
-        and if the number is not (partly) nan.
+        and if the number is not (partly) nan or infinite.
 
         If this conversion is possible and
-        the number is not nan it returns true
+        the number is not nan or inifite it returns true
         else false.
         """
         try:
@@ -226,16 +224,13 @@ def split_number_convertable_strings(*args:str):
             num_value = complex(eval(string))
 
             ## Check if the calculated complex value is a special value which is not a number
-            # (I could write this without if statements but i think it would be less readable)
             
             # check if parts of the number are NaN (Not a Number)
             # this check is neccessary because python is able
             # to "calculate" with "not a number" values... 
-            if math.isnan(num_value.real) or math.isnan(num_value.imag):
-                return False
-            if not math.isfinite(num_value.real) or not math.isfinite(num_value.imag):
-                return False
-            return True
+            number_is_not_nan       = not (math.isnan(num_value.real) or math.isnan(num_value.imag))
+            number_is_finite        = math.isfinite(num_value.real) and math.isfinite(num_value.imag)
+            return number_is_not_nan and number_is_finite
             
             # Explanation: Why I don't use a simple operator but a cast:
             # you can NOT use operators like
@@ -262,7 +257,7 @@ def split_number_convertable_strings(*args:str):
     return numbers, not_numbers
 
 # I wrote the arguments for the function in this way
-# to make them more readable
+# to make them more readable.
 args:tuple[str] = (
     # This elements are - obviously - not numbers:
     "myString", 
@@ -277,7 +272,7 @@ args:tuple[str] = (
     "0.0", 
     "0.5", 
     "1+1j",     # this is a complex number j is mathematically i
-    "1e9",     # scientific notation
+    "1e9",      # scientific notation
     "0x123",    # hex
     "0b1001010",# binary
 
@@ -288,7 +283,7 @@ args:tuple[str] = (
     "-math.inf",
     "complex(math.inf, math.nan)",
 
-    # Booleans are numbers:
+    # booleans are numbers:
     "True",
     "False",
     "'test' == 'test'",
@@ -330,11 +325,10 @@ def ComplexNumberToNiceString(num:complex) -> str:
     canceling unnecessary zeros.
     """
     try:
-        # check if its not a complex number
+        # check if the imagenary part of the number can be ignored
         if num.imag == 0:
-            num = value.real
-            # check if its a whole number
-            if num == int(num):
+            num:float = value.real
+            if float.is_integer(num):
                 num = int(num)
     except:
         pass
@@ -343,6 +337,6 @@ def ComplexNumberToNiceString(num:complex) -> str:
 print("The following strings are numbers:")
 
 for string in numbers:
-    value:complex = complex(eval(string))
+    value = complex(eval(string))
     
     print(f"{string:>45}  =>  {ComplexNumberToNiceString(value)}")
