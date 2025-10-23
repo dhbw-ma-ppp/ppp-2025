@@ -85,6 +85,7 @@ print(f"Die Wert in der ersten Position ist: {memory_stuff(commands)}")
 
 example1 = ("sd","sdd","1","d","df","23","223","f23f","33wef23","g","234")
 example2 = ["12",  "s", "asdasdsa", "1", "132", "s", "3", "1.2", "erc233", "23sd, 213", ",", ",,,", "."]
+example3 = ["123", "232321232141242", "2", "d", "dfsd", "dfsfds"]
 
 
 
@@ -107,7 +108,8 @@ def number_and_singlecharacter_seperator(*input):
     
     return(arguments_thar_are_numbers, arguments_with_one_character)
 
-    
-number_rguments, one_character_arguments = number_and_singlecharacter_seperator(*example2)
+current_example = example2
 
-print(f"Die Nummern sind {number_rguments} und die Argumente mit einem Wert sind {one_character_arguments} für das array {example2}") 
+number_rguments, one_character_arguments = number_and_singlecharacter_seperator(*current_example)
+
+print(f"Die Nummern sind {number_rguments} und die Argumente mit einem Wert sind {one_character_arguments} für das array {current_example}") 
