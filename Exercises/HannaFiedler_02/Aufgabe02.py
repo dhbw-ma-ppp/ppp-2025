@@ -15,7 +15,8 @@
 # of your working memory.
 def maschine_funktion(liste):
     pos = 0
-    while pos < (len(liste)):
+    gefunden = False
+    while gefunden == False:
         #print (liste[i])
         if liste[pos]==1: #addition
             #print("Addition")
@@ -33,6 +34,7 @@ def maschine_funktion(liste):
             return liste[0]
         else:
             print("Fehler im Code.")
+            gefunden = True
             return 0
         pos+=4
 
