@@ -34,7 +34,6 @@ def maschine_funktion(liste):
             return liste[0]
         else:
             print("Fehler im Code.")
-            gefunden = True
             return 0
         pos+=4
 
