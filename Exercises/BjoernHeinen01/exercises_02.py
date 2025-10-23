@@ -241,14 +241,14 @@ def split_number_convertable_strings(*args:str):
             return False
     
     numbers:list[str]       = []
-    not_numbers:list[str]   = []
+    characters:list[str]   = []
     for string in args:
         if _is_string_convertible_to_number(string):
             numbers += [string]
         if len(string) == 1:
-            not_numbers += [string]
+            characters += [string]
     
-    return numbers, not_numbers
+    return numbers, characters
 
 # I wrote the arguments for the function in this way
 # to make them more readable.
@@ -303,9 +303,9 @@ args:tuple[str] = (
     "(x := 2) * x - 1 * math.e**(2*math.pi*math.cos(x))"
     )
 
-numbers, not_numbers = split_number_convertable_strings(*args)
+numbers, characters = split_number_convertable_strings(*args)
 
-print("The following strings are not numbers:")
+print("The following strings are charakters:")
 for string in not_numbers:
     print(f"\t   *\t{string}")
 print("\n\n")

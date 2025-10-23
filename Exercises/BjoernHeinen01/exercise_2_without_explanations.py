@@ -87,16 +87,11 @@ print(f"    The result of the virtual machine is {result_of_the_virtual_machine}
 
 print("Task 2: Write a function which sorts strings into numbers and not numbers:\n")
 
-# I need the build in math library to use some "advanced" numbers
 import math
 
-def isStringCat(string:str): 
-    """ This class is a very simple comparator
-        just for demonstration purpose."""
-    return string == "Cat"
+def isStringCat(string:str): return string == "Cat"
 
-def f(x:float):
-    return x*x
+def f(x:float): return x*x
 
 def split_number_convertable_strings(*args:str):
     """
@@ -114,52 +109,44 @@ def split_number_convertable_strings(*args:str):
         except:
             return False
     
-    numbers:list[str]       = []
-    not_numbers:list[str]   = []
+    numbers:list[str]    = []
+    characters:list[str] = []
     for string in args:
         if _is_string_convertible_to_number(string):
             numbers += [string]
         if len(string) == 1:
-            not_numbers += [string]
+            characters += [string]
     
-    return numbers, not_numbers
+    return numbers, characters
 
-# I wrote the arguments for the function in this way
-# to make them more readable.
+# I wrote the arguments for the function in this way because its more readable.
 args:tuple[str] = (
-    # This elements are - obviously - not numbers:
     "myString", 
     "One", 
     "return True",
     "a",
 
-    # Numbers in different formats:
     "42",        
     "0",       
     "1", 
     "-37",
     "0.0", 
     "0.5", 
-    "1+1j",     # this is a complex number j is mathematically i
-    "1e9",      # scientific notation
-    "0x123",    # hex
-    "0b1001010",# binary
+    "1+1j",     
+    "1e9",      
+    "0x123",    
+    "0b1001010",
 
-    # special "numbers" and not numbers are from the math lib:
-    "math.nan", # NotANumber
+    "math.nan", 
     "nan + 1j",
-    "math.inf", # infinity is not a number
+    "math.inf", 
     "-math.inf",
     "complex(math.inf, math.nan)",
 
-    # booleans are numbers:
     "True",
     "False",
     "'test' == 'test'",
 
-    # its mathematically no problem to write instead of a number
-    # a function with a parameter:
-    # e.g. 4 = 2^2 = f(2) while f(x) = x*x
     "int(1)",
     "float(2)",
     "eval(hex(42))",
@@ -171,39 +158,31 @@ args:tuple[str] = (
     "7**3",
     "7**0b001",
 
-    # slowly its getting weird:
     "0x123**0b001+1j+(eval(\"'cat'=='cat'\"))+1e10",
     "4&1%0x7&0b0|13",
     "(x := 2) * x - 1 * math.e**(2*math.pi*math.cos(x))"
     )
 
-numbers, not_numbers = split_number_convertable_strings(*args)
+numbers, characters = split_number_convertable_strings(*args)
 
-print("The following strings are not numbers:")
-for string in not_numbers:
+print("The following strings are characters:")
+for string in characters:
     print(f"\t   *\t{string}")
 print("\n\n")
 
 
 
 def ComplexNumberToNiceString(num:complex) -> str:
-    """
-    This function takes a complex number
-    and returns a more readable string 
-    representation of the number by
-    canceling unnecessary zeros.
-    """
     try:
         if num.imag == 0:
             num:float = value.real
             if float.is_integer(num):
                 num = int(num)
-    except:
+    except: 
         pass
     return str(num)
 
 print("The following strings are numbers:")
-
 for string in numbers:
     value = complex(eval(string))
     
