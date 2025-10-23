@@ -79,7 +79,7 @@ def sortieren_funktion(*args):
             try: #kann der Wert als Hexadezimalzahl dargestellt werden?
                 wert1=int(wert,16) 
             except ValueError as exception: #falls Typecast nicht möglich: nächster Schleifendurchlauf
-                continue
+                pass
             else:
                 add_to_list(wert,liste_zahl)
         else: #falls Umwandlung möglich: Zahl zu liste_zahl hinzufügen
