@@ -32,11 +32,12 @@ print("1)")
 
 
 def calculate_number_through_memory_list(
-    memory_integer_list: list[int], opcode_index: int = 0
+    memory_integer_list: list[int], opcode_index: int = 0, unbind_list: bool = True
 ) -> int:
     """Process a list of integers through opcodes (1: add, 2: multiply, 99: halt).
 
     Recursively executes the program stored in `memory_integer_list` until opcode 99 is reached.
+    Expecting list with correct values, else runtime error when accessing items through outbound indices!
 
     Parameters
     ----------
@@ -51,7 +52,13 @@ def calculate_number_through_memory_list(
         Value at position 0 after execution.
     """
 
-    # expecting list with correct values, else runtime error when accessing items through outbound indices
+    if (
+        unbind_list
+    ):  # `if`` wouldn't be needed if while would be used instead, but recursion could reveal greater flexibility
+        memory_integer_list = (
+            memory_integer_list.copy()
+        )  # rebinds list (which is mutable) to new copy, so its in its own context
+
     opcode = memory_integer_list[opcode_index]
 
     if opcode == 99:  # halt
@@ -71,7 +78,9 @@ def calculate_number_through_memory_list(
         (read_1 + read_2) if opcode == 1 else (read_1 * read_2)
     )  # () for better structure, alternatively to ternary you could use if else compound statement
 
-    return calculate_number_through_memory_list(memory_integer_list, opcode_index + 4)
+    return calculate_number_through_memory_list(
+        memory_integer_list, opcode_index=opcode_index + 4, unbind_list=False
+    )  # new unbind not needed, --> perfomance
 
 
 test_function(
