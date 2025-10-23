@@ -121,7 +121,7 @@ def sort_into_categories(*args):
         i += 1
 
 # Das bricht -- sucht nach Zahlen, wir suchen aber eine Möglichkeit Strings nach Zahlen auszulesen
-
+# hex or binary integers are casted to an integer 
 def check_for_number(*args):
     number_argument= []
     for num in args:
@@ -147,25 +147,8 @@ def check_for_number(*args):
         # 4. Enum or  objectives mit .value
         elif hasattr(num, "value"):
             return check_for_number(args.value)
-        
-        # 5. testing if input is in hex,oct or bin
-        else:
-            if is_convertible_to_base(num):
-                number_argument.append(num)
-
     return number_argument
             
-
-def is_convertible_to_base(num: str):
-    # firt two elements bx ==> bin
-    if num[:2] == "0b" and int(num[2:], 2):
-        return num
-    # first two elements 0x ==> hex
-    elif num[:2] == "0x" and int(num[2:], 16):
-        return num
-    else:
-        return False
-
 
 
 
