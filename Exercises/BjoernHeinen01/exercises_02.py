@@ -190,11 +190,8 @@ def f(x:float):
 
 def split_number_convertable_strings(*args:str):
     """
-    Takes an arbriatry number of string arguments
-    these strings get seperated into to different lists.
-
-    Strings which are convertable into numbers are returned in the first list
-    and the other strings are returned in the second list.
+    All elements which are convertable into a number get returned in the first list. 
+    All characters get returned in the second list.
     """
     # the underscore of this inner function emphasizes
     # that it is a private function

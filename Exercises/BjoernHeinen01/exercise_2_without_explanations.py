@@ -45,21 +45,6 @@ def virtual_machine(data:list[int]) -> int:
 
     This approach may be slower with a small set of operators but
     it scales with a time complexity of O(1) very well with larger sets of operators.
-
-    Example: 
-    An array of if statements:
-         if instruction == 1:
-         elif instruction == 2:
-         ...
-         elif instruction == n: 
-    has a time complexity of O(n) 
-    because the computer has to iterate
-    threw them until it found a true if statement.
-
-    But the function lookup has a time complexity of O(1) 
-    because its directly choosing the correct function by
-    calculating its index position in the function_field!
-    Its a direct look up.
     """
     func_ptr:int = 0
     
@@ -77,8 +62,9 @@ def virtual_machine(data:list[int]) -> int:
             data[data[func_ptr + 3]] = function_field[func_index](v1, v2)
 
             func_ptr += 4
-        
+
         return data[0]
+    
     except IndexError:
         error_message_start:str = f"Error: A wrong function index was tried to use!\nData: n{data}\nfunction pointer: {func_ptr}\n"
         try:
@@ -110,33 +96,14 @@ def isStringCat(string:str):
     return string == "Cat"
 
 def f(x:float):
-    """
-    My quadratic function.
-
-    I named it f(x) to show the similarities 
-    of mathematical functions and code functions. 
-    """
     return x*x
 
 def split_number_convertable_strings(*args:str):
     """
-    Takes an arbriatry number of string arguments
-    these strings get seperated into to different lists.
-
-    Strings which are convertable into numbers are returned in the first list
-    and the other strings are returned in the second list.
+    All elements which are convertable into a number get returned in the first list. 
+    All characters get returned in the second list.
     """
     def _is_string_convertible_to_number(string:str) -> bool:
-        """
-        The function takes a string and checks 
-        if the string is convertable 
-        into a complex number
-        and if the number is not (partly) nan or infinite.
-
-        If this conversion is possible and
-        the number is not nan or inifite it returns true
-        else false.
-        """
         try:
             num_value = complex(eval(string)) 
 
