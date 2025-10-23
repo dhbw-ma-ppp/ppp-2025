@@ -39,6 +39,7 @@ def working_memory(liste):
                 zaehler += 4
             case _:
                 print("Error")
+                return 0
     return liste[0]
 
 
@@ -71,12 +72,12 @@ def Klassifizierung(string_liste):
     while index < len(string_liste):
         try:
             float(string_liste[index])
-            print(zahlen_liste.append(string_liste[index]))
+            zahlen_liste.append(string_liste[index])
         except:
             pass
         
         if len(string_liste[index]) == 1:
-            print(zeichen_liste.append(string_liste[index]))
+            zeichen_liste.append(string_liste[index])
     
         index += 1
     return zahlen_liste, zeichen_liste
