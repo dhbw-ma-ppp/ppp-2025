@@ -65,31 +65,34 @@ print("  ")
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
-def unnamedarguments(liste):
-    stringliste = []
-    intliste = []
-    sonstigezeichen = []
+def unnamedarguments_input():
+    numbers = []
+    single_chars = []
+
     while True:
-        eingabe = input("Gib einen String ein oder STOP zum beenden:  ").lower()
-        strsplitt = list(eingabe)
-        if eingabe == "stop":
+        eingabe = input("Gib Strings ein (getrennt durch Leerzeichen) oder STOP zum Beenden: ")
+        if eingabe.upper() == "STOP":
             print("Beendet!")
             break
-        else:
-            for x in strsplitt:
-                if x.isdigit():
-                    intliste.append(x)
-                elif x.isalpha:
-                    stringliste.append(x)   
-                else:
-                    sonstigezeichen.append(x)
-        print(f"Original Eingabe:  {eingabe}")
-        print(f"Alle Zeichen einzeln:  {strsplitt}")
-        print("  ")
-        print(f"Liste mit INT Werten:  {intliste}\nListe mit STR Werten:  {stringliste}")
-        print(f"Liste mit Sonderzeichen:  {sonstigezeichen}")
-        return
-unnamedarguments([])
+        teile = eingabe.split()
+
+        for wort in teile:
+            try:
+                zahlen =float(wort)
+                numbers.append(zahlen)
+            except ValueError:
+                pass
+
+            if len(wort) == 1:
+                single_chars.append(wort)
+
+        print(f"Aktuelle Zahlen-Liste: {numbers}")
+        print(f"Aktuelle Einzelzeichen-Liste: {single_chars}")
+
+unnamedarguments_input()
+
+
+
 
 # Eingabe Beispiele:
 
@@ -97,16 +100,3 @@ unnamedarguments([])
 # BSP2: Man kann mit Sonderzeichen versuchern wie z.B.: ',#,/ sowas in der Art. Wenn das in INT-Liste auftaucht, dann muss ein Fehler im code sein. 
 
 
-  # try:
-    # strsplitt  = int(x)
-     # intliste.append(x)
- #except ValueError:
-     # pass 
-
- # try:
-    # s = str(x)
-     # stringliste.append(x)
-# except ValueError:
-    # pass
-
-# so würde auch gehen!!
