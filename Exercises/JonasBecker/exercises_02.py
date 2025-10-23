@@ -80,7 +80,7 @@ def calculate_number_through_memory_list(
 
     return calculate_number_through_memory_list(
         memory_integer_list, opcode_index=opcode_index + 4, unbind_list=False
-    )  # new unbind not needed, --> perfomance
+    )  # new unbind not needed, --> a little better perfomance. for best perfomance tho, consider using while in the future
 
 
 test_function(
