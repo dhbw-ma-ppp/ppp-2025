@@ -66,12 +66,12 @@ simulated_computer(commands)
 
 
 
-def num_or_char(*args):
+def num_or_char(arr):
 
     numbers = []
     one_char = []
 
-    for element in args:
+    for element in arr:
         try:
             float(element)
             numbers.append(element)
