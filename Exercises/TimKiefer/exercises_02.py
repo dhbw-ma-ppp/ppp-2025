@@ -27,25 +27,25 @@
 print("Aufgabe 1:") #clean cut between exercises
 
 def sim_comp(memory): #simulates the computer
-    pointer = 0
+    i = 0
     while True:
-        opcode = memory[pointer]
-        if opcode == 1:
-            pos1 = memory[pointer + 1]
-            pos2 = memory[pointer + 2]
-            pos3 = memory[pointer + 3]
-            memory[pos3] = memory[pos1] + memory[pos2]
-            pointer += 4
-        elif opcode == 2:
-            pos1 = memory[pointer + 1]
-            pos2 = memory[pointer + 2]
-            pos3 = memory[pointer + 3]
-            memory[pos3] = memory[pos1] * memory[pos2]
-            pointer += 4
-        elif opcode == 99:
+        opcode = memory[i]
+        if opcode == 99:
             break
+        elif opcode == 1:
+            pos1 = memory[i + 1]
+            pos2 = memory[i + 2]
+            pos3 = memory[i + 3]
+            memory[pos3] = memory[pos1] + memory[pos2]
+            i += 4
+        elif opcode == 2:
+            pos1 = memory[i + 1]
+            pos2 = memory[i + 2]
+            pos3 = memory[i + 3]
+            memory[pos3] = memory[pos1] * memory[pos2]
+            i += 4
         else:
-            raise ValueError(f"Unknown opcode {opcode} encountered at position {pointer}")
+            raise ValueError(f"Unknown opcode {opcode} encountered at position {i}")
     return memory[0]
 
 # print out which value is returned by your function for the following list:
@@ -75,8 +75,26 @@ def catg_strings(*args):
         if len(arg) == 1:
             single_chars.append(arg)
     return numbers, single_chars
+
+def print_results(test_name, result_tuple):
+    """Formats and prints the categorization results in a clean, tabular format."""
+    numbers, single_chars = result_tuple
+    
+    print(f"--- {test_name} ---")
+    print(f"{'[Numbers]':<20} {'[One Character]':<20}")
+    print("-" * 40)
+    
+    numbers_str = ", ".join(numbers)
+    single_chars_str = ", ".join(single_chars)
+    
+    print(f"{numbers_str:<20} {single_chars_str:<20}")
+    print()
 # Test cases
-test1 = catg_strings("123", "a", "aa", "456")
-test2 = catg_strings("hello", "b", "-42", "world", "c", "99", "d", "ef", "01", "!", "longstring", "Z", "52", "x", "12a", "3.14")
-test3 = catg_strings("a", "1", "2", "three", "4", "!", "b", "C", "D", "efg", "-7", "8", "nine", "0")
-print(f"[Numbers],[One Character]\n: {test1}\n{test2}\n{test3}")
+test1_result = catg_strings("123", "a", "aa", "456")
+test2_result = catg_strings("hello", "b", "-42", "world", "c", "99", "d", "ef", "01", "!", "longstring", "Z", "52", "x", "12a", "3.14")
+test3_result = catg_strings("a", "1", "2", "three", "4", "!", "b", "C", "D", "efg", "-7", "8", "nine", "0")
+
+# --- Print Formatted Output ---
+print_results("Test Case 1", test1_result)
+print_results("Test Case 2", test2_result)
+print_results("Test Case 3", test3_result)
