@@ -77,17 +77,12 @@ def catg_strings(*args):
     return numbers, single_chars
 
 def print_results(test_name, result_tuple):
-    """Formats and prints the categorization results in a clean, tabular format."""
+    """Formats and prints results vertically."""
     numbers, single_chars = result_tuple
     
     print(f"--- {test_name} ---")
-    print(f"{'[Numbers]':<20} {'[One Character]':<20}")
-    print("-" * 40)
-    
-    numbers_str = ", ".join(numbers)
-    single_chars_str = ", ".join(single_chars)
-    
-    print(f"{numbers_str:<20} {single_chars_str:<20}")
+    print(f"[Numbers]:       {', '.join(numbers)}")
+    print(f"[One Character]: {', '.join(single_chars)}")
     print()
 # Test cases
 test1_result = catg_strings("123", "a", "aa", "456")
