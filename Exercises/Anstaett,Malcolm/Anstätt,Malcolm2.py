@@ -46,7 +46,7 @@ def list_alg(lst):
             case _:
                  print("Kein gültiger Opcode")
                  break
-    return
+    return lst[0]
 
 print("Aufgabe 1:\n")
 list_alg(commands)
@@ -62,17 +62,17 @@ list_alg(commands)
 # examples and verify that the output for these examples is correct.
 
 
-number_lst = []
-string_lst = []
-unsorted_lst = []
-
 def string_sort(*args):
 
-    # if not args:                                                  # Freie String Eingabe
-    #     string_count = int(input("Anzahl an Strings:", ))
-    #     for _ in range(string_count): 
-    #         arb_string = input("Eingabe String:", )
-    #         args += (arb_string,)
+    number_lst = []
+    string_lst = []
+    unsorted_lst = []
+
+    if not args:                                                  # Freie String Eingabe
+         string_count = int(input("Anzahl an Strings:", ))
+         for _ in range(string_count): 
+             arb_string = input("Eingabe String:", )
+             args += (arb_string,)
 
     for arb_string in args:
         try:
@@ -91,7 +91,7 @@ def string_sort(*args):
             unsorted_lst.append(arb_string)
 
      
-    return print("Liste mit Zahlen:\n", number_lst) , print("Liste mit einzelnen Zeichen:\n", string_lst)
+    return number_lst ,string_lst
 
 
 print("Aufgabe 2:\n")
@@ -99,6 +99,5 @@ print("Aufgabe 2:\n")
 example1= ("123","Hello","3.14","A","5e3","X","-5","World","pi","e","!")
 example2= ("a","ab","b","bc","c")
 example3= ("321","3e10","3.14","-5")
-#string_sort()               #Freie Eingabe
-string_sort(*example1)      #vorbestimmte Eingabe
-
+print("Die sortierte Liste mit freier Eingabe:\n",string_sort())             #Freie Eingabe
+#print("Die sortierten Listen:\n",string_sort(*example1))      #vorbestimmte Eingabe
