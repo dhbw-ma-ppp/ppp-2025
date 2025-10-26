@@ -8,6 +8,33 @@
 #  transfer(other_account, amount) -> It should withdraw from one account and deposit into the other.
 #  Try depositing, withdrawing and transferring amounts and print the balance each time.
 
+class BankAccount:
+    def __init__(self, balance):    #Konstruktor
+        self._balance = balance
+    
+    def deposit(self, amount):      #Einzahlen
+        self._balance += amount
+    
+    def withdraw(self, amount):     #Auszahlen
+        self._balance -= amount
+
+    def get_balance(self):          #Kontostand ausgeben
+        return self._balance
+    
+    def transfer(self, other_account, amount):  #Auf anderes Konto überweisen
+        self._balance -= amount
+        other_account._balance += amount
+
+my_account = BankAccount(2000)
+other_account = BankAccount(1000)
+print("Part 1:")
+my_account.deposit(200)
+print("Einzahlen:",my_account.get_balance())
+my_account.withdraw(150)
+print("Abheben:",my_account.get_balance())
+my_account.transfer(other_account, 23)
+print("Transfer:",my_account.get_balance(), "(my_account),", other_account.get_balance(),"(other_accout)")
+
 
 # PART 2:
 # Write a class for a French deck of cards (2-Ace of diamonds, hearts, spades, clubs).
@@ -17,12 +44,71 @@
 #   I should be able to iterate over all cards in the deck.
 #   Printing a cards string representation should give me a nice, readable description of that card.
 
+class Kartendeck:
+    def __init__(self, name):       #Konstruktor
+        self.deck = []    
+        self._create()          #Die Liste wird automatisch mit Karten gefüllt
+        self.name = name
+
+    def _create(self):              #Das Deck soll nur über den Konstruktor aufgerufenwerden können, daher "_"
+        for i in range(13): #13 verschiedene Zahlen
+            for j in range(4):  #4 verschiedene Farben
+                self.deck.append(Karte(i,j))
+                self.deck.append(Karte(i,j))
+
+    def __iter__(self):
+        return iter(self.deck)
+     
+class Karte:
+    def __init__(self, number, suite):  #Kosntruktor der Karte
+        self.number = number
+        self.suite = suite
+
+    def __str__(self):                  #Eine lesbare Beschreibung der Karte 
+        numbers = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
+        suites = ["diamonds", "hearts", "spades", "clubs"]
+        return f"{numbers[self.number]} of {suites[self.suite]}"
+    
+print("\nPart 2:")
+deck1 = Kartendeck("deck1")
+#print("\nIterate:") #Iterieren über alle Karten des Decks
+#for card in deck1:
+#    print(card)
+
 
 # PART 3:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
 
+class Skatdeck(Kartendeck):
+    def _create(self):              #Das Deck soll nur über den Konstruktor aufgerufenwerden können, daher "_"
+        for i in range(5, 13):      #Erst ab der 7
+            for j in range(4):
+                self.deck.append(Karte(i,j))
+                self.deck.append(Karte(i,j))
+        return self.deck
+
+print("\nPart 3:")
+deck2 = Skatdeck("deck2")
+#print("\nSkatdeck:") #Iterieren über alle Karten des Skatdecks
+#for card in deck1:
+#    print(card)
+
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
+assert len(deck1.deck) == 104, "Das Deck sollte 104 Karten haben."  #13*4*2
+assert len(deck2.deck) == 64, "Das Skatdeck sollte 64 Karten haben."#(13-5)*4*2
+assert str(deck1.deck[0]) == "2 of diamonds", "An Position 0 des Decks sollte sich die Karo 2 befinden"
+assert str(deck2.deck[0]) == "7 of diamonds", "An Position 0 des Skatdecks sollte sich die Karo 7 befinden"
+assert str(deck1.deck[0]) == str(deck1.deck[1]), "Die erste Karte sollte doppelt vorkommen."
+count = 0
+for card in deck1:
+    count += 1
+assert count == 104, "Es sollte über 104 Karten iteriert weden."
+count = 0
+for card in deck2:
+    count += 1
+assert count == 64, "Es sollte über 64 Karten iteriert weden."
+print("Alle Tests bestanden.")
 
 
 # PART 4:
@@ -38,6 +124,41 @@
 # - 123334 is not a valid number as there is no group of exactly two repeated digits
 # - 111334 is a valid number. while there are three 1s, there is also a group of exactly two 3s.
 # - 112233 is a valid number. At least one group of two is fulfilled, there is no maximum to the number of such groups.
-#
+
+class Number:
+    def __init__(self,lower, upper):
+        self.lower = lower
+        self.upper = upper
+
+    def count(self):
+        count = 0
+        for i in range (self.lower, self.upper):
+            if self._right_order(i):
+                count += 1
+        return count
+    
+    def _right_order(self, number):
+        digits = [int(d) for d in str(number)]
+        order = True
+        twice = False
+        if any(digits[i] > digits[i+1] for i in range(len(digits)-1)):
+            return False
+        for i in range(len(digits)-1):
+            if digits[i] == digits[i+1]:
+                if digits[i] == len(digits)-1:
+                    twice = True
+                elif digits[i] != digits[i-1]:
+                    twice = True
+        if twice:
+            return True
+        else:
+            return False
+
+    
+print("\nPart 4:")
+number1 = Number(100, 200)
+print("Anzahl:",number1.count())
+
+
 # run your function with the lower bound `13456471` and the upper bound `58515929`. 
 # It should complete in a few seconds. Note the resulting count in your pull request, please.
