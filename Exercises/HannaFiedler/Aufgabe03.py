@@ -125,10 +125,10 @@ print("Alle Tests bestanden.")
 # - 111334 is a valid number. while there are three 1s, there is also a group of exactly two 3s.
 # - 112233 is a valid number. At least one group of two is fulfilled, there is no maximum to the number of such groups.
 
-class Number: 
+class Numbers: 
     def __init__(self,lower, upper): 
         self.lower = lower 
-        self.upper = str(upper)                        
+        self.upper = upper                        
         self.count = 0 
         for length in range(len(str(lower)), len(str(upper)) + 1):  #Erzeugt Liste für die Ziffern der neuen Zahl 
             self.digits = [0] * length
@@ -139,7 +139,7 @@ class Number:
             if run_len == 2:                                        #Notwendig, wenn die letzten beiden Ziffern das Paar bilden
                 twice = True
             n = int("".join(map(str, self.digits)))                 #Fügt die Ziffern zu einer Zahl zusammen 
-            if self.lower <= n <= int(self.upper) and twice:        #Wenn die bedingungen erfüllt sind, wird die Anzahlt um 1 erhöht
+            if self.lower <= n < int(self.upper) and twice:         #Wenn die Bedingungen erfüllt sind, wird die Anzahlt um 1 erhöht
                 self.count +=1                                       
                 #print(n)
             return 
@@ -149,19 +149,19 @@ class Number:
         else: 
             start = 1
 
-        for j in range(start, 10):                                  #Erzeugt Ziffer die >= ist als die vorherige 
-            if j == prev:
+        for i in range(start, 10):                                  #Erzeugt Ziffer die >= ist als die vorherige 
+            if i == prev:
                 new_run = run_len +1                                #run_len zählt wie häufig die aktuelle Ziffer vorkommt
                 new_twice = twice
             else:                                                   #Wenn sich die Ziffer ändert, beginnt das Zählen neu und es wird geprüft ob es bereits ein Paar gibt
-                new_run = 1
                 if twice or run_len == 2:                           
                     new_twice = True
                 else:
                     new_twice = False
+                new_run = 1
 
-            self.digits[pos] = j                                    #j wird an der Stelle "pos" zur Zahl hinzugefügt
-            self._generate(pos+1, new_twice, j, new_run)            #Rekursiver Aufruf 
+            self.digits[pos] = i                                    #j wird an der Stelle "pos" zur Zahl hinzugefügt
+            self._generate(pos+1, new_twice, i, new_run)            #Rekursiver Aufruf 
     
     def total(self):                                                #Gibt Anzahl der Zahlen zurück 
         return self.count 
@@ -169,7 +169,7 @@ class Number:
 # run your function with the lower bound `13456471` and the upper bound `58515929`. 
 # It should complete in a few seconds. Note the resulting count in your pull request, please.
 print("\nPart 4:") 
-number1 = Number(13456471, 58515929) 
-print("Anzahl:",number1.total())
+range1 = Numbers(13456471, 58515929) 
+print("Anzahl:",range1.total())
 
 #Anzahl: 5234
