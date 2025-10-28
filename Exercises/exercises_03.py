@@ -82,7 +82,7 @@ print()
 class French_Deck:
     def __init__ (self):
         Variants = ["Diamonds", "Hearts", "Spades", "Clubs"]
-        Numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "Jack", "Queen", "King", "Ace"]
+        Numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
         self.cards = []
         for variant in Variants:
             for number in Numbers:
@@ -92,25 +92,25 @@ class French_Deck:
     def __getitem__(self, deck):
         y = 0
         while y <= 3: #its set to 3 answers for easier testing, normal case would be y == 0
-            x = input("Please enter a number (0-51) or the suite name(Diamonds, Hearts, Spades, Clubs): ")
+            x = input("Please enter a number (0-55) or the suite name(Diamonds, Hearts, Spades, Clubs): ")
             if x.isdigit():
                 x = int(x)
-                if 0 <= x and x <= 51:
+                if 0 <= x and x <= 56:
                     print(deck[x])
                     y += 1
                 else:
-                    print("Invalid Input. Please enter a Number between 0 and 51!")    
+                    print("Invalid Input. Please enter a Number between 0 and 55!")    
             elif x == "Diamonds":
-                print(deck[1:13])
+                print(deck[0:14])
                 y += 1
             elif x == "Hearts":
-                print(deck[13:26])
+                print(deck[14:28])
                 y += 1
             elif x == "Spades":
-                print(deck[26:39])
+                print(deck[28:42])
                 y += 1
             elif x == "Clubs":
-                print(deck[39:52])
+                print(deck[42:56])
                 y += 1
             else:
                 print("Invalid Input. Please enter a number or the suite name with the first letter capitalized.")
@@ -140,7 +140,7 @@ print()
 class skart_deck():
     def __init__ (self):
         Suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
-        Number = ["7", "8", "9", "Jack", "Queen", "King", "Ace"]
+        Number = ["7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
         self.cards = []
         for variant in Suits:
             for number in Number:
@@ -148,25 +148,25 @@ class skart_deck():
     def __getitem__ (self, deck):
         y = 0
         while y <= 3: #its set to 3 answers for easier testing, normal case would be y == 0
-            x = input("Please enter a number (0-27) or the suite name (Diamonds, Hearts, Spades, Clubs): ")
+            x = input("Please enter a number (0-32) or the suite name (Diamonds, Hearts, Spades, Clubs): ")
             if x.isdigit():
                 x = int(x)
-                if 0 <= x and x <= 27:
+                if 0 <= x and x <= 33:
                     print(deck[x])
                     y += 1
                 else:
-                    print("Invalid Input. Please enter a Number between 0 and 27!")    
+                    print("Invalid Input. Please enter a Number between 0 and 32!")    
             elif x == "Diamonds":
-                print(deck[0:7])
+                print(deck[0:8])
                 y += 1
             elif x == "Hearts":
-                print(deck[7:14])
+                print(deck[8:16])
                 y += 1
             elif x == "Spades":
-                print(deck[24:21])
+                print(deck[16:24])
                 y += 1
             elif x == "Clubs":
-                print(deck[21:28])
+                print(deck[24:33])
                 y += 1
             else:
                 print("Invalid Input. Please enter a number or the suite name with the first letter capitalized.")
@@ -177,8 +177,8 @@ skart_deck.__getitem__(self = skart_deck, deck = skart_deck().cards)
 
 
 #Testing both decks length
-assert len(French_Deck().cards) == 52, "French Deck should have 52 cards"
-assert len(skart_deck().cards) == 28, "Skart Deck should have 28 cards"
+assert len(French_Deck().cards) == 56, "French Deck should have 56 cards"
+assert len(skart_deck().cards) == 32, "Skart Deck should have 32 cards"
 
 #Testing indexing in both decks
 assert French_Deck().cards[0] == "1 of Diamonds", "First card in French Deck should be 1 of Diamonds"
