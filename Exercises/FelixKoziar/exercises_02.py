@@ -14,7 +14,6 @@
 # After the program stops, the function should return the value in the first location (address 0) 
 # of your working memory.
 
-import math
 import ast 
 
 def simulate_computer(lst):
@@ -79,22 +78,32 @@ def categorize_string_inputs(*args):
     number_lst = []
     char_lst = []
     for arg in args:
-
-        if len(arg) == 1 : # Checking for single character strings
-            char_lst.append(arg) # Adding to char_lst
+        # First check if it's a single character
+        if len(arg) == 1:
+            char_lst.append(arg)
+        
+        # Try parsing as decimal first (handles leading zeros correctly)
         try:
-            float(ast.literal_eval(arg)) # Checking if the argument can be evaluated to a number
-            number_lst.append(arg) # Adding to number_lst
-        except:
+            num = float(arg)  # This correctly handles "09", "04" etc.
+            number_lst.append(arg)
+            continue
+        except ValueError:
             pass
+
+        # If decimal parsing failed, try ast.literal_eval for other number formats
+        try:
+            val = ast.literal_eval(arg)
+            if isinstance(val, (int, float)):
+                number_lst.append(arg)
+        except (ValueError, SyntaxError):
+            continue  # If it cannot be evaluated to a number, we skip it
 
     return number_lst, char_lst
 
-print(categorize_string_inputs("2.5e-2", "a", "Katze","5"))      #example1
-print(categorize_string_inputs("3.0", "True", "4,4", "4/2", "H"))      #example2
-print(categorize_string_inputs("!", "4*2", "*", " ", "math.pi", "math.e"))      #example3
-print(categorize_string_inputs("0xff", "0b1011","0o712", "math.sqrt(2)"))      #example4
-print(categorize_string_inputs("π", "∞","", "'hello'", "-6", "5+2j", "None"))      #example5
+print("Test mit führenden Nullen:", categorize_string_inputs("09", "04", "001", "0", "00"))
+print("Test mit verschiedenen Zahlenformaten:", categorize_string_inputs("2.5e-2", "a", "Katze", "5", "09", "04"))
+print("Test mit Hex und Binary:", categorize_string_inputs("0xff", "0b1011", "0o712"))
+print("Test mit speziellen Werten:", categorize_string_inputs("-6", "5+2j", "None", "True"))
 
 # In this a programm a number is defined as any string that can be converted to a float
 # using the ast.literal_eval function from the ast module. -> Literals include strings, bytes, numbers, tuples, lists, dicts, sets, booleans, and None.
