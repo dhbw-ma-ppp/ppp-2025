@@ -27,7 +27,6 @@ def add( current_i, cmds):
 
     sum = cmds[pos2] + cmds [pos3]
     cmds[pos4] = sum
-    return current_i+4 , cmds
 
 
 def multiply(current_i, cmds):
@@ -40,20 +39,24 @@ def multiply(current_i, cmds):
     pos3 = cmds[current_i+2]
     pos4 = cmds[current_i+3]
 
-    sum = cmds[pos2] * cmds [pos3]
-    cmds[pos4] = sum
-    return current_i+4 , cmds
+    product = cmds[pos2] * cmds [pos3]
+    cmds[pos4] = product
 
-def memory_stuff(cmds):
+def virtual_machine(cmds):
     i=0
-    while i <= len(cmds) -4 :
+    while len(cmds) > i and cmds[i] != 99:
+        pos2 = cmds[i+1]
+        pos3 = cmds[i+2]
+        pos4 = cmds[i+3]
         match cmds[i]:
             case 1:
-                i, cmds = add(i, cmds)
+                summe = cmds[pos2] + cmds [pos3]
+                cmds[pos4] = summe
             case 2:
-                i, cmds = multiply(i, cmds)
-            case 99:
-                return cmds[0]
+                product = cmds[pos2] * cmds [pos3]
+                cmds[pos4] = product
+        i += 4
+    return cmds[0]
 
 # As an example, if the list of integers passed to your function is 
 # [1, 0, 0, 0, 99] the 1 in the first position indicates you should read the values
@@ -69,8 +72,9 @@ def memory_stuff(cmds):
 
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
+cmds2 = [1, 1, 1, 4, 99, 5, 6, 0, 99] 
 
-print(f"Die Wert in der ersten Position ist: {memory_stuff(commands)}")
+print(f"Die Wert in der ersten Position ist: {virtual_machine(commands)}")
 #print(commands)
 
 ###########################################
@@ -84,32 +88,32 @@ print(f"Die Wert in der ersten Position ist: {memory_stuff(commands)}")
 # examples and verify that the output for these examples is correct.
 
 example1 = ("sd","sdd","1","d","df","23","223","f23f","33wef23","g","234")
-example2 = ["12",  "s", "asdasdsa", "1", "132", "s", "3", "1.2", "erc233", "23sd, 213", ",", ",,,", "."]
-example3 = ["123", "232321232141242", "2", "d", "dfsd", "dfsfds"]
+example2 = ("12",  "s", "asdasdsa", "1", "132", "s", "3", "1.2", "erc233", "23sd, 213", ",", ",,,", ".")
+example3 = ("12.3", "232321232141242", "-2", "d", "dfsd", "dfsfds")
 
 
 
-def number_and_singlecharacter_seperator(*input):
+
+def number_and_singlecharacter_seperator(*elements):
     arguments_thar_are_numbers = []
     arguments_with_one_character = []
 
 
-    for i in input:
-        if len(str(i)) == 1:
-            arguments_with_one_character.append(i)
+    for element in elements:
+        if len(str(element)) == 1:
+            arguments_with_one_character.append(element)
+
         try:
-            i = eval(i)
-        except NameError:
-            pass
-        except SyntaxError:
-            pass
-        if type(i) == int or type(i)==float:
-            arguments_thar_are_numbers.append(i)
+            complex(element)
+            arguments_thar_are_numbers.append(element)
+        except:
+            continue
+
     
     return(arguments_thar_are_numbers, arguments_with_one_character)
 
-current_example = example2
+current_example = example3
 
 number_rguments, one_character_arguments = number_and_singlecharacter_seperator(*current_example)
 
-print(f"Die Nummern sind {number_rguments} und die Argumente mit einem Wert sind {one_character_arguments} für das array {current_example}") 
+print(f"Die Nummern sind {number_rguments} und die Argumente mit einem Wert sind {one_character_arguments} für die Werte {current_example}") 
