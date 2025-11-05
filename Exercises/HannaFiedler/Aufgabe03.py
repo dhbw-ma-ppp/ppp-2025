@@ -1,3 +1,5 @@
+import time
+
 # PART 1:
 # Create a class BankAccount with:
 # A “private” attribute _balance
@@ -22,8 +24,8 @@ class BankAccount:
         return self._balance
     
     def transfer(self, other_account, amount):  #Auf anderes Konto überweisen
-        self._balance -= amount
-        other_account._balance += amount
+        self.withdraw(amount)
+        other_account.deposit(amount)
 
 my_account = BankAccount(2000)
 other_account = BankAccount(1000)
@@ -169,7 +171,11 @@ class Numbers:
 # run your function with the lower bound `13456471` and the upper bound `58515929`. 
 # It should complete in a few seconds. Note the resulting count in your pull request, please.
 print("\nPart 4:") 
-range1 = Numbers(13456471, 58515929) 
-print("Anzahl:",range1.total())
-
+start=time.time()
+for i in range(1000):
+    range1 = Numbers(13456471, 58515929) 
+    range1.total()
+#print("Anzahl:",range1.total())
+end=time.time()
+print((end-start)/1000)
 #Anzahl: 5234
