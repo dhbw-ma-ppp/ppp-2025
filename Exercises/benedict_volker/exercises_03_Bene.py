@@ -58,19 +58,6 @@ class CardDeck:
         if cardindex > len(self.cards) or cardindex < 0:
             print("Index nicht im Kartendeck enthalten. Er muss zwischen 0 und 51 liegen")
             return 
-        card = self.cards[cardindex] 
-            
-        print(f"---------------")
-        print(f"| {card[2:]}         {card[2:]} |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"|      {card[:2]}     |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"| {card[2:]}         {card[2:]} |")
-        print(f"---------------")
         
         return self.cards[cardindex]
     def give_whole_deck(self):
@@ -93,19 +80,6 @@ class SkatDeck:
         if cardindex > len(self.cards) or cardindex < 0:
             print("Index nicht im Kartendeck enthalten. Er muss zwischen 0 und 51 liegen")
             return 
-        card = self.cards[cardindex] 
-            
-        print(f"---------------")
-        print(f"| {card[2:]}         {card[2:]} |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"|      {card[:2]}     |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"|             |")
-        print(f"| {card[2:]}         {card[2:]} |")
-        print(f"---------------")
         
         return self.cards[cardindex]
     def give_whole_deck(self):
@@ -114,12 +88,16 @@ class SkatDeck:
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
 deck1 = CardDeck()
-print(f"You have picked the {deck1.pick_card(51)}")
+print(f"You have picked the {deck1.pick_card(4)}")
 print(f"Das Deck besteht aus: {deck1.give_whole_deck()}")
 
 skatdeck1 = SkatDeck()
 print(f"You have picked the {skatdeck1.pick_card(15)}")
 print(f"Das Deck besteht aus: {skatdeck1.give_whole_deck()}")
+
+res = "6 \u2666"
+assert res == deck1.pick_card(4)
+assert "7 \u2666" == skatdeck1.pick_card(0)
 
 # PART 4:
 # write a function that accepts two numbers, a lower bound and an upper bound.
