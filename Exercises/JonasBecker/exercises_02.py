@@ -125,8 +125,8 @@ def split_numbers_and_single_chars(*args: str) -> tuple[set[str], set[str]]:
 
     Returns
     -------
-    tuple[list[str], list[str]]
-        Tuple with two lists. First one listing the numbers, second one listing single characters.
+    tuple[set[str], set[str]]
+        Tuple with two sets. First one "listing" the numbers, second one listing single characters.
     """
 
     numbers: set[str] = set()
