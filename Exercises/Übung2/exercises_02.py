@@ -23,40 +23,55 @@
 
 # Here's another testcase:
 # [1, 1, 1, 4, 99, 5, 6, 0, 99] should become [30, 1, 1, 4, 2, 5, 6, 0, 99]
-# Your function should return 30.
+# Your function should return 30. 
+
+def programm(eingabe):
+    index=0
+    while True:
+        match eingabe[index]:
+            case 1: 
+                index=addition(index)
+            case 2:
+                index=multiplikation(index)
+            case 99:
+                ninetynine()
+                break
+            case _:
+                print("Kein Opcode gefunden. Programm wird beendet")
+                break 
+
+def addition(index):
+    add_nr1=eingabe[index+1]
+    add_nr2=eingabe[index+2]
+    speicherplatz_add=eingabe[index+3]
+    eingabe[speicherplatz_add]=eingabe[add_nr1]+eingabe[add_nr2]
+    return index+4
+
+def multiplikation(index):
+    mul_nr1=eingabe[index+1]
+    mul_nr2=eingabe[index+2]
+    speicherplatz_mul=eingabe[index+3]
+    eingabe[speicherplatz_mul]=eingabe[mul_nr1]*eingabe[mul_nr2]
+    return index+4
+
+def ninetynine():
+    print("99 gefunden! Programm wurde erfolreich ausgeführt!")
+
+
+if __name__ == '__main__':
+    print("Programm 1 von exercise_02: \n")
+    #in Eingabe die jeweilige Liste
+    eingabe = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
+    programm(eingabe)
+    print(f"Die neue Liste: {eingabe}") #Kontrolle 2
+    print(f"Der Wert an der Stelle 0 beträgt: {eingabe[0]}")
+
+#Programm funktioniert. Vergleiche mit anderen
 
 
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
-def computer_simulation(x:list):
-    opcodes = [1, 2, 99]
-    current = 0
-    pos1 = 0
-    pos2 = 0
-    pos3 = 0
-    newvalue = 0
-    while True:
-        if (x[current] in opcodes):
-            pos1 = x[current + 1]
-            pos2 = x[current + 2]
-            pos3 = x[current + 3]
-            if (x[current] == 1):             
-                newvalue = x[pos1] + x[pos2]        
-                current += 4
-            elif (x[current] == 2):
-                newvalue = x[pos1] * x[pos2]
-                current += 4
-            elif (x[current] == 99):
-                print(f"Value returned: {x[0]}")
-                break
-            x[pos3] = newvalue
-        else:
-            print("Error Code 199: The value is not an opcode.")
-            print("Aborting.")
-            break
-
-computer_simulation(commands)
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -68,29 +83,50 @@ computer_simulation(commands)
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
 
-test_inputs = [
-    "42", "3.14", "-7", "0", "1000", "2e10", "-0.001", "5.0",
-    "a", "Z", "!", "@", "#", "x", "Y", "9", "0", "b",
-    "hello", "world", "Python", "test", "string", "multiple", "characters", "123abc", "abc123", "3.14.15",
-    " ", "  ", "True", "False", "None", "null", "undefined", "yes", "no", "okay",
-    "€", "£", "$", "¥", "©", "®", "™"
-]
+#Filtert nur 'typische' Zahlen (alles was sich in Float konvertieren lässt).
 
-def seperator(args):
-    numbers = []
-    single_characters = []
-    for arg in args:
-        if (arg.isdigit()):
-            numbers.append(arg)
-        elif (len(arg) == 1):
-            single_characters.append(arg)
+import string
+import collections
+
+def filter(eingabe):
+    Liste1=eingabe.split()
+    lenght = len(Liste1)
+    ListeChar = []
+    ListeNummer = []
+    for i in range (lenght):
+        laengei = len(Liste1[i]) 
+        if laengei==1:
+            if Liste1[i] in "1234567890":
+                ListeNummer.append(Liste1[i])
+                ListeChar.append(Liste1[i])  
+            else:
+                ListeChar.append(Liste1[i])
         else:
             try:
-                float(arg)
-                numbers.append(arg)
+                nummer=float(Liste1[i])
+                ListeNummer.append(nummer)
             except ValueError:
                 continue
+    print(f"Alle Nummern im Input: {ListeNummer}")
+    print(f"Alle einzelnen Charaktere: {ListeChar}")
 
-    print(f"Numbers: {numbers}\nSingle Characters: {single_characters}")
+def NummerListeFilter(ListeNummer, ListeNummerEnd):
+    for i in range (len(ListeNummer)):
+        try:
+            nummerEnd=float(ListeNummer[i])
+            ListeNummerEnd.append(nummerEnd)
+        except ValueError:
+            continue
+    ListeNummer.clear()
 
-seperator(test_inputs)
+
+if __name__ == '__main__':
+    print("Programm 2 von exercises_02: \n")
+    #Inputs zum Prüfen: 
+    #der hundnr.12 mag 1 tier oder nur c
+    #ein einzelnes c oder 3.16839 c12 w 0
+    #123 1.23 12.3 a b c acb123
+    y=input("Geben sie etwas ein: ")
+    filter(y)
+
+
