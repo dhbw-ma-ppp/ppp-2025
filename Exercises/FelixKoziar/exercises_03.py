@@ -143,12 +143,10 @@ def is_valid(number):
     for next_digit in digits[1:]: 
         if next_digit == current_num:
             streak += 1
-            if streak > 2 and has_exactly_two == False: # if we have a streak > 2 and no pair yet
-                return False
         else:
             if streak == 2:
                 has_exactly_two = True
-                break
+                break  # Sobald wir eine 2er-Gruppe haben, sind wir fertig!
             
             current_num = next_digit
             streak = 1
