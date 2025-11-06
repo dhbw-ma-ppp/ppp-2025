@@ -54,7 +54,7 @@ def exercise1(arr):
             case 99:
                 break
             case _:
-                i+=1
+                raise ValueError("Invalid opcode encountered")
     return arr[0]
 
 res = exercise1(commands)
