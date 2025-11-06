@@ -105,8 +105,6 @@ if __name__ == '__main__':
 #   I should be able to iterate over all cards in the deck.
 #   Printing a cards string representation should give me a nice, readable description of that card.
 
-#schauen ob eleganter möglich
-#Schlecht: extra erstellung des Decks
 
 def create(color, number):
         card=[]
@@ -210,14 +208,14 @@ def condition_2(temp_str): #Prüfen auf Paar
     length = len(temp_str)
     for i in range(length - 1):
         if temp_str[i] == temp_str[i+1]:
-            group_of_three = (i + 2 < length) and (temp_str[i+2] == temp_str[i]) #Dreiergruppe?
-            part_of_previous = (i > 0) and (temp_str[i-1] == temp_str[i]) #Teil der vorherigen gruppe?
-            if not group_of_three and not part_of_previous: #wenn beide nicht, TRUE
+            group_of_three = (i + 2 < length) and (temp_str[i+2] == temp_str[i]) 
+            part_of_previous = (i > 0) and (temp_str[i-1] == temp_str[i]) 
+            if not group_of_three and not part_of_previous: 
                 return True 
     return False
 
     
-def condition_1(temp_str): #Durchlaufen des Strings -> schauen ob vorherige Nummer größer/gleich
+def condition_1(temp_str): #Prüfen ob Ziffern von links nach rechts steigen
     boolean=True
     for l in range(len(temp_str) -1):
         if temp_str[l]<=temp_str[l+1]: 
