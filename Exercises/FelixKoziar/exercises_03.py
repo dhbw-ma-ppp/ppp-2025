@@ -146,7 +146,7 @@ def is_valid(number):
         else:
             if streak == 2:
                 has_exactly_two = True
-                break  # Sobald wir eine 2er-Gruppe haben, sind wir fertig!
+                break
             
             current_num = next_digit
             streak = 1
