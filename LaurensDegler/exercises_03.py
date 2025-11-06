@@ -12,35 +12,38 @@ class BankAccount:
     def __init__(self):
         self._balance = 0
 
-    def deposit(self, amount):
+    def deposit(self, amount:int) -> None:
         if amount > 0:
             self._balance += amount        
 
-    def withdraw(self, amount):
+    def withdraw(self, amount:int) -> None:
         if 0 < amount <= self._balance:
             self._balance -= amount
 
-    def get_balance(self):
+    def get_balance(self) -> int:
         return self._balance
 
-    def transfer(self, other_account, amount):
+    def transfer(self, other_account:BankAccount, amount:int) -> str:
         if 0 < amount <= self._balance:
             self.withdraw(amount)
             other_account.deposit(amount)
+        return f"The transfer of {amount}€ is complete."
 
-print("PART 1:")
+print("PART 1: \n")
+
 account1 = BankAccount()
 account2 = BankAccount()
-print("Account 1 balance:", account1.get_balance())
+print(f"Account 1 balance: {account1.get_balance()}€")
 
 account1.deposit(100)
-print("Account 1 balance:", account1.get_balance())
+print(f"Account 1 balance: {account1.get_balance()}€")
 account1.withdraw(50)
-print("Account 1 balance:", account1.get_balance())
-account1.transfer(account2, 25)
+print(f"Account 1 balance: {account1.get_balance()}€ \n")
+print(f"{account1.transfer(account2, 25)} \n")
 
-print("Account 1 balance:", account1.get_balance())
-print("Account 2 balance:", account2.get_balance())
+print(f"Account 1 balance: {account1.get_balance()}€")
+print(f"Account 2 balance: {account2.get_balance()}€ \n")
+
 
 # PART 2:
 # Write a class for a French deck of cards (2-Ace of diamonds, hearts, spades, clubs).
@@ -63,7 +66,7 @@ class Card:
 
 
 # PART 2: Deck implementation
-class Deck:
+class Deck():
     """A French deck (2-Ace of Diamonds, Hearts, Spades, Clubs).
 
     Behaves like a sequence: supports len(), indexing, iteration.
@@ -97,9 +100,9 @@ deck = Deck()
 # basic properties
 assert len(deck) == 52, f"expected 52 cards, got {len(deck)}"
 # ordering: first card should be 2 of Diamonds
-assert str(deck[0]) == '2 of Diamonds'
+assert str(deck[0]) == '2 of Diamonds', f"expected first card '2 of Diamonds', got {str(deck[0])}"
 # last card should be Ace of Clubs
-assert str(deck[-1]) == 'Ace of Clubs'
+assert str(deck[-1]) == 'Ace of Clubs', f"expected last card 'Ace of Clubs', got {str(deck[-1])}"
 # iteration yields the same first card
 it = iter(deck)
 assert str(next(it)) == str(deck[0])
@@ -114,7 +117,7 @@ print('Deck checks passed.')
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
 
-class SkatDeck(Deck):
+class SkatDeck():
     """Deck for Skat: ranks 7..Ace for each suit (7,8,9,10,Jack,Queen,King,Ace).
 
     Subclasses Deck but constructs only the Skat ranks.
@@ -124,13 +127,25 @@ class SkatDeck(Deck):
 
     def __init__(self):
         self._cards = [Card(suit, rank) for suit in Card.SUITS for rank in self.SKAT_RANKS]
+        
+    def __len__(self):
+        return len(self._cards)
+    
+    def __getitem__(self, index: int):
+        return self._cards[index]
+    
+    def __iter__(self):
+        return iter(self._cards)
+    
+    def __repr__(self):
+        return f"<Deck {len(self)} cards>"
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
-skat = SkatDeck()
+skat = SkatDeck() # initialization
 assert len(skat) == 32, f"expected 32 cards in skat deck, got {len(skat)}"
-assert str(skat[0]) == '7 of Diamonds'
-assert str(skat[-1]) == 'Ace of Clubs'
+assert str(skat[0]) == '7 of Diamonds', f"expected first card '7 of Diamonds', got {str(deck[0])}"
+assert str(skat[-1]) == 'Ace of Clubs', f"expected first card 'Ace of Clubs', got {str(deck[-1])}"
 print('SkatDeck checks passed.')
 
 
@@ -151,8 +166,8 @@ print('SkatDeck checks passed.')
 # run your function with the lower bound `13456471` and the upper bound `58515929`. 
 # It should complete in a few seconds. Note the resulting count in your pull request, please.
 
-def count_valid_numbers(lower_bound, upper_bound):
-    def is_valid(number):
+def count_valid_numbers(lower_bound: int, upper_bound: int) -> int:
+    def is_valid(number: int) -> bool:
         digits = [int(d) for d in str(number)]
         has_exactly_two_adjacent = False
         count = 1
@@ -180,4 +195,6 @@ def count_valid_numbers(lower_bound, upper_bound):
     return valid_count
 
 print("PART 4:")
-print(count_valid_numbers(123345, 123346)) # should be 1
+print(count_valid_numbers(123345, 123346))  # should be 1
+print(count_valid_numbers(1,100))           # returns 9
+print(count_valid_numbers(1,10000))         # returns 369
