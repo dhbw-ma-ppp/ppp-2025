@@ -166,7 +166,24 @@ print('SkatDeck checks passed.')
 # run your function with the lower bound `13456471` and the upper bound `58515929`. 
 # It should complete in a few seconds. Note the resulting count in your pull request, please.
 
-def count_valid_numbers(lower_bound: int, upper_bound: int) -> int:
+def count_valid_numbers(*args) -> int:
+    
+    lower_bound , upper_bound = 0 , 0
+    
+    if not (1<= len(args) <=2):
+        raise TypeError(f"count_valid_numbers expects 1 or 2 arguments, not {len(args)}")
+    
+    if len(args) == 1:
+        upper_bound = args[0]
+    else:
+        lower_bound, upper_bound = args[0], args[1]
+    
+    if not (isinstance(lower_bound, int) and isinstance(upper_bound, int)):
+        raise TypeError("args must be form the type int!")
+    
+    if lower_bound > upper_bound:
+        return 0
+    
     def is_valid(number: int) -> bool:
         digits = [int(d) for d in str(number)]
         has_exactly_two_adjacent = False
@@ -195,6 +212,9 @@ def count_valid_numbers(lower_bound: int, upper_bound: int) -> int:
     return valid_count
 
 print("PART 4:")
-print(count_valid_numbers(123345, 123346))  # should be 1
-print(count_valid_numbers(1,100))           # returns 9
-print(count_valid_numbers(1,10000))         # returns 369
+print(count_valid_numbers(123345, 123346))          # should be 1
+print(count_valid_numbers(100))                     # returns 9
+print(count_valid_numbers(10000))                   # returns 369
+print(count_valid_numbers(100000))                  # returns 1197
+print(count_valid_numbers(1000000))                 # returns 3243
+print(count_valid_numbers(123456789, 123897468))    # returns 162
