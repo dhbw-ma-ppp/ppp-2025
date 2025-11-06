@@ -1,6 +1,7 @@
 from __future__ import (
     annotations,
-)  # allows using the class itself as a type hint before it is fully defined
+)  # reserach: allows using the class itself as a type hint before it is fully defined
+from typing import Type, Iterator # research: allows for more "complex" type-hints
 
 
 # PART 1:
@@ -15,7 +16,7 @@ from __future__ import (
 
 
 class BankAccount:
-    def __init__(self):
+    def __init__(self) -> None:
         self._balance: float = 0
 
     @property
@@ -84,7 +85,7 @@ if not account1.withdraw(100):
 
 
 class Card:
-    def __init__(self, rank: str, suit: str):
+    def __init__(self, rank: str, suit: str) -> None:
         self.rank = rank
         self.suit = suit
 
@@ -96,7 +97,7 @@ class FrenchDeck:
     ranks = list(range(2, 11)) + list("JQKA")
     suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._cards: list[Card] = [
             Card(rank, suit) for suit in self.suits for rank in self.ranks
         ]
@@ -107,7 +108,7 @@ class FrenchDeck:
     def __getitem__(self, position: int) -> Card:
         return self._cards[position]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Card]:
         return iter(self._cards)  # not needed here but recommended
 
 
@@ -125,7 +126,7 @@ print("\n2+3)")
 french_deck = FrenchDeck()
 
 
-def test_deck_class(deck_class):
+def test_deck_class(deck_class: Type[FrenchDeck]) -> None:
     deck = deck_class()
     class_name = deck_class.__name__
     print(f"\nTesting class {class_name}:")
