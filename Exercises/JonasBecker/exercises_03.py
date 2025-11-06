@@ -93,7 +93,7 @@ class Card:
 
 
 class FrenchDeck:
-    ranks = [str(n) for n in range(2, 11)] + list("JQKA")
+    ranks = list(range(2, 11)) + list("JQKA")
     suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
 
     def __init__(self):
@@ -108,26 +108,50 @@ class FrenchDeck:
         return self._cards[position]
 
     def __iter__(self):
-        return iter(self.cards) # not needed here but recommended
+        return iter(self._cards)  # not needed here but recommended
 
-
-print("2)")
-
-french_deck = FrenchDeck()
-print(
-    f"The French Deck has {len(french_deck)} cards.\n"
-    f"First Card: {french_deck[0]}, Last Card: {french_deck[-1]}"
-)
-for card in french_deck:
-    pass
-print("The french_deck is iterable!")
 
 # PART 3:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
+class SkatDeck(FrenchDeck):
+    ranks = list(range(7, 11)) + list("JQKA")
+
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
+print("\n2+3)")
+
+french_deck = FrenchDeck()
+
+
+def test_deck_class(deck_class):
+    deck = deck_class()
+    class_name = deck_class.__name__
+    print(f"\nTesting class {class_name}:")
+
+    assert len(deck) > 0, f"❌ {deck_class.__name__} should have at least one card"
+    assert (
+        deck[0] is not None
+    ), f"❌ {deck_class.__name__} first card should not be None"
+    assert (
+        deck[-1] is not None
+    ), f"❌ {deck_class.__name__} last card should not be None"
+
+    print(
+        f"The class {class_name} has {len(deck)} cards.\n"
+        f"First Card: {deck[0]}, Last Card: {deck[-1]}"
+    )
+    for card in deck:
+        pass
+
+    print("The class is iterable!")
+
+    print(f"✅ All tests passed")
+
+
+test_deck_class(FrenchDeck)
+test_deck_class(SkatDeck)
 
 # PART 4:
 # write a function that accepts two numbers, a lower bound and an upper bound.
