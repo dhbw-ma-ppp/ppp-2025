@@ -12,25 +12,25 @@ print("Aufgabe 1:\n")
 
 class BankAcount:
 
-    def __init__(self,owner):
+    def __init__(self,owner): # __init__ Methode für Bankkonto
         self.owner = owner
         self._balance = 0
 
-    def deposit(self, amount):
+    def deposit(self, amount): # Einzahlungsmethode
         self._balance += amount
         print(f"Einzahlung von: {amount}\n. Neuer Kontostand: {self._balance}.")
 
-    def withdraw(self, amount):
+    def withdraw(self, amount): # Auszahlungsmethode
         if amount > self._balance:
             print("Kontostand nicht ausreichend.")
         else:
             self._balance -= amount
             print(f"Auszahlung von: {amount}\n. Neuer Kontostand: {self._balance}.")
     
-    def get_balance(self):
+    def get_balance(self): # Kontostand abrufen
         return self._balance
     
-    def transfer(self,amount, owner):
+    def transfer(self,amount, owner): # Überweisung
         if amount > self._balance:
             print("Kontostand nicht ausreichend.")
         else:
@@ -65,15 +65,15 @@ print("Aufgabe 2:\n")
 
 class french_deck:
 
-    def __init__(self):
+    def __init__(self): # __init__ für französisches Deck
         suites = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
         values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
         self.cards = [f"{value} of {suite}" for suite in suites for value in values]
 
-    def get_card(self, position):
+    def get_card(self, position): # Karte an bestimmter Position abrufen
         print(self.cards[position])
 
-    def __iter__(self):
+    def __iter__(self): # Iteration über alle Karten im Deck ermöglichen
         for card in self.cards:
             yield card
 
@@ -95,7 +95,7 @@ print("Aufgabe 3:\n")
 
 class skat_deck(french_deck):
 
-    def __init__(self):
+    def __init__(self): # __init__ für Skat-Deck überschreiben
         suites = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
         values = ['7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
         self.cards = [f"{value} of {suite}" for suite in suites for value in values]
@@ -124,41 +124,39 @@ for card in skat:  # Ausgabe: Alle Karten im Deck
 # run your function with the lower bound `13456471` and the upper bound `58515929`. 
 # It should complete in a few seconds. Note the resulting count in your pull request, please.
 
-print("Aufgabe 4:\n")
-
 import time
 
 print("Aufgabe 4:\n")
 
 def specific_number_counter(lower_bound, upper_bound):
     
-    def has_exactly_double(number):
+    def has_exactly_double(number): # BEdingung für genau doppelte Ziffern
         num_str = str(number)
         counts = {}
         for digit in num_str:
             counts[digit] = counts.get(digit, 0) + 1
         return 2 in counts.values()
 
-    def digits_increase(number):
+    def digits_increase(number): # Bedingung für steigende Ziffern
         num_str = str(number)
         return all(num_str[i] <= num_str[i+1] for i in range(len(num_str)-1))
 
     count = 0
     for num in range(lower_bound, upper_bound):
-        if has_exactly_double(num):  # Check for exactly double first
-            if digits_increase(num):  # Only check increasing digits if the first condition is met
+        if has_exactly_double(num):  # Bedingung für genau doppelte Ziffern zuerst prüfen
+            if digits_increase(num):  # BEdingung für steigende Ziffern nur prüfen, wenn die erste Bedingung erfüllt ist
                 count += 1
     return count
 
-# Start the timer
+# Timer starten
 start_time = time.time()
 
-# Run the function
+# Funktion ausführen
 result = specific_number_counter(13456471, 58515929)
 
-# Stop the timer
+# Timer stoppen
 end_time = time.time()
 
-# Print the result and the elapsed time
+# Ergenis und Dauer ausgeben
 print(f"Ergebnis: {result}") # Ergebnis: 5234
 print(f"Berechnungszeit: {end_time - start_time:.2f} Sekunden") # Berechnungszeit: ca. 130 Sekunden
