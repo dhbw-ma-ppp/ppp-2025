@@ -120,7 +120,7 @@ import time
 # accepts 0 params
 # TODO: return all outputs
 
-class func_names:
+class op_names:
     addition = "addition"
     multiplication = "multiplication"
     input = "input"
@@ -135,29 +135,28 @@ class func_names:
 def calc_virtual_machine(commands:list[int], use_auto_input:bool = False, auto_input:int = None, should_print:bool = True, log_operations:bool = False):
     instr_index = 0
 
-
     op_code_to_op_name = {
-        "1" : func_names.addition,        
-        "2" : func_names.multiplication,  
-        "3" : func_names.input,          
-        "4" : func_names.output,       
-        "5" : func_names.jump_if_true,  
-        "6" : func_names.jump_if_false,    
-        "7" : func_names.less_than,        
-        "8" : func_names.equal,
-        "99": func_names.exit      
+        "1" : op_names.addition,        
+        "2" : op_names.multiplication,  
+        "3" : op_names.input,          
+        "4" : op_names.output,       
+        "5" : op_names.jump_if_true,  
+        "6" : op_names.jump_if_false,    
+        "7" : op_names.less_than,        
+        "8" : op_names.equal,
+        "99": op_names.exit      
     }
 
     op_name_to_arg_count = {
-        func_names.addition         : 3,
-        func_names.multiplication   : 3,
-        func_names.input            : 1,
-        func_names.output           : 1,
-        func_names.jump_if_true     : 2,
-        func_names.jump_if_false    : 2, 
-        func_names.less_than        : 3,
-        func_names.equal            : 3,
-        func_names.exit             : 0
+        op_names.addition         : 3,
+        op_names.multiplication   : 3,
+        op_names.input            : 1,
+        op_names.output           : 1,
+        op_names.jump_if_true     : 2,
+        op_names.jump_if_false    : 2, 
+        op_names.less_than        : 3,
+        op_names.equal            : 3,
+        op_names.exit             : 0
     }
     
     def get_args_indexes(args_start_index:int, op_value:str, op_name:str) -> list[int]:
@@ -186,21 +185,21 @@ def calc_virtual_machine(commands:list[int], use_auto_input:bool = False, auto_i
             print(f"{instr_index:>6}: {op_value:>4} => {op_name}({', '.join(str(i) for i in op_arg_indexes)})", sep="")
 
         match op_name:
-            case func_names.addition:
+            case op_names.addition:
                 v1 = commands[op_arg_indexes[0]]
                 v2 = commands[op_arg_indexes[1]]
                 store_at_index = op_arg_indexes[2]
 
                 commands[store_at_index] = v1 + v2
 
-            case func_names.multiplication:
+            case op_names.multiplication:
                 v1 = commands[op_arg_indexes[0]]
                 v2 = commands[op_arg_indexes[1]]
                 store_at_index = op_arg_indexes[2]
 
                 commands[store_at_index] = v1 * v2
 
-            case func_names.input:
+            case op_names.input:
                 store_at_index = op_arg_indexes[0]
                 if use_auto_input:
                     user_input = auto_input
@@ -209,7 +208,7 @@ def calc_virtual_machine(commands:list[int], use_auto_input:bool = False, auto_i
 
                 commands[store_at_index] = int(user_input)
                 
-            case func_names.output:
+            case op_names.output:
                 v = commands[op_arg_indexes[0]]
 
                 # check for invalid behavior
@@ -220,7 +219,7 @@ def calc_virtual_machine(commands:list[int], use_auto_input:bool = False, auto_i
                 if should_print:
                     print(v)
             
-            case func_names.jump_if_true:
+            case op_names.jump_if_true:
                 condition_value = commands[op_arg_indexes[0]]
                 new_instr_index = commands[op_arg_indexes[1]]
 
@@ -229,7 +228,7 @@ def calc_virtual_machine(commands:list[int], use_auto_input:bool = False, auto_i
                     # cancel auto increase
                     instr_index -= len(op_arg_indexes)+1
 
-            case func_names.jump_if_false:
+            case op_names.jump_if_false:
                 condition_value = commands[op_arg_indexes[0]]
                 new_instr_index = commands[op_arg_indexes[1]]
 
@@ -237,24 +236,25 @@ def calc_virtual_machine(commands:list[int], use_auto_input:bool = False, auto_i
                     instr_index = new_instr_index
                     # cancel auto increase
                     instr_index -= len(op_arg_indexes)+1
-            case func_names.less_than:
+            case op_names.less_than:
                 v1 = commands[op_arg_indexes[0]]
                 v2 = commands[op_arg_indexes[1]]
                 store_at_index = op_arg_indexes[2]
 
                 commands[store_at_index] = int(v1 < v2)
 
-            case func_names.equal:
+            case op_names.equal:
                 v1 = commands[op_arg_indexes[0]]
                 v2 = commands[op_arg_indexes[1]]
                 store_at_index = op_arg_indexes[2]
 
                 commands[store_at_index] = int(v1 == v2)
 
-            case func_names.exit:
+            case op_names.exit:
                 return last_print
+            
             case _:
-                raise RuntimeError(f"Not recogniced func_name: {op_name}")
+                raise RuntimeError(f"Not recognized op_name: {op_name}")
             
         instr_index += len(op_arg_indexes) + 1
 
@@ -296,9 +296,7 @@ if input("Do you want the logs? (Y/N) -> ").upper() == "Y":
     
 
     while True:
-        example_number = input("Enter the number of the example: -> ")
-
-        match example_number.lower():
+        match input("Enter the number of the example: -> ").lower():
             case "1":
                 calc_virtual_machine([1002,4,3,4,33], log_operations=True)
             case "2":
