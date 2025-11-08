@@ -179,13 +179,15 @@ def count_valid_numbers_in_range(lower: int, upper: int) -> int: # will create a
         if any(digits[i] > digits[i+1] for i in range(len(digits)-1)): # if any of those is true (true, that its not monotone -> e.g. 54)
             return False
         
+        # exactly two adjacents
+        
         counts = {}
         i = 0
         while i < len(digits):
             count = 1
-            while i + count < len(digits) and digits[i] == digits[i + count]:
+            while count <= 3 and i + count < len(digits) and digits[i] == digits[i + count]:
                 count += 1
-            counts[digits[i]] = count
+            counts[digits[i]] = count # because of monotony no overwrite, possible values of count: 1, 2 (the one we care about), 3(all others)
             i += count
         
         return 2 in counts.values() 
