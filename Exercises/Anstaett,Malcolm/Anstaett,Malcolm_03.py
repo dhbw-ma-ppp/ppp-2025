@@ -81,9 +81,6 @@ class french_deck:
 deck = french_deck()
 deck.get_card(0)  # Ausgabe: Spezifische Karte 
 
-for card in deck:   # Ausgabe: Alle Karten im Deck
-    print(card)
-
 # PART 3:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
@@ -92,10 +89,9 @@ for card in deck:   # Ausgabe: Alle Karten im Deck
 
 print("Aufgabe 3:\n")
 
-
 class skat_deck(french_deck):
 
-    def __init__(self): # __init__ für Skat-Deck überschreiben
+    def __init__(self): # __init__ für Skat-Deck überschreiben mit Werten von 7 bis Ass
         suites = ['Diamonds', 'Hearts', 'Spades', 'Clubs']
         values = ['7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
         self.cards = [f"{value} of {suite}" for suite in suites for value in values]
@@ -103,9 +99,17 @@ class skat_deck(french_deck):
 skat = skat_deck()
 skat.get_card(0)  # Ausgabe: Spezifische Karte
 
-for card in skat:  # Ausgabe: Alle Karten im Deck
-    print(card)
 
+# Test FrenchDeck
+assert len(french_deck) == 52 # Prüfen ob das französische Deck 52 Karten hat
+assert str(french_deck[0]) == "2 of Diamonds" # Prüfen ob die erste Karte korrekt ist
+assert str(french_deck[-1]) == "Ace of Clubs" # Prüfen ob die letzte Karte korrekt ist
+
+
+# Test SkatDeck
+assert len(skat_deck) == 32 # Prüfen ob das Skat-Deck 32 Karten hat
+assert str(skat_deck[0]) == "7 of Diamonds" # Prüfen ob die erste Karte korrekt ist
+assert str(skat_deck[-1]) == "Ace of Clubs" # Prüfen ob die letzte Karte korrekt ist
 
 # PART 4:
 # write a function that accepts two numbers, a lower bound and an upper bound.
@@ -130,33 +134,40 @@ print("Aufgabe 4:\n")
 
 def specific_number_counter(lower_bound, upper_bound):
     
-    def has_exactly_double(number): # BEdingung für genau doppelte Ziffern
-        num_str = str(number)
-        counts = {}
-        for digit in num_str:
-            counts[digit] = counts.get(digit, 0) + 1
-        return 2 in counts.values()
+    def has_exactly_double(num_str):  # Prüfe, ob es eine Gruppe von genau zwei gleichen Ziffern gibt
+        group_size = 1
+        for i in range(1, len(num_str)): # Ziffern durchlaufen
+            if num_str[i] == num_str[i - 1]: # Überprüfen ob die Ziffern gleich sind
+                group_size += 1 
+            else:
+                if group_size == 2:  # Gruppe von genau zwei gefunden
+                    return True
+                group_size = 1
+        return group_size == 2   # Letzte Gruppe überprüfen
 
-    def digits_increase(number): # Bedingung für steigende Ziffern
-        num_str = str(number)
-        return all(num_str[i] <= num_str[i+1] for i in range(len(num_str)-1))
+    def digits_increase(num_str): # Prüfe, ob die Ziffern nur ansteigen
+        for i in range(len(num_str) - 1): # Ziffern durchlaufen
+            if num_str[i] > num_str[i + 1]: #Vergleichen und schauen ob die Ziffern ansteigen
+                return False
+        return True
 
     count = 0
     for num in range(lower_bound, upper_bound):
-        if has_exactly_double(num):  # Bedingung für genau doppelte Ziffern zuerst prüfen
-            if digits_increase(num):  # BEdingung für steigende Ziffern nur prüfen, wenn die erste Bedingung erfüllt ist
+        num_str = str(num)  # Einmalige String-Konvertierung
+        if digits_increase(num_str):  # Funktion aufrufen um zu prüfen ob die Ziffern ansteigen
+            if has_exactly_double(num_str):  # Funktion aufrufen um zu prüfen ob es eine Gruppe von genau zwei gleichen Ziffern gibt
                 count += 1
     return count
 
-# Timer starten
+# Start Timer
 start_time = time.time()
 
 # Funktion ausführen
 result = specific_number_counter(13456471, 58515929)
 
-# Timer stoppen
+# Stop Timer
 end_time = time.time()
 
-# Ergenis und Dauer ausgeben
-print(f"Ergebnis: {result}") # Ergebnis: 5234
-print(f"Berechnungszeit: {end_time - start_time:.2f} Sekunden") # Berechnungszeit: ca. 130 Sekunden
+# Ergebnis und Zeit ausgeben
+print(f"Ergebnis1: {result}") # Ausgabe des Ergebnisses: 5234
+print(f"Berechnungszeit: {end_time - start_time:.2f} Sekunden") # Ausgabe der Zeit in Sekunden
