@@ -268,12 +268,6 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
                 return a[i] < b[i]
         return len(a) < len(b)
     
-    def coeffs_to_int(coeffs:list[int]):
-        num = 0
-        for coeff in coeffs: 
-            num = num*10+coeff
-        return num
-    
     # this function is very fast (0.0023) but is called very often (2868)
     def valid_increase_by_one(valid_num:list[int]):
         for i in range(len(valid_num)-1, -1, -1): 
@@ -290,7 +284,7 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
         valid_num += [1]
     
     @lru_cache(maxsize=None)
-    # this function is very fast!
+    # VERY FAST
     def combinations_of_clean_row(row_value:int, row_length:int) -> int:
         # return number of valid combinations in a clean row
         if row_length == 1:
@@ -302,6 +296,21 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
         
         return combinations
     
+    # fast
+    def increase_to_row_of_ten_with_lower_bound(lower:list[int], index) -> int:
+        if index == len(lower)-1:
+            combinations = 10 - lower[-1]
+            lower[index] = 9
+        else:
+            combinations = 0
+            combinations += increase_to_row_of_ten_with_lower_bound(lower, index+1)
+            clean_row_value = lower[index] + 1
+            combinations += combinations_of_clean_row(clean_row_value, len(lower)-index)
+            for i in range(index, len(lower)):
+                lower[i] = 9
+
+        return combinations
+
     def get_next_pair_num(valid_num:list[int]) -> int:
         # Checks if the valid_num has a pair if not it increases until it has!
         while True:
@@ -313,8 +322,7 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
     def calc(lower_bound, upper_bound):
         # convert numbers into usefull values
         # this helps later to perform specific operations with them
-        valid_lower_bound:list[int] = convert_number_into_increasing_digits(str(lower_bound))#1090 -> 1111
-        valid_upper_bound:list[int] = convert_number_into_increasing_digits(str(upper_bound))
+        valid_lower_bound:list[int] = convert_number_into_increasing_digits(str(lower_bound))
         upper_bound_as_list:list[int] = [int(char) for char in str(upper_bound)]
 
         first_matching_number = valid_lower_bound
@@ -348,22 +356,12 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
             # is pair at the end of the num?
             if pair_index == len(valid_num)-1:
                 pair_count += 10-valid_num[-1]
-
                 # set pair to pair of 9
                 valid_num[-2] = 9
                 valid_num[-1] = 9
 
             elif valid_num[pair_index] != 9:
-                row_length:int = len(valid_num)-1-pair_index
-                row_value:int = valid_num[pair_index+1]
-
-                off_set:int = coeffs_to_int(valid_num[pair_index+1:]) - coeffs_to_int( [row_value] * row_length)
-                
-                pair_count += combinations_of_clean_row(valid_num[pair_index+1], row_length) - off_set
-
-                # set row to row of 9
-                for i in range(row_length):
-                    valid_num[pair_index+i+1] = 9
+                pair_count += increase_to_row_of_ten_with_lower_bound(valid_num, pair_index+1)
                     
             if not less(valid_num, upper_bound_as_list):
                 break
@@ -386,7 +384,7 @@ def get_number_of_increasing_digits_with_pair_in_range(lower_bound, upper_bound)
 
     return a-b
 
-n = 100
+n = 1000
 count_of_special_numbers = None
 
 bounds = (13456471, 58515929)
@@ -397,5 +395,15 @@ end = time.time()
 print(f"The result of the matching numbers in the bounds {bounds[0]}, {bounds[1]} is {count_of_special_numbers}")
 print(f"Average runtime of the calculation: {(end-start)/n}")
 
-# time ~ 0.00565 seconds
+# time ~ 0.00588 seconds
 # result 5234
+
+assert get_number_of_increasing_digits_with_pair_in_range(0, 89)      == 8
+assert get_number_of_increasing_digits_with_pair_in_range(0, 90)      == 8
+assert get_number_of_increasing_digits_with_pair_in_range(601, 1096)  == 12
+assert get_number_of_increasing_digits_with_pair_in_range(0, 0)       == 0
+assert get_number_of_increasing_digits_with_pair_in_range(0, 1)       == 0
+assert get_number_of_increasing_digits_with_pair_in_range(0, 111)     == 9
+assert get_number_of_increasing_digits_with_pair_in_range(9, 199)     == 24
+assert get_number_of_increasing_digits_with_pair_in_range(0, 900)     == 81
+
