@@ -171,7 +171,7 @@ test_deck_class(SkatDeck)
 # run your function with the lower bound `13456471` and the upper bound `58515929`.
 # It should complete in a few seconds. Note the resulting count in your pull request, please.
 
-def count_valid_numbers_in_range(lower: int, upper: int) -> int: # will create an improved version later tbd
+def count_valid_numbers_in_range(lower: int, upper: int) -> int:
     def is_valid(n: int) -> bool:
         digits = [int(d) for d in str(n)]
         
@@ -180,7 +180,6 @@ def count_valid_numbers_in_range(lower: int, upper: int) -> int: # will create a
             return False
         
         # exactly two adjacents
-        
         counts = {}
         i = 0
         while i < len(digits):
@@ -194,10 +193,43 @@ def count_valid_numbers_in_range(lower: int, upper: int) -> int: # will create a
     
     return sum(1 for n in range(lower, upper) if is_valid(n))
 
+def count_valid_numbers_in_range_fast(lower: int, upper: int) -> int:
+    n = len(str(upper - 1))
+    count = 0
+    def generate_and_count_if_valid_monotone(
+        pos: int = 0,
+        prev: int = 0,
+        run_length: int = 0,
+        has_pair: bool = False,
+        digits: list[int] = []
+    ):
+        nonlocal count
+        if pos == n:
+            if has_pair or run_length == 2:
+                number = int(''.join(map(str, digits)))
+                if lower <= number < upper:
+                    count += 1
+            return
+
+        start = prev  # next digit >= previous digit (monotone)
+        for d in range(start, 10):
+            new_run_length = run_length + 1 if d == prev else 1
+            new_has_pair = has_pair or (run_length == 2 and d != prev) 
+            generate_and_count_if_valid_monotone(
+                pos = pos + 1,
+                prev = d,
+                run_length = new_run_length,
+                has_pair = new_has_pair,
+                digits = digits + [d]
+            )
+
+    generate_and_count_if_valid_monotone()
+    return count
+
 lower = 13_456_471
 upper = 58_515_929
 
-result = count_valid_numbers_in_range(lower, upper)
+result = count_valid_numbers_in_range_fast(lower, upper)
 
 print("\n4)")
 print(f"Count of valid numbers: {result}") # 5234
