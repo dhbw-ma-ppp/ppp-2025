@@ -205,6 +205,6 @@ assert calculate_number_through_memory_list(memory_list, [0]) == [0], failed("0 
 
 assert calculate_number_through_memory_list(commands, []) == [16694270], failed(
     "$commands"
-)
+)  # Output for homework: 16694270
 
 print("✅ All tests passed! :]")
