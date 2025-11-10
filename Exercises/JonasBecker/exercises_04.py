@@ -203,7 +203,7 @@ assert calculate_number_through_memory_list(memory_list, [-5]) == [1], failed("-
 assert calculate_number_through_memory_list(memory_list, [0]) == [0], failed("0 != 0")
 
 assert calculate_number_through_memory_list(commands, [5]) == [16694270], failed(
-    "$commands"
+    "$commands(5)"
 )  # Output for homework: 16694270
 
 print("✅ All tests passed! :]")
