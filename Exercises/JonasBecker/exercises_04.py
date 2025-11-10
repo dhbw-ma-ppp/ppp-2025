@@ -173,8 +173,7 @@ def calculate_number_through_memory_list(  # TBD: maybe write as class
             else:
                 write(0)
         case _:
-            pass
-
+            raise NotImplementedError(f"Opcode '{opcode}' is not implemented yet.")
     """
     **Repeat**
     """
