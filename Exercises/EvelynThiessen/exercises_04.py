@@ -59,7 +59,6 @@
 def simulated_computer_memory(lst):
     
     instruction_ptr = 0
-    jump = 0
     while True:
         instruction = lst[instruction_ptr]
         opcode = instruction % 100
