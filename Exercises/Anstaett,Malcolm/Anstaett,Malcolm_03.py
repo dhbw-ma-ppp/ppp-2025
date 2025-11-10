@@ -30,13 +30,13 @@ class BankAcount:
     def get_balance(self): # Kontostand abrufen
         return self._balance
     
-    def transfer(self,amount, owner): # Überweisung
+    def transfer(self,amount, other_account): # Überweisung
         if amount > self._balance:
             print("Kontostand nicht ausreichend.")
         else:
             self._balance -= amount
-            owner._balance += amount
-            print(f"Überweisung von: {amount} an Konto: {owner.owner}\n. Neuer Kontostand: {self._balance}.")
+            other_account._balance += amount
+            print(f"Überweisung von: {amount} an Konto: {other_account.owner}\n. Neuer Kontostand: {self._balance}.")
 
 #Funktionstest
 
@@ -70,8 +70,11 @@ class french_deck:
         values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
         self.cards = [f"{value} of {suite}" for suite in suites for value in values]
 
-    def get_card(self, position): # Karte an bestimmter Position abrufen
-        print(self.cards[position])
+    def __len__(self):  # Ermöglicht die Verwendung von len()
+        return len(self.cards)
+
+    def __getitem__(self, position):  # Ermöglicht den Zugriff auf Karten per Index
+        return self.cards[position]
 
     def __iter__(self): # Iteration über alle Karten im Deck ermöglichen
         for card in self.cards:
@@ -79,7 +82,8 @@ class french_deck:
 
 
 deck = french_deck()
-deck.get_card(0)  # Ausgabe: Spezifische Karte 
+print(deck[0])  # Erste Karte
+
 
 # PART 3:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
@@ -97,19 +101,18 @@ class skat_deck(french_deck):
         self.cards = [f"{value} of {suite}" for suite in suites for value in values]
 
 skat = skat_deck()
-skat.get_card(0)  # Ausgabe: Spezifische Karte
-
+print(skat[0])  # Erste Karte im Skat-Deck
 
 # Test FrenchDeck
-assert len(french_deck) == 52 # Prüfen ob das französische Deck 52 Karten hat
-assert str(french_deck[0]) == "2 of Diamonds" # Prüfen ob die erste Karte korrekt ist
-assert str(french_deck[-1]) == "Ace of Clubs" # Prüfen ob die letzte Karte korrekt ist
+assert len(french_deck()) == 52  # Überprüft, ob das französische Deck 52 Karten hat
+assert str(french_deck()[0]) == "2 of Diamonds"  # Überprüft, ob die erste Karte korrekt ist
+assert str(french_deck()[-1]) == "Ace of Clubs"  # Überprüft, ob die letzte Karte korrekt ist
 
 
 # Test SkatDeck
-assert len(skat_deck) == 32 # Prüfen ob das Skat-Deck 32 Karten hat
-assert str(skat_deck[0]) == "7 of Diamonds" # Prüfen ob die erste Karte korrekt ist
-assert str(skat_deck[-1]) == "Ace of Clubs" # Prüfen ob die letzte Karte korrekt ist
+assert len(skat_deck()) == 32  # Überprüft, ob das Skat-Deck 32 Karten hat
+assert str(skat_deck()[0]) == "7 of Diamonds"  # Überprüft, ob die erste Karte korrekt ist
+assert str(skat_deck()[-1]) == "Ace of Clubs"  # Überprüft, ob die letzte Karte korrekt ist
 
 # PART 4:
 # write a function that accepts two numbers, a lower bound and an upper bound.
