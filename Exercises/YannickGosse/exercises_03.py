@@ -141,7 +141,7 @@ assert str(Deck2[12]) == "Jack of Hearts"
 assert str(Deck2[31]) == "Ace of Clubs"
 print("Iterating the first five cards: \n")
 count = 0
-for card in Deck1:
+for card in Deck2:
     if count < 5:
         print(f"  {card}")
     count += 1
