@@ -9,11 +9,12 @@
 #  Try depositing, withdrawing and transferring amounts and print the balance each time.
 
 class BankAccount:
-    __attribute_balance__ = 0
-    def __init__(self):
-        self._balance = 0
+    def __init__(self, initial_balance=0): 
+        self._balance = initial_balance # privates Attribut für Kontostand
 
     def deposit(self, amount):
+        if amount < 0:
+            raise ValueError("Einzahlungsbetrag darf nicht negativ sein")
         self._balance += amount
 
     def withdraw(self, amount):
@@ -56,32 +57,33 @@ def eingabe():
         print("Ungültige Auswahl.")
     return choice
     
-
-
-#account1.deposit(100)
-#print("Konto1: Kontoguthaben nach Einzahlung:", account1.get_balance())
-#account1.withdraw(30)
-#print("Konto1: Kontoguthaben nach Abhebung:", account1.get_balance())
-#account1.transfer(account2, 50)
-#print("Konto1: Kontoguthaben nach Überweisung:", account1.get_balance())
-
 print("Aufgabe 1:")
 
-Kontonummer = input("Kontonummer eingeben: ")
-if Kontonummer == "12345":
-    print("Zugriff gewährt.\n Guthaben:", account1.get_balance())
-    while True:
-        eingabe()
-        if input("Möchten Sie eine weitere Transaktion durchführen? (Drücken Sie Enter zum Fortfahren, oder geben Sie 'q' zum Beenden ein): ").lower() == 'q':
-            break
-        print("Guthaben:", account1.get_balance())
+print("Konto1: Anfangskontostand:", account1.get_balance())
+print("Konto2: Anfangskontostand:", account2.get_balance())
+account1.deposit(100)
+print("Konto1: Kontoguthaben nach Einzahlung:", account1.get_balance())
+account1.withdraw(30)
+print("Konto1: Kontoguthaben nach Abhebung:", account1.get_balance())
+account1.transfer(account2, 50)
+print("Konto1: Kontoguthaben nach Überweisung:", account1.get_balance())
+print("Konto2: Kontoguthaben nach Überweisung:", account2.get_balance())
 
-elif Kontonummer == "67890":
-    print("Zugriff gewährt.\n Guthaben:", account2.get_balance())
-    eingabe()
-else:
-    print("Zugriff verweigert.")
 
+#Kontonummer = input("Kontonummer eingeben: ")
+#if Kontonummer == "12345":
+#   print("Zugriff gewährt.\n Guthaben:", account1.get_balance())
+#  while True:
+#        eingabe()
+ #       if input("Möchten Sie eine weitere Transaktion durchführen? (Drücken Sie Enter zum Fortfahren, oder geben Sie 'q' zum Beenden ein): ").lower() == 'q':
+ #           break
+ #       print("Guthaben:", account1.get_balance())
+
+#elif Kontonummer == "67890":
+#    print("Zugriff gewährt.\n Guthaben:", account2.get_balance())
+#    eingabe()
+#else:
+#    print("Zugriff verweigert.")
 
 
 
@@ -133,10 +135,11 @@ for card in deck:
 # PART 3:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
+# using built-in assert instead of external 'assertpy'
+
 class SkatDeck(Deck):
     def __init__(self):
         super().__init__()  # Rufe den Konstruktor der Basisklasse auf
-        self.cards = [card for card in self.cards if Card.RANKS.index(card.rank) >= Card.RANKS.index('7')]  # Filtere Karten ab 7 aufwärts
         self.cards = [card for card in self.cards if Card.RANKS.index(card.rank) >= Card.RANKS.index('7')]  # Filtere Karten ab 7 aufwärts
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
@@ -151,6 +154,9 @@ for card in skat_deck:
 
 print("\nAnzahl der Karten im normalen Deck:", len(deck))  # Anzahl der Karten im normalen Deck
 print("Anzahl der Karten im Skat-Deck:", len(skat_deck))
+assert len(deck) == 52  # Normales Deck sollte 52 Karten haben
+assert len(skat_deck) == 32  # Skat-Deck sollte 32 Karten haben
+
 
 # PART 4:
 # write a function that accepts two numbers, a lower bound and an upper bound.
@@ -166,7 +172,7 @@ def count_valid_numbers(lower_bound, upper_bound):  #Zählt gültige Zahlen im B
         str_num = str(number)   # Zahl in String umwandeln
         
         # prüfen, ob die Ziffern nur zunehmen
-        if list(str_num) != sorted(str_num):
+        if any(str_num[i] > str_num[i+1] for i in range(len(str_num)-1)):
             continue
 
         # prüfen, ob es mindestens eine Gruppe von genau zwei benachbarten Ziffern gibt
