@@ -17,7 +17,7 @@ class BankAccount:
         return self._balance
     
     def withdraw(self, amount):
-        if amount < self._balance:
+        if amount <= self._balance:
             self._balance -= amount
             return self._balance
         
@@ -27,10 +27,10 @@ class BankAccount:
     def get_balance(self):
         return self._balance
     
-    def transfer(self, other_account, amount):
-        self._balance = my_BankAccount.deposit(amount)
-        other_BankAccount = BankAccount(other_account)
-        other_account = other_BankAccount.withdraw(amount)
+    def transfer(self, other_account_balance, amount):
+        self._balance = my_BankAccount.withdraw(amount)
+        other_BankAccount = BankAccount(other_account_balance)
+        other_account_balance = other_BankAccount.deposit(amount)
         return self._balance, other_account
 
 #Testing der Klasse
@@ -39,6 +39,7 @@ my_BankAccount = BankAccount(9000)
 
 print("Mein Kontostand:", my_BankAccount.get_balance())
 print("Mein Kontostand:", my_BankAccount.deposit(500))
+print("Mein Kontostand:", my_BankAccount.withdraw(1000))
 my, other = my_BankAccount.transfer(10000, 500)
 print(f"Mein Kontostand: {my}\nAnderer Kontostand: {other}")
 
@@ -68,9 +69,9 @@ class FrenchDeck:
                        for rank in self.rank]
     
     def one_card(self, position):
-        return self.cards[position]
+        return self.cards[position - 1]
     
-    def hole_deck(self):
+    def whole_deck(self):
         return self.cards
 
 myCard = Card('7', 'Hearts')
@@ -81,7 +82,7 @@ myDeck = FrenchDeck()
 index = 45
 
 print(f"Die Karte am Index {index} ist die:", myDeck.one_card(index))
-#print("Das ist ein volles französisches Kartendeck:", myDeck.hole_deck())
+#print("Das ist ein volles französisches Kartendeck:", myDeck.whole_deck())
 
 # PART 3:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
@@ -99,13 +100,13 @@ class SkatDeck:
                        for rank in self.rank]
     
     def one_card(self, position):
-        return self.cards[position]
+        return self.cards[position - 1]
     
-    def hole_deck(self):
+    def whole_deck(self):
         return self.cards
 
 myskat_deck = SkatDeck()
-#print("Das ist ein vollständiges Skatdeck:", myskat_deck.hole_deck())
+#print("Das ist ein vollständiges Skatdeck:", myskat_deck.whole_deck())
 
 # PART 4:
 # write a function that accepts two numbers, a lower bound and an upper bound.
@@ -129,24 +130,24 @@ import time
 def countnumbers(lower_bound, upper_bound):
     valid_numbers = 0
     
-    for count in range(lower_bound, upper_bound):
+    for numbers_in_test in range(lower_bound, upper_bound):
         current_number = str(count)
 
-        if tests_increase(current_number) is True:
-            if tests_duplicates(current_number) is True:
+        if tests_increase_of_numbers(current_number):
+            if tests_duplicates(current_number):
                 valid_numbers += 1
-                print(current_number)
+                #print(current_number) -> lediglich zur Überprüfung bei Fehlern nötig
     
     return valid_numbers
 
-def tests_increase(current_number):
+def tests_increase_of_numbers(current_number):
 
     index = 1
 
     while index < len(current_number):
 
         if current_number[index - 1] <= current_number[index]:
-            pass
+            continue
         else:
             return False
             
@@ -157,7 +158,6 @@ def tests_increase(current_number):
 def tests_duplicates(current_number):
      
     current_number = '#' + current_number + '#'
-    index = 1
 
     for index in range(len(current_number) - 1):
         if current_number[index] == current_number[index + 1]:                  # schauen nach 2 gleichen Zahlen
@@ -165,7 +165,6 @@ def tests_duplicates(current_number):
                 if current_number[index] != current_number[index + 2]:
                     return True
 
-        index += 1
 
     return False   
 
@@ -176,4 +175,4 @@ validnumbers = countnumbers(13456471, 58515929)
 end = time.time()
 
 print(f"There're {validnumbers} valid numbers.")
-print("Die Funktion braucht:", end - start)
+print("Die Funktion braucht:", end - start) # etwa 9s
