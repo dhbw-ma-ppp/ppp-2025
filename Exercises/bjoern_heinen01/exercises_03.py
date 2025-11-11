@@ -233,8 +233,10 @@ import time
 
 def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:int, upper_bound:int) -> int:
     
-    def convert_number_into_increasing_digits(num:str) -> list[int]:
-        chars = list(num)
+    ### defenition of sub functions: ### 
+
+    def convert_number_into_increasing_digits(num:int) -> list[int]:
+        chars = list(str(num))
         for i in range(1,len(chars)):
             # char comparrison works without casting to int
             # because of the structure of askii/utf-8
@@ -270,17 +272,21 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
     
     # this function is very fast (0.0023) but is called very often (2868)
     def valid_increase_by_one(valid_num:list[int]):
-        for i in range(len(valid_num)-1, -1, -1): 
-            if valid_num[i] == 9: 
+        # ind_rev => index_reversed
+        for ind_rev in range(len(valid_num)-1, -1, -1): 
+            if valid_num[ind_rev] == 9: 
                 continue
-            value = valid_num[i] + 1
-            for ii in range(i, len(valid_num)):
-                valid_num[ii] = value
+            value = valid_num[ind_rev] + 1
+
+            for digit_index in range(ind_rev, len(valid_num)):
+                valid_num[digit_index] = value
+
             return
         
-        # this happens log_10(upper_bound)-log_10(lower_bound)
+        # this happens log_10(upper_bound)-log_10(lower_bound) times
         for i in range(len(valid_num)):
             valid_num[i] = 1
+
         valid_num += [1]
     
     @lru_cache(maxsize=None)
@@ -296,21 +302,15 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
         
         return combinations
     
-    # fast
-    def increase_to_row_of_ten_with_lower_bound(lower:list[int], index) -> int:
-        if index == len(lower)-1:
-            combinations = 10 - lower[-1]
-            lower[index] = 9
-        else:
-            combinations = 0
-            combinations += increase_to_row_of_ten_with_lower_bound(lower, index+1)
-            clean_row_value = lower[index] + 1
-            combinations += combinations_of_clean_row(clean_row_value, len(lower)-index)
-            for i in range(index, len(lower)):
-                lower[i] = 9
+    def get_combinations_to_row_of_nines_with_lower_bound(lower:list[int], index) -> int:
+        combinations = 10 - lower[-1]
 
+        for i in range(len(lower)-2,index-1, -1):
+            clean_row_value = lower[i] + 1
+            combinations += combinations_of_clean_row(clean_row_value, len(lower) - i)
         return combinations
-
+    
+    # This function is VERY slow
     def get_next_pair_num(valid_num:list[int]) -> int:
         # Checks if the valid_num has a pair if not it increases until it has!
         while True:
@@ -318,63 +318,55 @@ def get_number_of_increasing_digits_with_pair_in_range_to_nine_row(lower_bound:i
             if index != -1:
                 return index
             valid_increase_by_one(valid_num)
-    
-    def calc(lower_bound, upper_bound):
-        # convert numbers into usefull values
-        # this helps later to perform specific operations with them
-        valid_lower_bound:list[int] = convert_number_into_increasing_digits(str(lower_bound))
-        upper_bound_as_list:list[int] = [int(char) for char in str(upper_bound)]
 
-        first_matching_number = valid_lower_bound
-        if get_second_pair_index(first_matching_number) == -1:
-            get_next_pair_num(first_matching_number)
+    ### defenition of sub functions is finished ### 
+
+    upper_bound_as_list:list[int] = [int(char) for char in str(upper_bound)]
+
+    # valid num is always a number with increasing digits
+    # a matchin_num is a valid_num wich has at least one pair
+    valid_num:list[int] = convert_number_into_increasing_digits(lower_bound)
+
+    matching_num_count = 0
+    pair_index = get_next_pair_num(valid_num)
+    
+    ## Check Bounds
+    if valid_num == upper_bound_as_list:
+        return 1
+    if less(upper_bound_as_list, valid_num):
+        return 0
+    
+    
+    ### Main loop: ###
+
+    while less(valid_num, upper_bound_as_list):
         
-        ## Check Bounds
-        # Return one wenn upper_bound == lower_bound und valide_matching_numm
-        # return 0 if upperbound < lower_bound
-        # return 0 if no matching num is between lower_bound and upperbound
-        if valid_lower_bound == upper_bound_as_list:
-            # no pair -> no matiching num -> 0 numbers in range
-            if get_second_pair_index(valid_lower_bound) == -1:
-                return 0
-            # 1 nmatching num is in range
-            return 1
+        ## get combinations until pair gets destroyed:
+
+        # is pair at the end of the num?
+        if pair_index == len(valid_num)-1:
+            matching_num_count += 10-valid_num[-1]
+            # set pair to pair of 9
+            valid_num[-2] = 9
+            valid_num[-1] = 9
+        else:
+            matching_num_count += get_combinations_to_row_of_nines_with_lower_bound(valid_num, pair_index+1)
+            
+            # update valid_num
+            for i in range(pair_index+1, len(valid_num)):
+                valid_num[i] = 9
         
-        # get the first matching num
-        pair_count = 0
-        valid_num = valid_lower_bound.copy()
+        if not less(valid_num, upper_bound_as_list):
+            break
+        
+        ## destroy pair
+        valid_increase_by_one(valid_num)
+        
+        ## get next pair
         pair_index = get_next_pair_num(valid_num)
-        # boundary check
-        if less(upper_bound_as_list, valid_num):
-            return 0
-        # if this point of the function is reached 
-        # there has to be atleast one matching number
-        
-        
-        # increase valid_num
-        while less(valid_num, upper_bound_as_list):
-            # is pair at the end of the num?
-            if pair_index == len(valid_num)-1:
-                pair_count += 10-valid_num[-1]
-                # set pair to pair of 9
-                valid_num[-2] = 9
-                valid_num[-1] = 9
-
-            elif valid_num[pair_index] != 9:
-                pair_count += increase_to_row_of_ten_with_lower_bound(valid_num, pair_index+1)
-                    
-            if not less(valid_num, upper_bound_as_list):
-                break
-            
-            # destroy pair
-            valid_increase_by_one(valid_num)
-            
-            # get next pair
-            pair_index = get_next_pair_num(valid_num)
-        
-        return pair_count
     
-    return calc(lower_bound,upper_bound)
+    return matching_num_count
+    
       
 def get_number_of_increasing_digits_with_pair_in_range(lower_bound, upper_bound):
     max = int("9"*len(str(upper_bound)))
@@ -398,6 +390,13 @@ print(f"Average runtime of the calculation: {(end-start)/n}")
 # time ~ 0.00588 seconds
 # result 5234
 
+# short unit test:
+
+assert get_number_of_increasing_digits_with_pair_in_range(97, 99)      == 0
+assert get_number_of_increasing_digits_with_pair_in_range(99, 100)      == 1
+assert get_number_of_increasing_digits_with_pair_in_range(99, 99)      == 0
+assert get_number_of_increasing_digits_with_pair_in_range(100, 100)      == 0
+
 assert get_number_of_increasing_digits_with_pair_in_range(0, 89)      == 8
 assert get_number_of_increasing_digits_with_pair_in_range(0, 90)      == 8
 assert get_number_of_increasing_digits_with_pair_in_range(601, 1096)  == 12
@@ -407,3 +406,105 @@ assert get_number_of_increasing_digits_with_pair_in_range(0, 111)     == 9
 assert get_number_of_increasing_digits_with_pair_in_range(9, 199)     == 24
 assert get_number_of_increasing_digits_with_pair_in_range(0, 900)     == 81
 
+# long unit test:
+
+assert get_number_of_increasing_digits_with_pair_in_range(602400332, 1557275973) == 18986
+assert get_number_of_increasing_digits_with_pair_in_range(952916804, 1681816258) == 19084
+assert get_number_of_increasing_digits_with_pair_in_range(366819351, 1297174798) == 16964
+assert get_number_of_increasing_digits_with_pair_in_range(865381094, 1182046857) == 10748
+assert get_number_of_increasing_digits_with_pair_in_range(615297311, 851890430) == 110
+assert get_number_of_increasing_digits_with_pair_in_range(690979506, 827104524) == 19
+assert get_number_of_increasing_digits_with_pair_in_range(429746522, 1117241797) == 5615
+assert get_number_of_increasing_digits_with_pair_in_range(693501000, 1095140364) == 21
+assert get_number_of_increasing_digits_with_pair_in_range(565462426, 1364533229) == 17909
+assert get_number_of_increasing_digits_with_pair_in_range(475913018, 1229421055) == 13977
+assert get_number_of_increasing_digits_with_pair_in_range(220485589, 915530461) == 8352
+assert get_number_of_increasing_digits_with_pair_in_range(534260339, 1313235322) == 16039
+assert get_number_of_increasing_digits_with_pair_in_range(468606563, 570126323) == 315
+assert get_number_of_increasing_digits_with_pair_in_range(556015842, 1259345258) == 15846
+assert get_number_of_increasing_digits_with_pair_in_range(495300789, 1073204075) == 425
+assert get_number_of_increasing_digits_with_pair_in_range(145330617, 860878517) == 8845
+assert get_number_of_increasing_digits_with_pair_in_range(639670675, 804343459) == 110
+assert get_number_of_increasing_digits_with_pair_in_range(46887367, 558078104) == 18437
+assert get_number_of_increasing_digits_with_pair_in_range(690361521, 1136430612) == 9369
+assert get_number_of_increasing_digits_with_pair_in_range(481800909, 871711919) == 425
+assert get_number_of_increasing_digits_with_pair_in_range(563744892, 1055160838) == 197
+assert get_number_of_increasing_digits_with_pair_in_range(976381353, 1021383131) == 0
+assert get_number_of_increasing_digits_with_pair_in_range(6116820, 404056676) == 26606
+assert get_number_of_increasing_digits_with_pair_in_range(245818163, 1012085689) == 3854
+assert get_number_of_increasing_digits_with_pair_in_range(521827288, 927604340) == 425
+assert get_number_of_increasing_digits_with_pair_in_range(716902926, 1498848466) == 18703
+assert get_number_of_increasing_digits_with_pair_in_range(298969439, 972847574) == 3493
+assert get_number_of_increasing_digits_with_pair_in_range(359116451, 471127055) == 952
+assert get_number_of_increasing_digits_with_pair_in_range(533619671, 945961859) == 425
+assert get_number_of_increasing_digits_with_pair_in_range(165067409, 1067848774) == 8437
+assert get_number_of_increasing_digits_with_pair_in_range(396563543, 802744495) == 1308
+assert get_number_of_increasing_digits_with_pair_in_range(112425339, 159544762) == 6727
+assert get_number_of_increasing_digits_with_pair_in_range(681017273, 1230259917) == 13558
+assert get_number_of_increasing_digits_with_pair_in_range(460037288, 1111619584) == 2376
+assert get_number_of_increasing_digits_with_pair_in_range(561674354, 1080630896) == 197
+assert get_number_of_increasing_digits_with_pair_in_range(739619683, 1702705540) == 19107
+assert get_number_of_increasing_digits_with_pair_in_range(987065836, 1319904841) == 15614
+assert get_number_of_increasing_digits_with_pair_in_range(564211496, 1386115572) == 17992
+assert get_number_of_increasing_digits_with_pair_in_range(71470656, 987368235) == 18348
+assert get_number_of_increasing_digits_with_pair_in_range(5716445, 826369862) == 27927
+assert get_number_of_increasing_digits_with_pair_in_range(930336483, 1409296214) == 17797
+assert get_number_of_increasing_digits_with_pair_in_range(265021559, 1039386136) == 3578
+assert get_number_of_increasing_digits_with_pair_in_range(37233193, 892895445) == 19185
+assert get_number_of_increasing_digits_with_pair_in_range(681873027, 1001922889) == 23
+assert get_number_of_increasing_digits_with_pair_in_range(375228407, 542215036) == 903
+assert get_number_of_increasing_digits_with_pair_in_range(37290016, 238193041) == 14850
+assert get_number_of_increasing_digits_with_pair_in_range(447271068, 546677370) == 331
+assert get_number_of_increasing_digits_with_pair_in_range(766736797, 1700597951) == 19107
+assert get_number_of_increasing_digits_with_pair_in_range(6716400, 86200550) == 9548
+assert get_number_of_increasing_digits_with_pair_in_range(599153932, 762519989) == 91
+assert get_number_of_increasing_digits_with_pair_in_range(7998461, 817459138) == 27852
+assert get_number_of_increasing_digits_with_pair_in_range(982024160, 1446074540) == 18267
+assert get_number_of_increasing_digits_with_pair_in_range(191036432, 855690153) == 8350
+assert get_number_of_increasing_digits_with_pair_in_range(790157326, 1566587344) == 18912
+assert get_number_of_increasing_digits_with_pair_in_range(809071276, 1763853340) == 19088
+assert get_number_of_increasing_digits_with_pair_in_range(959721896, 1514180287) == 18682
+assert get_number_of_increasing_digits_with_pair_in_range(26338070, 592731549) == 20361
+assert get_number_of_increasing_digits_with_pair_in_range(871167545, 1457982005) == 18597
+assert get_number_of_increasing_digits_with_pair_in_range(412667440, 520339043) == 885
+assert get_number_of_increasing_digits_with_pair_in_range(260442187, 1199908179) == 14332
+assert get_number_of_increasing_digits_with_pair_in_range(722443777, 1688069705) == 19105
+assert get_number_of_increasing_digits_with_pair_in_range(367986760, 1076444530) == 1330
+assert get_number_of_increasing_digits_with_pair_in_range(673330281, 873612704) == 37
+assert get_number_of_increasing_digits_with_pair_in_range(689104192, 1192447001) == 10775
+assert get_number_of_increasing_digits_with_pair_in_range(508854254, 1051908977) == 425
+assert get_number_of_increasing_digits_with_pair_in_range(305381113, 613273410) == 3381
+assert get_number_of_increasing_digits_with_pair_in_range(35011939, 180710471) == 11016
+assert get_number_of_increasing_digits_with_pair_in_range(216984610, 471662560) == 7909
+assert get_number_of_increasing_digits_with_pair_in_range(147795053, 768206581) == 8631
+assert get_number_of_increasing_digits_with_pair_in_range(952763809, 1427712868) == 17797
+assert get_number_of_increasing_digits_with_pair_in_range(47311553, 475630323) == 18197
+assert get_number_of_increasing_digits_with_pair_in_range(558761584, 723841326) == 184
+assert get_number_of_increasing_digits_with_pair_in_range(585935493, 1196160425) == 10868
+assert get_number_of_increasing_digits_with_pair_in_range(452318509, 1273384694) == 16316
+assert get_number_of_increasing_digits_with_pair_in_range(190888916, 802866004) == 8350
+assert get_number_of_increasing_digits_with_pair_in_range(205890965, 1178129080) == 19090
+assert get_number_of_increasing_digits_with_pair_in_range(890099624, 1849564478) == 19105
+assert get_number_of_increasing_digits_with_pair_in_range(679900576, 1612338100) == 19018
+assert get_number_of_increasing_digits_with_pair_in_range(207242796, 390659194) == 7042
+assert get_number_of_increasing_digits_with_pair_in_range(578562176, 678572461) == 91
+assert get_number_of_increasing_digits_with_pair_in_range(333987760, 1009663459) == 2942
+assert get_number_of_increasing_digits_with_pair_in_range(565357257, 1452886426) == 18584
+assert get_number_of_increasing_digits_with_pair_in_range(329899792, 358399154) == 2096
+assert get_number_of_increasing_digits_with_pair_in_range(815921793, 938404985) == 2
+assert get_number_of_increasing_digits_with_pair_in_range(693956567, 796622233) == 19
+assert get_number_of_increasing_digits_with_pair_in_range(556311122, 1280949188) == 15929
+assert get_number_of_increasing_digits_with_pair_in_range(952101952, 1828303564) == 19105
+assert get_number_of_increasing_digits_with_pair_in_range(263869002, 507656073) == 3153
+assert get_number_of_increasing_digits_with_pair_in_range(444601570, 761686398) == 1075
+assert get_number_of_increasing_digits_with_pair_in_range(139013531, 561320145) == 8995
+assert get_number_of_increasing_digits_with_pair_in_range(3862027, 864630180) == 28368
+assert get_number_of_increasing_digits_with_pair_in_range(107266979, 440036919) == 17020
+assert get_number_of_increasing_digits_with_pair_in_range(894059116, 1426603939) == 17797
+assert get_number_of_increasing_digits_with_pair_in_range(874543227, 1328095766) == 15616
+assert get_number_of_increasing_digits_with_pair_in_range(436386777, 662006295) == 1198
+assert get_number_of_increasing_digits_with_pair_in_range(193527527, 635610562) == 8240
+assert get_number_of_increasing_digits_with_pair_in_range(403116012, 712920949) == 1289
+assert get_number_of_increasing_digits_with_pair_in_range(855685116, 1423100671) == 17799
+assert get_number_of_increasing_digits_with_pair_in_range(112301464, 425108437) == 14316
+assert get_number_of_increasing_digits_with_pair_in_range(594349177, 1062726876) == 112
