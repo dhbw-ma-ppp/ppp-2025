@@ -91,7 +91,7 @@ def virtual_machine(lst):
                 index += 2
             case 4: # Ausgabe
                 value = parameter_mode(parameter1, lst, index + 1)
-                print(value)
+                print("Ausgabewert:",value)
                 index += 2
             case 5: # Jump-if-true
                 value1 = parameter_mode(parameter1, lst, index + 1)
