@@ -132,8 +132,6 @@ def virtual_machine(lst):
                 raise ValueError(f"Ungültiger Opcode: {opcode}")
     return lst
 #Test
-test = [1002,4,3,4,33]
 
 virtual_machine(commands)
-virtual_machine(test)
-print(test)
+# Der ausgegebene Wert bei Eingabe von '5' ist: 16694270
