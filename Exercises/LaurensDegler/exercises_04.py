@@ -1,3 +1,4 @@
+
 # Extend the simulated computer from the second week:
 # You will need to support a number of additional opcodes:
 # - 3: read a single integer as input and save it to the position given
@@ -106,157 +107,125 @@ commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,22
 #
 # Führen Sie abschließend Ihren Code für die folgenden Anweisungen aus. Geben Sie bei der Eingabeaufforderung die Zahl „5” ein. Das Programm sollte bei der Ausführung eine einzelne Zahl ausgeben.
 # Bitte notieren Sie sich diese Zahl in Ihrem PR, damit ich nicht alle Dateien selbst ausführen muss :)
+import logging
 
-def calculate_number_in_list(lst: list[int], pointer:int = 0):
-    def find_actual_opcode(pointer: int):
-        number_as_str = str(lst[pointer])
-        opcode = number_as_str[-2:]
-        mode = 0
-        for i in range(2, len(number_as_str)):
-            if number_as_str[0-i] == 0 or number_as_str[0-i] == 1:
-                mode = number_as_str[0-i]
-                break 
-        return int(opcode), int(mode) #hier ist noch was zu machen
+logging.basicConfig(filename='logger.log', level=logging.DEBUG, force=True)
+
+def calculate_number_in_list(lst: list[int]):
+    handler = make_handlers()
+    pointer = 0
+    while True:
+        opcode, modes = parse_opcode_and_modes(lst[pointer])
+        if opcode not in handler:
+            raise RuntimeError(f"Unknown opcode {opcode} at pointer {pointer}")
+        next_pointer = handler[opcode](lst, pointer, modes)
+        if next_pointer is None:
+            break
+        pointer = next_pointer
     
-    opcode, mode = find_actual_opcode(pointer)
+def parse_opcode_and_modes(code: int):
+    s = str(code)
+    opcode = int(s[-2:]) if len(s) >= 2 else int(s)
+    # digits left of opcode, reversed => modes in order m1,m2,m3...
+    modes_str = s[:-2][::-1]  # '' -> no modes
+    modes = [int(ch) for ch in modes_str] if modes_str else []
+    return opcode, modes
 
+def get_param_value(lst: list[int], pointer: int, param_index, modes: list[int]):
+    mode = modes[param_index-1] if param_index - 1 < len(modes) else 0
+    raw_index = pointer + param_index
+    if raw_index >= len(lst):
+        raise IndexError(f"Parameter {param_index} außerhalb der Liste ({pointer=}).")
+    raw = lst[raw_index]
     if mode == 0:
-        mode_is_position(lst, pointer, opcode)
+        if raw < 0 or raw >= len(lst):
+            raise IndexError(f"Position mode: Adresse {raw} ungültig.")
+        return lst[raw]
     elif mode == 1:
-        mode_is_direkt(lst, pointer, opcode)
+        return raw
     else:
-        return print(f"Invalid mode {mode}")
+        raise ValueError(f"Unbekannter Parametermodus {mode}")
+
+def get_write_address(lst, pointer, param_index):
+    raw_index = pointer + param_index
+    if raw_index >= len(lst):
+        raise IndexError(f"Write-Parameter {param_index} außerhalb der Liste (pointer={pointer}).")
+    addr = lst[raw_index]
+    if addr < 0 or addr >= len(lst):
+        raise IndexError(f"Write-Adresse {addr} ungültig.")
+    return addr
+
+def make_handlers():
+    handlers = {}
     
-def mode_is_direkt(lst: list[int],pointer: int,opcode: int):
-    match opcode:
-        case 99:
-            return
-        case 4:
-            try:
-                return lst[lst[pointer + 1]]
-            except IndexError:
-                return print(f"The list doesnt contain {lst[pointer + 1]} Items!")
-        case 1:
-            try:
-                lst[lst[pointer + 3]] = lst[pointer + 1] + lst[pointer + 2]
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"Opcode 1 at position {pointer} could not be executed because the list does not contain enough elements!")
-        case 2:
-            try:
-                lst[lst[pointer + 3]] = lst[pointer + 1] * lst[pointer + 2]
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"Opcode 2 at position {pointer} could not be executed because the list does not contain enough elements!")
-        case 3:
-            try:
-                lst[lst[pointer +1]] = int(input(f"Please enter an integer:\n"))
-                pointer += 2
-                return calculate_number_in_list(lst, pointer)
-            except:
-                return print(f"you didnt enter an Integer")
-        case 5:
-            try:
-                if lst[pointer + 1] != 0:
-                    pointer = lst[lst[pointer + 2]]
-                    return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements! {pointer}, {51}")
-        case 6:
-            try:
-                if lst[pointer + 1] == 0:
-                    pointer = lst[lst[pointer + 2]]
-                    return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements!{pointer}, {61}")
-        case 7:
-            try:
-                if lst[pointer + 1] < lst[pointer + 2]:
-                    lst[lst[pointer + 3]] = 1
-                else:
-                    lst[lst[pointer + 3]] = 0
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements!{pointer}, {71}")
-        case 8:
-            try:
-                if lst[pointer + 1] == lst[pointer + 2]:
-                    lst[lst[pointer + 3]] = 1
-                else:
-                    lst[lst[pointer + 3]] = 1
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements!{pointer}, {81}")
-            
-def mode_is_position(lst: list[int],pointer: int,opcode: int):
-    match opcode:
-        case 99:
-            return
-        case 4:
-            try:
-                return lst[lst[pointer + 1]]
-            except IndexError:
-                return print(f"The list doesnt contain {lst[pointer + 1]} Items!")
-        case 1:
-            try:
-                lst[lst[pointer + 3]] = lst[lst[pointer + 1]] + lst[lst[pointer + 2]]
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"Opcode 1 at position {pointer} could not be executed because the list does not contain enough elements!")
-        case 2:
-            try:
-                lst[lst[pointer + 3]] = lst[lst[pointer + 1]] * lst[lst[pointer + 2]]
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"Opcode 2 at position {pointer} could not be executed because the list does not contain enough elements!")
-        case 3:
-            try:
-                lst[lst[pointer +1]] = int(input(f"Please enter an integer:\n"))
-                pointer += 2
-                return calculate_number_in_list(lst, pointer)
-            except:
-                return print(f"you didnt enter an Integer")
-        case 5:
-            try:
-                if lst[pointer + 1] != 0:
-                    pointer = lst[lst[pointer + 2]]
-                    return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements!{pointer}, {52}")
-        case 6:
-            try:
-                if lst[pointer + 1] == 0:
-                    pointer = lst[lst[pointer + 2]]
-                    return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements!{pointer}, {62}")
-        case 7:
-            try:
-                if lst[pointer + 1] < lst[pointer + 2]:
-                    lst[lst[pointer + 3]] = 1
-                else:
-                    lst[lst[pointer + 3]] = 0
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements!{pointer}, {72}")
-        case 8:
-            try:
-                if lst[pointer + 1] == lst[pointer + 2]:
-                    lst[lst[pointer + 3]] = 1
-                else:
-                    lst[lst[pointer + 3]] = 1
-                pointer += 4
-                return calculate_number_in_list(lst, pointer)
-            except IndexError:
-                return print(f"The list doesnt contain enough elements!{pointer}, {82}")
-        case other:
-            return print(f"Invalid opcode {other} at position {pointer} in list!")
-        
+    #   opcode 1: add
+    def op_add(lst, pointer, modes):
+        a = get_param_value(lst, pointer, 1, modes)
+        b = get_param_value(lst, pointer, 2, modes)
+        dest = get_write_address(lst, pointer, 3)
+        lst[dest] = a + b
+        return pointer + 4
+    handlers[1] = op_add
+    
+    #   opcode 2: multiply
+    def op_mul(lst, pointer, modes):
+        a = get_param_value(lst, pointer, 1, modes)
+        b = get_param_value(lst, pointer, 2, modes)
+        dest = get_write_address(lst, pointer, 3)
+        lst[dest] = a * b
+        return pointer + 4
+    handlers[2] = op_mul
+    
+    #   opcode 3: input (write)
+    def op_input(lst, pointer, modes):
+        dest = get_write_address(lst, pointer, 1)
+        lst[dest] = int(input(f"Please enter an integer:\n"))
+        return pointer + 2
+    handlers[3] = op_input
+    
+    #   opcode 4: output (read)
+    def op_output(lst, pointer, modes):
+        val = get_param_value(lst, pointer, 1, modes)
+        print(val)
+        return None
+    handlers[4] = op_output
+    
+    #   opcode 5: jump-if-true
+    def op_jump_true(lst, pointer, modes):
+        test = get_param_value(lst, pointer, 1, modes)
+        target = get_param_value(lst, pointer, 2, modes)
+        return target if test != 0 else pointer + 3
+    handlers[5] = op_jump_true
+    
+    #   opcode 6: jump-if-false
+    def op_jump_false(lst, pointer, modes):
+        test = get_param_value(lst, pointer, 1, modes)
+        target = get_param_value(lst, pointer, 2, modes)
+        return target if test == 0 else pointer + 3
+    handlers[6] = op_jump_false
+    
+    #   opcode 7: less than
+    def op_less_than(lst, pointer, modes):
+        a = get_param_value(lst, pointer, 1, modes)
+        b = get_param_value(lst, pointer, 2, modes)
+        dest = get_write_address(lst, pointer, 3)
+        lst[dest] = 1 if a < b else 0
+        return pointer + 4
+    handlers[7] = op_less_than
+    
+    #   opcode 8: equals
+    def op_equals(lst, pointer, modes):
+        a = get_param_value(lst, pointer, 1, modes)
+        b = get_param_value(lst, pointer, 2, modes)
+        dest = get_write_address(lst, pointer, 3)
+        lst[dest] = 1 if a == b else 0
+        return pointer + 4
+    handlers[8] = op_equals
+    
+    #   opcode 99: halt
+    def op_halt(lst, pointer, modes):
+        return None
+    handlers[99] = op_halt
+    return handlers
+    
 calculate_number_in_list(commands)
