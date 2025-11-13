@@ -134,7 +134,7 @@ def maschine_funktion(speicher):
         else:
             raise ValueError("Ungültiger Opcode: {}".format(opcode))
 
-    return letzer_opcode
+    return letzer_opcode 
 
 
 
@@ -155,7 +155,7 @@ commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,22
 
 #start time
 #time_start = time.time()
-print(maschine_funktion(commands))
+print(maschine_funktion(commands)) #output = 16694270
 #end time
 #time_end = time.time()
 #print("Dauer: {} Sekunden".format(time_end - time_start))
