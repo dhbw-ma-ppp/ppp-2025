@@ -66,14 +66,10 @@ def simulated_computer(liste):
         value1 = get_mode(liste, index + 1, mode_parameter1)
 
         if index + 3 < len(liste): #Checking if there's enough for three parameters
-            pos2 = liste[index + 2]
-            pos3 = liste[index + 3]
-                
+            pos3 = liste[index + 3] 
             value2 = get_mode(liste, index + 2, mode_parameter2)
         
         elif index + 2 < len(liste): #if not, check whether there's enough for two parameters
-            pos2 = liste[index + 2]
-                
             value2 = get_mode(liste, index + 2, mode_parameter2)
                               
         match opcode:
