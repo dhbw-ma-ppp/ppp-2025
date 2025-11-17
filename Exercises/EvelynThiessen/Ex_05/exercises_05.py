@@ -77,10 +77,12 @@ first_run = True
 koordinaten = []
 tiles = {}
 output_list = []
+
 ball_x = 0
 paddle_x = 0
 plt.ion()
 
+# Computer
 class IntComputer:
     def __init__(self, input_getter, output_collector):
         
@@ -174,6 +176,7 @@ class IntComputer:
             opcode_function = self.function_map[opcode]
             opcode_function(modes)
 
+# Funktionen
 def draw_game():
     x_wall = []
     y_wall = []
@@ -187,7 +190,7 @@ def draw_game():
         else:
             update_tiles(x,y,tile_type)
 
-    if x_wall and y_wall:
+    if x_wall and y_wall: #sorg dafür, dass die Wall schön zusammen ist
 
         max_y, max_x = max(y_wall), max(x_wall)
         min_y, min_x = min(y_wall), min(x_wall)
@@ -215,11 +218,12 @@ def update_tiles(x,y,tile_type):
         color_block = None
         marker_block = None
         size = None
+
         match tile_type:
             case 2: 
                 r = float((y * 0.05) % 256) 
                 g = float((y * 0.01) % 256) 
-                b = float((y * 0.03) % 256) 
+                b = float((y * 0.03) % 256) # für den Farbverlauf
 
                 color_block = (r,g,b)
                 marker_block = "s"
@@ -245,9 +249,11 @@ def update_tiles(x,y,tile_type):
 
 def collect_output(output):
     output_list.append(output)
+
     if len(output_list) == 3:
         x,y,tile_type = output_list
         output_list.clear()
+
         if x == -1 and y == 0:
             print(f"Score: {tile_type}")
             return
@@ -267,6 +273,7 @@ def auto_player():
     else:
         return -1
 
+#Start
 with open("Exercises/EvelynThiessen/Ex_05/breakout_commands.txt", "r") as commands_file: 
     commands = commands_file.read()
     commands = commands.split("\n")
