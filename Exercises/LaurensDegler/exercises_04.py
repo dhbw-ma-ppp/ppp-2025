@@ -130,7 +130,7 @@ def make_handlers():
     def op_output(lst, pointer, modes):
         val = get_param_value(lst, pointer, 1, modes)
         print(val)
-        return None
+        return pointer + 2
     handlers[4] = op_output
     
     #   opcode 5: jump-if-true
@@ -166,7 +166,7 @@ def make_handlers():
     handlers[8] = op_equals
     
     #   opcode 99: halt
-    def op_halt(lst, pointer, modes):
+    def op_halt(*_):
         return None
     handlers[99] = op_halt
     return handlers
