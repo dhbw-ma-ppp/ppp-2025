@@ -77,6 +77,8 @@ first_run = True
 koordinaten = []
 tiles = {}
 output_list = []
+ball_x = 0
+paddle_x = 0
 plt.ion()
 
 class IntComputer:
@@ -201,19 +203,23 @@ def draw_game():
         plot_it([max_x, max_x], sides)
         plot_it([min_x, min_x], sides)
         plot_it(bottom, [min_y, min_y])
-
-    plt.gca().set_axis_off()
+    
+    ax = plt.gca()
+    ax.invert_yaxis()
+    ax.set_axis_off()
     plt.draw()
 
 def update_tiles(x,y,tile_type):
+        global ball_x
+        global paddle_x
         color_block = None
         marker_block = None
         size = None
         match tile_type:
             case 2: 
-                r = float((x * 2) % 256) *0.01
-                g = float((x * 0.1) % 256) * 0.02
-                b = float( x % 256) * 0.02
+                r = float((y * 0.05) % 256) 
+                g = float((y * 0.01) % 256) 
+                b = float((y * 0.03) % 256) 
 
                 color_block = (r,g,b)
                 marker_block = "s"
@@ -222,11 +228,12 @@ def update_tiles(x,y,tile_type):
                 color_block = "black"
                 marker_block = "_"
                 size = 40
+                paddle_x = x
             case 4: 
                 color_block = "pink"    
                 marker_block = "o"
                 size = 40
-                print("ball!")
+                ball_x = x
             case 0:
                 color_block = "white"
                 marker_block = "s"
@@ -241,21 +248,31 @@ def collect_output(output):
     if len(output_list) == 3:
         x,y,tile_type = output_list
         output_list.clear()
-        tiles[(x,y)] = tile_type
+        if x == -1 and y == 0:
+            print(f"Score: {tile_type}")
+            return
+        
         if not first_run:
             update_tiles(x,y,tile_type)
+            plt.pause(0.01)
+            return
+
+        tiles[(x,y)] = tile_type
+
+def auto_player():
+    if ball_x == paddle_x:
+        return 0
+    elif ball_x > paddle_x:
+        return 1
+    else:
+        return -1
 
 with open("Exercises/EvelynThiessen/Ex_05/breakout_commands.txt", "r") as commands_file: 
     commands = commands_file.read()
     commands = commands.split("\n")
 
 commands = list(map(int, commands))
-int_computer = IntComputer(input, collect_output)
+int_computer = IntComputer(auto_player, collect_output)
 int_computer.run(commands)
 
-#show_game()
-
-# Schwarz = Wand
-# Blau/Lila = Blöcke
-# Grün = Ball
-# Grau = Schläger
+# High-Score: 17159
