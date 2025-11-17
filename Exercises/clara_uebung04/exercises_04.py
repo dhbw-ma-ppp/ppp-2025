@@ -56,22 +56,20 @@ commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,22
 def simulated_computer(liste):
     index = 0
 
-    while True:
+    while liste[index] != 99:
         
         opcode = liste[index] % 100
         mode_parameter1 = (liste[index] // 100) % 10
         mode_parameter2 = (liste[index] // 1000) % 10
 
-        pos1 = liste[index + 1]
         value1 = get_mode(liste, index + 1, mode_parameter1)
 
-        if index + 3 < len(liste): #Checking if there's enough for three parameters
-            pos3 = liste[index + 3] 
+        if index + 2 < len(liste): #Checking if there's enough space for three parameters    
             value2 = get_mode(liste, index + 2, mode_parameter2)
-        
-        elif index + 2 < len(liste): #if not, check whether there's enough for two parameters
-            value2 = get_mode(liste, index + 2, mode_parameter2)
-                              
+            
+            if index + 3 < len(liste):
+                pos3 = liste[index + 3]
+                          
         match opcode:
             case 1: 
                 liste[pos3] = value1 + value2
@@ -81,6 +79,7 @@ def simulated_computer(liste):
                 index += 4
             case 3:
                 user_input = input("Please enter a number:")
+                pos1 = liste[index + 1]
                 liste[pos1] = int(user_input)
                 index += 2
             case 4:
@@ -108,11 +107,10 @@ def simulated_computer(liste):
                 else:
                     liste[pos3] = 0
                 index += 4
-            case 99:
-                return "Function ended"
             case _:
                 print("Something went wrong. This opcode doesn't exist.")
                 return None
+    return "Function ended"
             
 def get_mode(liste, position, mode):
     if mode == 0:
