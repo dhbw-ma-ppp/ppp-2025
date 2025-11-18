@@ -24,10 +24,34 @@
 # Here's another testcase:
 # [1, 1, 1, 4, 99, 5, 6, 0, 99] should become [30, 1, 1, 4, 2, 5, 6, 0, 99]
 # Your function should return 30.
+def simulated_computer(arr):  
+    i = 0 
+    while True:  # Immer True, bis l32 eintrifft
+        element = arr[i]
 
+        if element == 99:  # wenn das Element 99 ist hören wir auf
+            break
+
+        elif element == 1:
+            pos1, pos2, pos3 = arr[i + 1 : i + 4]  #pos1 = i + 1, pos2 = i + 2 und pos3 = i + 3 
+            arr[pos3] = arr[pos1] + arr[pos2]      #an der Stelle des Elmentes von i + 3 wird die Summe aus den Elementen von i + 1 und i + 2 eingefügt
+
+        elif element == 2:
+            pos1, pos2, pos3 = arr[i + 1 : i + 4]  #pos1 = i + 1, pos2 = i + 2 und pos3 = i + 3 
+            arr[pos3] = arr[pos1] * arr[pos2]  #an der Stelle des Elmentes von i + 3 wird das Produkt aus den Elementen von i + 1 und i + 2 eingefügt
+        
+        i+=4  # i wird um 4 erhöht (i = i + 4)
+    print(arr[0])
+    return arr[0]
+    
 
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
+
+simulated_computer(commands)
+
+
+
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -38,3 +62,38 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
+
+
+
+
+def num_or_char(arr):
+
+    numbers = []
+    one_char = []
+
+    for element in arr:
+        try:
+            float(element)
+            numbers.append(element)
+        except ValueError: # -> enthält nicht e als Einzelnes, nur bspw.: 5e2, deswegen noch das if-Statement in Zeile 84
+            pass 
+        
+        if len(element) == 1:
+            one_char.append(element)
+        
+        if element == "e":
+            numbers.append(element)
+
+    
+    print(f"Zahlen: {numbers}")
+    print(f"Ein Charakter: {one_char}")
+
+liste1 = ["hallo", "12", "test", "4", "e", "True"]
+liste2 = ["5e2", "0", "-7", "Test", "!", "999"]
+liste3 = [" ", "007", "A", "b", "10.0", "hundert", "-0.5"]
+
+num_or_char(liste1)
+num_or_char(liste2)
+num_or_char(liste3)
+
+
