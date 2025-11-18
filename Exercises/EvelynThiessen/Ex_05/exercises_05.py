@@ -209,7 +209,7 @@ def draw_game():
     
     ax = plt.gca()
     ax.invert_yaxis()
-    ax.set_axis_off()
+    plt.axis("off")
     plt.draw()
 
 def update_tiles(x,y,tile_type):
@@ -227,7 +227,7 @@ def update_tiles(x,y,tile_type):
 
                 color_block = (r,g,b)
                 marker_block = "s"
-                size = 40
+                size = 30
             case 3: 
                 color_block = "black"
                 marker_block = "_"
@@ -255,7 +255,7 @@ def collect_output(output):
         output_list.clear()
 
         if x == -1 and y == 0:
-            print(f"Score: {tile_type}")
+            plt.title(f"Score: {tile_type}")
             return
         
         if not first_run:
