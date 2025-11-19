@@ -75,11 +75,11 @@ from int_computer import IntComputer
 import numpy as np
 
 
-
+import time
 
 class game:
     def __init__(self):
-        self.manual_input = False # Choose whether you want to play yourself or let it play itself
+        self.manual_input = True # Choose whether you want to play yourself or let it play itself
         self.pixels = np.zeros((23,43), dtype=int)
         self.score = 0
         self.temp_collection_of_outputs = []
@@ -143,11 +143,11 @@ class game:
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()
             
-            
                 
 
 if __name__ == "__main__":
-    with open('breakout_commands.txt', 'r') as ifile:
+    from pathlib import Path
+    with open(Path('./Exercises/benedict_volker/Aufgabe5/breakout_commands.txt').absolute(), 'r') as ifile:
         content = ifile.readlines()
 
     commands = []
