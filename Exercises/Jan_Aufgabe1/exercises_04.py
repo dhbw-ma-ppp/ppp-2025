@@ -48,9 +48,8 @@ import time
 
 def maschine_funktion(speicher):
     position = 0
-    letzer_opcode = None
+    output = None
     while position < len(speicher):
-        opcode = speicher[position]
         instr = str(speicher[position]).zfill(5)
         opcode = int(instr[-2:])  # nimme die letzten zwei Ziffern als Opcode
         mode1 = int(instr[2])
@@ -90,7 +89,7 @@ def maschine_funktion(speicher):
         elif opcode == 4:  # Output
             val1 = get_wert(1, mode1)
             print("Output:", val1)
-            letzer_opcode = val1
+            output = val1
             position += 2
 
         elif opcode == 5:  # Jump-if-true
@@ -134,7 +133,7 @@ def maschine_funktion(speicher):
         else:
             raise ValueError("Ungültiger Opcode: {}".format(opcode))
 
-    return letzer_opcode 
+    return output 
 
 
 
