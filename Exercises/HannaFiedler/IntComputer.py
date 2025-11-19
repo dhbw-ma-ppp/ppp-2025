@@ -71,26 +71,23 @@
 
 import operator
 import numpy as np
-from matplotlib import pyplot as plt  
+from matplotlib import pyplot as plt
+from matplotlib.colors import ListedColormap
 
 class IntComputer:
     def __init__(self, input_getter, output_collector):
-        self.first = True
         def get_input(modes):
-            if self.first == True:
-                plt.imshow(board, origin="upper")
             target_mode = modes % 10
             if target_mode == 2:
                 target = self.memory.get(self.ip, 0) + self.relative_mode_offset
             else:
                 target = self.memory.get(self.ip, 0)
             self.memory[target] = input_getter()
-            self.first = False
             self.ip += 1
 
         def write_output(modes):
             x, = self.get_function_arguments(modes, 1)
-            output_collector(x, self.first)
+            output_collector(x)
 
         def set_offset(modes):
             x,  = self.get_function_arguments(modes, 1)
@@ -167,42 +164,59 @@ with open("breakout_commands.txt", "r") as c_file:
     commands = [int(line.strip()) for line in c_file if line.strip() != '']
 
 def input_getter():
+    #legt Geschwindigkeit der Visualisierung fest
     plt.pause(0.0001)
+    #autoplay
     if x_ball < x_paddle:
         return -1
     elif x_ball > x_paddle:
         return 1
     else:
         return 0
+    
+#board ohne Einträge (mit Nullen, festgelegtem Datentyp) erstellen
+board = np.zeros((23,43), dtype = int) 
+#Farbskala festlegen
+colors = ["#1B1E2B", "#AD1457", "#4D90FE", "#1DB089", "#FFD166"]
+cmap = ListedColormap(colors)
 
-board = np.zeros((23,43), dtype = int)
+#interaktiven Modus aktivieren
 plt.ion()
-plt.figure(figsize=(8,6))
-plt.imshow(board, origin = "upper")
+#Visualisierung des boards zu Beginn (noch keine Blöcke usw. sichtbar, legt aber Größe und Farben fest)
+fig, ax = plt.subplots()
+fig.patch.set_facecolor("#1B1E2A")
+img = ax.imshow(board, origin = "upper", vmin = 0, vmax = 4, cmap = cmap)
 plt.axis("off")
 plt.show()
 
+#Liste um outputs zu sammeln
 buffer = []
 
-def collect_output(output, first):
-    global x_paddle, x_ball, y_ball
+def collect_output(output):
+    global x_paddle, x_ball
+    #outputs sammeln, falls 3 vorhanden soll das Bild aktualisiert werden
     buffer.append(output)
     if len(buffer) == 3:
         x, y, tiletype = buffer
         buffer.clear()
+
+        #bei (-1/0) die dritte Variable als score anzeigen (Titel)
         if x == -1 and y == 0:
             score = tiletype
-           #print("Score:",score)
-            plt.title(f"Score: {score}")
+            ax.set_title(f"Score: {score}", color = "#8AABC4")
+            return
         else:
+            #X-Koordinate von paddle bzw. ball fürs autoplay
+            if tiletype == 3:
+                x_paddle = x
+            elif tiletype == 4:
+                x_ball = x
+            #den Block bei x,y aktualisieren
             board[y,x] = tiletype
-            if first == False:
-                plt.imshow(board)
-        if tiletype == 3:
-            x_paddle = x
-        elif tiletype == 4:
-            x_ball = x
-            y_ball = y
+            img.set_data(board)
+            plt.draw()
 
 ic = IntComputer(input_getter, collect_output)
 ic.run(commands)
+
+#highscore: 17159
