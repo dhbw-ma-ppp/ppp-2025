@@ -2,7 +2,6 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-# Unified Intcode runner with input callback and output streaming
 def run_intcode(memory, input_callback=None):
     mem = defaultdict(int)
     for i, val in enumerate(memory):
@@ -65,11 +64,10 @@ def run_intcode(memory, input_callback=None):
             relative_base += get_param(1, p1)
             ip += 2
 
-# Load breakout commands
+# Load the txt file
 with open("data/breakout_commands.txt", "r") as f:
     program = list(map(int, f.read().strip().split()))
 
-# PART 1: Static screen visualization
 program_part1 = program.copy()
 tiles = {}
 for x, y, tile_id in run_intcode(program_part1):
@@ -90,7 +88,6 @@ for (x, y), tile in tiles.items():
 plt.title("Breakout Static Screen")
 plt.show()
 
-# PART 2: Play game automatically
 program_part2 = program.copy()
 program_part2[0] = 2
 ball_x = paddle_x = 0
