@@ -190,7 +190,7 @@ def visualize_game(screen_array):
     plt.tight_layout()
     plt.show()
 
-with open("C:/Users/X1 Yoga/ppp-2025/Exercises/clara_uebung05/breakout_commands.txt", 'r') as f:
+with open("C:/Users/X1 Yoga/OneDrive/Dokumente/DHBW/Python/Programme/breakout_commands.txt", 'r') as f:
     commands = [int(x) for x in f.read().split('\n')]
 
 output_values = []
