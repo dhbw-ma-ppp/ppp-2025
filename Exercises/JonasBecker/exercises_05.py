@@ -17,11 +17,15 @@ user_inputs: list[int] = []
 
 
 def on_key(event: KeyEvent):
-    if event.key == "left":
+    event_name = event.key
+    if not isinstance(event_name, str): # or is None
+        return
+    lower_event_name: str = event_name.lower()
+    if lower_event_name in ["a", "left"]:
         user_inputs.append(-1)
-    elif event.key == "right":
+    elif lower_event_name in ["d", "right"]:
         user_inputs.append(1)
-    elif event.key == "down":
+    elif lower_event_name in ["s", "down"]:
         user_inputs.append(0)
 
 
