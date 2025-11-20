@@ -179,12 +179,17 @@ class IntComputer:
             opcode_function = self.function_map[opcode]
             opcode_function(modes)
 
-def load_program_data(filename):
+
+
+#--------------Eigene Lösung für das Breakout Spiel ----------------
+
+
+def load_program_data(filename): # lädt die Programmdaten aus einer Datei
     with open(filename, 'r') as f:
-        data = f.read().strip()
-    return [int(x) for x in data.splitlines()] 
+        data = f.read().strip() 
+    return [int(x) for x in data.splitlines()] # in eine Liste von Ganzzahlen umwandeln
     
-def solve_part_1(program_data):
+def solve_part_1(program_data): 
     print("Part 1 solution:")
 
     output_buffer = []
@@ -201,7 +206,7 @@ def solve_part_1(program_data):
     computer = IntComputer(input_getter=dummy_input, output_collector=collect_output) 
     computer.run(program_data.copy()) 
     
-    screen = {}
+    screen = {} 
 
     for i in range(0, len(output_buffer), 3):
         x = output_buffer[i]
@@ -232,7 +237,7 @@ def solve_part_1(program_data):
 
 
 
-class game_state:
+class game_state: # verwaltet den Spielzustand und die Anzeige
     def __init__(self, grid_shape, target_display, ax):
         self.grid = np.zeros(grid_shape, dtype=int)
         self.score = 0
@@ -247,8 +252,6 @@ class game_state:
         self.output_buffer.append(value) 
 
         if len(self.output_buffer) == 3: # wir haben ein komplettes Triplet
-            #x = self.output_buffer[0]
-            #y = self.output_buffer[1]
             x,y, tile_type = self.output_buffer
             self.output_buffer = []
 
@@ -274,7 +277,7 @@ class game_state:
         else:
             return 0
         
-def solve_part_2(program_data):
+def solve_part_2(program_data): # löst Teil 2 des Breakout Spiels
     print("Part 2 solution:")
 
     MAX_X = 44  # basierend auf der Analyse des Bildschirms in Teil 1
@@ -285,7 +288,7 @@ def solve_part_2(program_data):
     ax.set_title("Breakout Game - Part 2")
 
 
-    initial_grid = np.zeros((MAX_Y + 1, MAX_X + 1), dtype=int)
+    initial_grid = np.zeros((MAX_Y + 1, MAX_X + 1), dtype=int) 
     img = ax.imshow(initial_grid, vmin=0, vmax=4, cmap='plasma') # Farbschema für die Kacheln
 
 
@@ -299,7 +302,7 @@ def solve_part_2(program_data):
 
     computer = IntComputer(input_getter=state.get_move, output_collector=state.collect_output) 
 
-    computer.run(program_data)
+    computer.run(program_data) 
     print(f"Endscore: {state.score}")
 
     ax.set_title(f"Breakout Game - Final Score: {state.score}") 
