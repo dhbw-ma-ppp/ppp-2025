@@ -73,14 +73,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
-# --- Globale Variablen ---
+# Globale Variablen
 screen = {}
 score = 0
 output_buffer = []
-ball_x = 0    # Neu: Speichert wo der Ball ist
-paddle_x = 0  # Neu: Speichert wo der Schläger ist
+ball_x = 0    
+paddle_x = 0
 
-# 1. DATEI EINLESEN
+# Daten einlesen
 breakout_commands = []
 try:
     with open("data/breakout_commands.txt", "r") as file:
@@ -90,6 +90,7 @@ except FileNotFoundError:
     print("Fehler: Die Datei 'breakout_commands.txt' wurde nicht gefunden.")
     exit()
 
+# Vorlage IntComputer
 class IntComputer:
     def __init__(self, input_getter, output_collector):
         self.memory = {}
@@ -183,6 +184,7 @@ class IntComputer:
                 print(f"Unbekannter Opcode: {opcode}")
                 break
 
+# Ergänzte Funktionen füt das Breakout Spiel
 # Bildschirm Visualisierung
 
 def visualize_screen_live(screen_data, current_score):
@@ -257,7 +259,7 @@ def run_game():
         input_getter = input_automatic # Automatische Steuerung
     
     commands = breakout_commands.copy()
-    commands[0] = 2 # Free Play Mode
+    commands[0] = 2 # Spiel starten
     
     print("Spiel startet...")
     print("Viel Glück!")
@@ -265,15 +267,11 @@ def run_game():
     plt.ion()
     plt.figure(figsize=(5, 6))
 
-    computer = IntComputer(
-        input_getter,
-        output_collector=output_handler
-    )
-    
+    computer = IntComputer(input_getter,output_collector=output_handler)
     computer.run(commands)
     
     print(f"GAME OVER! Endpunktestand: {score}")
     plt.ioff()
     plt.show()
 
-run_game()
+run_game() # Spielstart Endpukstestand 17.159
