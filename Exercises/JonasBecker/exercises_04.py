@@ -1,4 +1,4 @@
-from utils.user import get_user_input
+from helpers.user import get_user_input
 from enum import (
     Enum,
 )  # Recherche, Opcode.ADD == 1 == False mit Enum (nur der Value!), Iterierbarkeit, zusätzliche properties wie Opcode.ADD.name, oder Opcode.Add.value

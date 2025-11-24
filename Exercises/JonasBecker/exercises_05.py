@@ -6,7 +6,7 @@ from numpy import ndarray
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
-from utils.user import get_user_input
+from helpers.user import get_user_input
 from utils.computer import calculate_number_through_memory_list
 from utils.mathplotlib.user import UserController
 

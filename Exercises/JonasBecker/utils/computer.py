@@ -1,5 +1,5 @@
 from enum import Enum
-from .user import get_user_input
+from helpers.user import get_user_input
 
 
 class Opcode(Enum):
