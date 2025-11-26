@@ -1,24 +1,18 @@
-# EXERCISES PYTHON - 10.10.2025 - KAAN B. TÜRKMEN
+# use this template for completing todays exercises
+# make a copy of the file, in a folder with your own name
+# add code below to answer the questions; for each question there should be
+# a single print() which will give the answer(s) to that question.
 
 # 1)
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
-qou=2711274328912 // 23369245575
-remainer= 2711274328912 % 23369245575
-print("Quotient:", qou)
-print("Remainer:", remainer)
+
+print(f"Task 1: \nThe quotient of \"2711274328912 // 23369245575\" is {2711274328912//23369245575} and the remainder is {2711274328912%23369245575}.\n\n")
+
 # 2)
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
-<<<<<<<< HEAD:Exercises/TheoReichenbecher/exercises_01.py
 t_fahrenheit = 451
+print(f"Task 2: \n{t_fahrenheit}°F is nearly equal to {round((t_fahrenheit-32)*5/9, 2)}°C.\n\n")
 
-def convert_to_celsius(f):
-    c = (f-32)*5/9
-    return c 
-
-print(convert_to_celsius(t_fahrenheit))
-
-========
->>>>>>>> main:Exercises/exercises_01.py
 
 # 3)
 # Given the string 
@@ -26,75 +20,98 @@ ds = "DataScience"
 # Print the first three and (separately) the last four letters
 # Print the string backwards
 # Replace "Science" with "Analytics"; `print(ds)` should result in the output 'DataAnalytics'
-print(ds[0:3])
-print(ds[7:])
+print("Task3: ")
+print(ds[:3])
+print(ds[-4:])
 
 print(ds[::-1])
-
-ds = ds.replace('Science', 'Analytics')
+ds:str = ds.replace("Science", "Analytics")
 print(ds)
+print("\n")
+
 # 4)
 # determine how many more '(' than ')' symbols occur in the following string:
 input_string = '()()(()()()(()()((()((()))((()((((()()((((()))()((((())(((((((()(((((((((()(((())(()()(()((()()(()(())(()((((()((()()()((((())((((((()(()(((()())(()((((()))())(())(()(()()))))))))((((((((((((()())()())())(())))(((()()()((((()(((()(()(()()(()(()()(()(((((((())(())(())())))((()())()((((()()((()))(((()()()())))(())))((((())(((()())(())(()))(()((((()())))())((()(())(((()((((()((()(())())))((()))()()(()(()))))((((((((()())((((()()((((()(()())(((((()(()())()))())(((()))()(()(()(()((((()(())(()))(((((()()(()()()(()(((())())(((()()(()()))(((()()(((())())(()(())())()()(())()()()((()(((()(())((()()((())()))((()()))((()()())((((()(()()(()(((()))()(()))))((()(((()()()))(()(((())()(()((()())(()(()()(()())(())()(((()(()())()((((()((()))))())()))((()()()()(())()())()()()((((()))))(()(((()()(((((((())()))()((((()((())()(()())(())()))(()(()())(((((((())))(((()))())))))()))())((())(()()((())()())()))))()((()()())(())((())((((()())())()()()(((()))())))()()))())(()()()(()((((((()()))())()))()(((()(((())((((()()()(()))())()()))))())()))())((())()())(((((())())((())())))(((())(((())(((((()(((((())(()(()())())(()(())(()))(()((((()))())()))))())))((()(()))))())))(((((())()))())()))))()))))(((()))()))))((()))((()((()(()(())()())))(()()()(())()))()((((())))))))(())(()((()()))(()))(()))(()((()))))))()()((((()()))()())()))))))()()()))(()((())(()))((()()()())()(((()((((())())))()((((()(()))))))())))()()())()))(()))))(()())()))))))((())))))))())()))()((())())))(()((()))()))(())))))(()))()())()()))((()(()))()()()()))))())()()))())(())()()))()))((()))))()()(()())))))()()()))((((()))()))))(()(())))(()())))((())())(()))()))))()())))()())()())))))))))()()))))())))((())((()))))())))(((()())))))))(()))()()))(()))()))))()())))))())((((()())))))))())))()()))))))))()))()))))()))))))(())))))))))())))))))))))))))())())((())))))))))()))((())))()))))))))())()(()))))))())))))()()()())()(()()()(()())(()))()()()(()())))())())))()))))())))))))()()()()())(())())()())()))))(()()()()()))))()))())())))((()())()())))()))()))))(()())))()))))))))(((()))()()))))))))))))))))))))(()))(()((()))())))())(()))(()(()(())))))()(()))()))()()))))))))))))()((()())(())())()(())))))())()())((()()))))(()()))))())()(())()))))))))))))))))))))()))(()(()())))))))()()((()))()))))))((())))()))))))))((()))())()()))())()()))((()))())))))))))))(()())()))(())((()(()()))(()())(())))()())(()(())()()))))()))()(()))))))(()))))))))))(()))())))))))))())))))())))(())))))()))))(())())))))))))()(()))))()())))())(()))()())))))))))))))())()()))))()))))))())))))()))))(())(()()()()((())()))())(()))((())()))())())(())(()()))))()))(())()()((())(())))(())))()))())))))))))()(((((())())))(())()))))(())))((()))()(((((((()))))()()))(())))))()(()))))(()()))()))())))))))(()())()))))))))())))(()))())()))(())()((())())()())())(()(()))))()))))))((()())(())()()(()())))()()))(())(())(()))())))()))(()))()()))((((()))))()))((()()()))))()))()))())))(()))()))))(())))()))())()(()))()())))())))))))())))())))()()))))))(()))())())))()))()()())())))))))))))))())))()))(()()))))())))())()(())))())))))))))))))))))()()())())))))()()()((()(()))()()(())()())()))()))))()()()))))))((()))))))))()(()(()((((((()()((()())))))))))))()))())))))((())())(()))())))())))))())()()())(())))())))()())())(())))))))()()(())))()))())))())())())()))))))))()))(()()()())())())))(())())))))))()()())()))))())))())()(())())))))))()())()))(()()(())())))()(()((()()((()()(((((())(()())()))(())()))(())))(())))))))()))()))((()))()))()))))))))()))))))))((()()())(()))(((()))(())))()))((())(((())))()())))())))))((())))))(())())((((((())())()(()))()(()((()())))((())()(()(()))))(())(()()())(())))())((()(((())())))(((()())())))())()(())())((((()()))))())((()))()()()()(())(((((((()()()((()))())(()())))(())())((((()()(()))))()((())))((())()))()(((()))())))()))((()(()))(())(()((((())((((()()(()()))(((())(()))))((((()(()))(())))))((()))(()))((()(((()(()))(()(()((()(())(()(()(()(()()((()))())(((())(()(()))))(()))()()))(())))(())()(((())(()))()((((()()))))())(()))))((())()((((()(((()))())())(((()))()())((())(())())(())()(())()(()()((((((()()))))()()(((()()))))()())()(((()(()))(()(()())(()(()))))(((((()(((())())))))(((((()((()()((())())((((((()(())(()()((()()()()()()()(()()))()(((()))()))(((((((())(((()((()())()((((())(((()(())))()((()(()()()((())((()())()))()))())))())((((((()))(()(()()()))(()((()(()(()))()((()(((()()()((())(((((())()(()))())())((()(())))(()(()())(())((())())())(((()()()(())))))())(()))))))()))))))())((()()()))((()((((((()))(((()((((()()()(((()))())()(()()(((()((()()()()())()()))()()()(()(())((()))))(()))())))))))()(()()(((((())()(()(((((()((()(()()())(()((((((((()((((((())()((((()()()((()((()((((((()))((())))))))())()))((()(()))()(()()(()((())((()()((((((((((((()())(()()()))((((()((((((())(()))())(()()((()()))()(((((((()((()()((((((()(((())))((())))((((((((()()(((((((())(((((()())(((())((())()((((()(((((((()(()(((()((((((()(((()(((((((((((()()((()()(()))((()()(((()(((())))((((())()(()(((())()(()(((())(((((((((((()))())))((((((())((()()((((()())())((((()()))((())(((((()(()()(()()()((())(()((()()((((()(((((()((()(()((((()())((((((()(((((()()(()(()((((())))(())(())(())((((()(()()((((()((((()()((()((((((())))(((((()))))()))(()((((((((()(((())())(((())))(()(()((())(((()((()()(((((()((()()(((())()(()))(((((((())(()(((((()))((()((()((()))(())())((((()((((())()(()))(((()(((((((((((((((())(((((((((()))(((()(()()()()((((((()((())()((((((((()(())(((((((((((()(()((())()((()()(()(()()((((()()((())(()((()()(()()((((()(((((((())))((((())(())()(((()()((()()((((()((()(((()((())(((()()()((((()((((()()(()(()((((((((())(()(((((())(()())(((((((()())()(()((((()((())(()()())((((()()(((()((((())(())(()()(((((((((()()))()(((())(()(()((((((())(()()())(()))()()(((()(((()((())(()(((((((()(()(()((()(((((()(()((()(()((((((()((((()()((((()(((()((())(()(()((()()((((()()(())()(())(((())(()((((((((()())(((((((((()(())()((((())))()))()()(((((()()((((((())(()()(((()(()(((((((()(()(((((((())(())((((()((()(())))((((()()())(()))((()())((((()(((((()(()(())(()(()()())(((((()(((((()((((()()((((((((()()))(()((((((())((((())()(()(((()()()(((()(()(())(())(((((()(())())((((())(())(()(((()(((((())((((())())((()(((((((()(((())(()(()))(((((((((()((()((()()(()((((())(((()((())((((())(()(((()(((()(()((((()(((())(()(((()(()()(()(()((()()(()())(())())((()(()(((()(((()(((()()(((((((((()(((((((((()()(((()(((()())((((()(()(((()()()((())((((((((((())(()(((()((((()())((((()((()))(((()()()(((((()(((((((())((()())(()((((())((((((((())(()((()((((((((((()()((()((()()))(((()())()())()(((()())()()(()(()(((((((())()))(())()))())()()((())()((()((((()((()((())(((((()((((((()(())))(()))())(((()))((()()(()(((()))((((())()(((()))))()(()(())()(((((())(()(()(())(())()((()()()((((()(())((()())(()(()))(()(()(()()(())()()(()((())()((()))))()))((()(()()()()((()())(()))())()(()(((((((((())())((()((()((((((())()((((())(((())((()(()()()((())(()((())(((()((((()()((()(()(((((())()))()((((((()))((())(((()()))(((())(())()))(((((((())(())())()(())(((((()))()((()))()(()()((()()()()()())((((((('
-
-<<<<<<<< HEAD:Exercises/TheoReichenbecher/exercises_01.py
-#open_count = 0 
-#close_count =0
-
-#Zähl den Input String durch
-#for n in input_string:
-#    if n == "(":
-#        open_count += 1
-#    if n == ")":
-#        close_count +=1
-#
-#print(open_count-close_count)
-open_c = input_string.count('(')
-close_c = input_string.count(')')
-
-print(open_c-close_c)
+print(f"Task 4: \nThe string has {len(input_string) - input_string.count(")")*2} more \"(\" symbols than \")\" symbols.\n\n")
 
 # 5)
 # how may elements are in each of the following lists?
 first_list = ['drs', 'clt', 'iny', 'alv', 'nvy', 'bpt', 'gkw', 'fkm', 'jrz', 'hov', 'bqu', 'bov', 'eju', 'eiz', 'fjm', 'bek', 'abj', 'hov', 'coq', 'iox', 'efs', 'krw', 'evy', 'elw', 'gil', 'ajq', 'cek', 'fkm', 'mnu', 'adf']
 second_list = ['dlz', 'akw', 'bry', 'eyz', 'bny', 'kst', 'elw', 'ekl', 'djm', 'aft', 'gkw', 'krw', 'coq', 'evy', 'bov', 'bkl', 'bov', 'afs', 'hov', 'fjq', 'cqu', 'ahq', 'beh', 'ijz', 'ksy', 'ilx', 'htu', 'epz', 'ekl', 'ajq']
+print(f"Task 5: \nIn the first list are {len(first_list)} elements and in the second list are {len(second_list)} elements.\n\n")
 
-print("Elementcount in 1. ==", len(first_list))
-print("Elementcount in 2. ==", len(second_list))
-
-
-========
->>>>>>>> main:Exercises/exercises_01.py
 # 6)
 # which and how many elements are common to the two lists above? 
-f = set(first_list)
-s = set(second_list)
 
-<<<<<<<< HEAD:Exercises/TheoReichenbecher/exercises_01.py
-intersection = f.intersection(s)
-print(intersection)
-print(len(intersection))
+# Sort the Elements in the input_list by their frequency
+# Print all elements in order of their frequency
+# Print the most frequent elements seperatly again
+# The time complexity is O(n) = n while n is the number of elements in arr
+def get_most_common_elements_in_list(input_list:list) -> None:
+
+    # Create a dictionary which maps every element value with the count of this element in the list
+    # O(n)
+    element_count:dict = {}
+    for e in input_list:
+        if element_count.__contains__(e):
+            element_count[e] += 1
+        else:
+            element_count[e] = 1
+
+    # invert the dictionary and store the elements with the same count in a list
+    # O(n)
+    sorted_by_frequency:dict = {}
+    for e in element_count:
+        count = element_count[e]
+        if sorted_by_frequency.__contains__(count):
+            sorted_by_frequency[count] += [e]
+        else:
+            sorted_by_frequency[count] = [e]
+
+    # print the result of the sorted elements ordered by count
+    # O(n)
+    for element_count in sorted_by_frequency:
+        print(f"The following elements exists {element_count} times in the two lists")
+        for element in sorted_by_frequency[element_count]:
+            print(f"     *\t{element}")
+        print("")
+    
+    # print the values with the highest count again but seperatly
+    # O(n)
+    maxElementCount:int = max(sorted_by_frequency.keys())
+    print(f"Because the following elements are the most frequent ones they have to be common! Right?\nEach of them exists {maxElementCount} times.")
+    for letters in sorted_by_frequency[maxElementCount]:
+        print(f"     *\t{letters}")
+
+
+print("Task 6:")
+get_most_common_elements_in_list(first_list + second_list)
+print("\n")
 
 # 7)
 # how often does the character 'a' occur in each of the lists above?
 
-a_count1= ''.join(first_list).count('a')
-print('a\'s in der ersten Liste:', a_count1)
-a_count2= ''.join(second_list).count('a')
-print('a\'s in der zweiten Liste:', a_count2)
+print(f"Task 7: \nThe letter \"a\" occures {str(first_list).count("a")} times in the first list and {str(second_list).count("a")} in the second list.\n\n")
 
-
-========
-# 7)
-# how often does the character 'a' occur in each of the lists above?
-
->>>>>>>> main:Exercises/exercises_01.py
 # 8)
-# Bonus (voluntary):
+# Bonus question (voluntary):
 # 5 & 3, 5 | 3, 5 ^ 3, ~5, 5 << 1, 5 >> 1
-<<<<<<<< HEAD:Exercises/TheoReichenbecher/exercises_01.py
 # Predict the result of each of these operations, then execute them and check whether your prediction was correct
-print("\t","5 & 3:",5 & 3,"\n\t","5 | 3:", 5 | 3,"\n\t", "5 ^ 3:",5 ^ 3,"\n\t","~5:", ~5,"\n\t","5 << 1:", 5 << 1,"\n\t", "5 >> 1:",5 >> 1,"\n\t") 
-========
-# Predict the result of each of these operations, then execute them and check whether your prediction was correct
->>>>>>>> main:Exercises/exercises_01.py
+print("Task 8:")
+# show binary representation
+print(f"{5:#b}")
+print(f"{3:#b}")
+
+# task:
+print(0b001  == 5&3)
+print(0b111  == 5 | 3)
+print(0b010  == 5^3)
+print("?"    == ~5)
+print(0b1010 == 5 << 1)
+print(0b010  == 5 >> 1)
+
+# testing:
+print(f"{5^3:#b}")
+print(f"{~5:#b}")
+
+print("\n")
