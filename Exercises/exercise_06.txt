@@ -1,5 +1,12 @@
-For this weeks exercise you need to analyse a dataset and prepare a machine learning model to predict a property of that dataset. The dataset is the data on Titanic passengers and can be found in the data folder.
+For this weeks exercise you need to analyse a dataset and prepare a machine learning model to predict a property 
+of that dataset. The dataset is the data on Titanic passengers and can be found in the data folder.
 
 There are two parts to todays exercise:
-- Analyse and visualize the data. Look for missing values and for correlations between features, as well as between feature and target. Prepare a brief report with some visualisations of the data, and with a summary of what you observed. This can be a jupyter notebok, some other document, or just part of the PR description with images pasted into it.
-- Train an ML model that will predict for any passenger whether they will survive. Determine whether this is a classification or regression task, and use an appropriate model. Spend some time on optimizing the algorithm and hyperparameters. Report the matthews correlation coefficient calculated on a test set as part of your submission. 
+- Analyse and visualize the data. Look for missing values and for correlations between features,
+  as well as between feature and target. Prepare a brief report with some visualisations of the data,
+  and with a summary of what you observed. This can be a jupyter notebok, some other document,
+  or just part of the PR description with images pasted into it.
+- Train an ML model that will predict for any passenger whether they will survive.
+  Determine whether this is a classification or regression task, and use an appropriate model.
+  Spend some time on optimizing the algorithm and hyperparameters.
+  Report the matthews correlation coefficientcalculated on a test set as part of your submission. 
