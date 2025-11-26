@@ -71,18 +71,22 @@
 from intcomputer import IntComputer
 from matplotlib import pyplot as plt
 
-
 def get_data():
-    with open("../../data/breakout_commands.txt", "r") as file: #you probably need to change the dircetory
-        content = file.read()
-        string_commands = content.splitlines()
-        raw_commands = [int(commands) for commands in string_commands]
-        return raw_commands
+    try:
+        with open("data/breakout_commands.txt", "r") as file:
+            content = file.read()
+    except FileNotFoundError:
+        with open("../../data/breakout_commands.txt", "r") as file:
+            content = file.read()
+            
+    string_commands = content.splitlines()
+    raw_commands = [int(commands) for commands in string_commands]
+    return raw_commands
 
-    
 def convert_data_with_intcomputer(raw_commands, auto_play=True, show_frames_callback=None):
     outputs = []
     frames = []
+
     game_state = {"paddle_x": 0, "ball_x": 0, "score": 0, "grid": {}}
     
     def get_input_auto():
@@ -91,18 +95,18 @@ def convert_data_with_intcomputer(raw_commands, auto_play=True, show_frames_call
         elif game_state["ball_x"] > game_state["paddle_x"]:
             return 1   # move right
         else:
-            return 0   # stay
+            return 0 # stay
         
     def get_input_manual():
         if show_frames_callback:
             show_frames_callback(game_state["grid"], game_state["score"])
         
-        print(f"\nScore: {game_state['score']} | Paddle: {game_state['paddle_x']} | Ball: {game_state['ball_x']}")
+        print(f"\rScore: {game_state['score']} | Paddle: {game_state['paddle_x']} | Ball: {game_state['ball_x']}", end="")
         while True:
-            user_input = input("Move (-1=left | 0=stay | 1=right): ")
+            user_input = input(" | Move (-1/0/1): ")
             if user_input in ['-1', '0', '1']:
                 return int(user_input)
-            print("Invalid input! Use -1, 0, or 1")
+            print("Invalid input", end="")
     
     def collect_output(value):
         outputs.append(value)
@@ -128,39 +132,28 @@ def convert_data_with_intcomputer(raw_commands, auto_play=True, show_frames_call
             })
     
     input_function = get_input_auto if auto_play else get_input_manual
-
     computer = IntComputer(input_function, collect_output)
     computer.run(raw_commands)
 
     return frames
 
-
-def show_frame(grid, score, max_x=44, max_y=24):
-    color_map = {
-        0: "k",  # empty = black
-        1: "g",  # wall = green
-        2: "b",  # block = blue
-        3: "r",  # paddle = red
-        4: "w"   # ball = white
-    }
+def update_plot(ax, grid, score, max_x, max_y):
+    ax.clear()
+    ax.set_facecolor("black")
+    ax.set_ylim(max_y + 1, -1) 
+    ax.set_xlim(-1, max_x + 1)
+    ax.axis("off")
     
-    plt.clf()
+    color_map = {0: "k", 1: "g", 2: "b", 3: "r", 4: "w"}
     
     positions = [(pos, tile) for pos, tile in grid.items() if tile != 0]
-    
     if positions:
         coords, tiles = zip(*positions)
         x, y = zip(*coords)
         colors = [color_map[t] for t in tiles]
-        plt.scatter(x, y, c=colors, s=100, marker="s")
+        ax.scatter(x, y, c=colors, s=80, marker="s")
     
-    plt.gca().set_facecolor("black")
-    plt.xlim(-1, max_x + 1)
-    plt.ylim(max_y + 1, -1)
-    plt.axis("off")
-    plt.title(f"Breakout Game - Score: {score}", color="white", fontsize=14)
-    plt.pause(0.01)
-
+    ax.set_title(f"Breakout - Score: {score}", color="white", fontsize=14)
 
 def animate_game(frames):
     if not frames:
@@ -171,77 +164,81 @@ def animate_game(frames):
     for frame in frames:
         all_positions.update(frame['grid'].keys())
     
+    if not all_positions:
+        return
+
     xs = [pos[0] for pos in all_positions]
     ys = [pos[1] for pos in all_positions]
     max_x, max_y = max(xs), max(ys)
+    
 
-    plt.figure(figsize=(12, 8), facecolor="black")
+    fig, ax = plt.subplots(figsize=(10, 6))
+    fig.patch.set_facecolor("black")
+    
     plt.ion()
-
-    step = max(1, len(frames) // 1000)
+    plt.show()
+    
+    step = max(1, len(frames) // 500) 
 
     for i in range(0, len(frames), step):
         frame = frames[i]
-        show_frame(frame["grid"], frame["score"], max_x, max_y)
+        update_plot(ax, frame['grid'], frame['score'], max_x, max_y)
+        plt.pause(0.001)
+    
+    last_frame = frames[-1]
+    update_plot(ax, last_frame['grid'], last_frame['score'], max_x, max_y)
+    
+    print(f"FINAL SCORE: {last_frame['score']}")
     
     plt.ioff()
-    plt.show()
-
-    print(f"FINAL SCORE: {frames[-1]['score']}")
-
+    plt.show() 
 
 def show_final_state(frames):
     if not frames:
-        print("No frames!")
         return
     
     final_frame = frames[-1]
     
-    positions = [(pos, tile) for pos, tile in final_frame['grid'].items() if tile != 0]
+    xs = [pos[0] for pos, _ in final_frame['grid'].items()]
+    ys = [pos[1] for pos, _ in final_frame['grid'].items()]
+    max_x, max_y = (max(xs), max(ys)) if xs else (44, 24)
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    fig.patch.set_facecolor("black")
     
-    if positions:
-        coords, tiles = zip(*positions)
-        x, y = zip(*coords)
-        
-        color_map = {
-            0: "k",  # empty = black
-            1: "g",  # wall = green
-            2: "b",  # block = blue
-            3: "r",  # paddle = red
-            4: "w"   # ball = white
-        }
-        colors = [color_map[t] for t in tiles]
-
-        plt.figure(figsize=(12, 8), facecolor="black")
-        plt.scatter(x, y, c=colors, s=100, marker="s")
-        plt.gca().set_facecolor("black")
-        plt.gca().invert_yaxis()
-        plt.axis("off")
-        plt.title(f"Breakout Game - Score: {final_frame['score']}", color="white", fontsize=14)
-        plt.tight_layout()
-        plt.show()
-
+    update_plot(ax, final_frame['grid'], final_frame['score'], max_x, max_y)
+    
     print(f"\nFinal Score: {final_frame['score']}")
-
+    plt.show()
 
 def game(mode, animate=True, auto_play=True):
     raw_commands = get_data()
     raw_commands[0] = mode
     
+    # Case 1: Manual Play
     if not auto_play and animate:
-        plt.figure(figsize=(12, 8), facecolor="black")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        fig.patch.set_facecolor("black")
         plt.ion()
-        
+        plt.show()
+
+        max_x, max_y = 42, 24 
+
+        def live_callback(grid, score):
+            update_plot(ax, grid, score, max_x, max_y)
+            plt.pause(0.01)
+
         frames = convert_data_with_intcomputer(
             raw_commands, 
-            auto_play=False, 
-            show_frames_callback=show_frame
+            auto_play=False,
+            show_frames_callback=live_callback 
         )
         
         plt.ioff()
-        plt.show()
         print(f"\nFINAL SCORE: {frames[-1]['score']}")
+        plt.show()
         
+    # Case 2: Auto Play
     else:
         frames = convert_data_with_intcomputer(raw_commands, auto_play=True)
         
@@ -250,20 +247,11 @@ def game(mode, animate=True, auto_play=True):
         else:
             show_final_state(frames)
 
-
 if __name__ == "__main__":
-    # Part 1: Static screen
-    # game(mode=1, animate=False)
-    
-    # Part 2: Auto-play (watch AI play)
+    # Part 2: Auto-play
     game(mode=2, animate=True, auto_play=True)
     
-    # Part 2: Manual control
+    # Part 2: Manual Control (Uncomment to play)
     # game(mode=2, animate=True, auto_play=False)
 
-
-#Score in graph: 17086
-#Score in terminal: 17159
-
-#Still working on a fix, probably because of some display after game sequence
-#Would enjoy help on how to fix my issue :)
+#Final Score: 17159
