@@ -1,4 +1,7 @@
-# EXERCISES PYTHON - 10.10.2025 - KAAN B. TÜRKMEN
+# use this template for completing todays exercises
+# make a copy of the file, in a folder with your own name
+# add code below to answer the questions; for each question there should be
+# a single print() which will give the answer(s) to that question.
 
 # 1)
 # what are the quotient and remainder after integer division of 2711274328912 by 23369245575
@@ -6,7 +9,6 @@ qou=2711274328912 // 23369245575
 remainer= 2711274328912 % 23369245575
 print("Quotient:", qou)
 print("Remainer:", remainer)
-
 # 2)
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
@@ -78,13 +80,8 @@ a_count2= ''.join(second_list).count('a')
 print('a\'s in der zweiten Liste:', a_count2)
 
 
-# 7)
-# how often does the character 'a' occur in each of the lists above?
-
-
 # 8)
 # Bonus (voluntary):
 # 5 & 3, 5 | 3, 5 ^ 3, ~5, 5 << 1, 5 >> 1
-
 # Predict the result of each of these operations, then execute them and check whether your prediction was correct
 print("\t","5 & 3:",5 & 3,"\n\t","5 | 3:", 5 | 3,"\n\t", "5 ^ 3:",5 ^ 3,"\n\t","~5:", ~5,"\n\t","5 << 1:", 5 << 1,"\n\t", "5 >> 1:",5 >> 1,"\n\t") 
