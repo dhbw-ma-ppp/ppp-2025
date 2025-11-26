@@ -35,3 +35,9 @@ Here, I have highlighted additional relationships, such as between `Pclass` and 
 first-class passengers seemed to have a certain advantage over lower classes during evacuation.
 
 ![feature details comparison results](./imgs/details.png)
+
+## Task 2
+
+**Using Desicion Tree with Hyper-Parameter-Tuning:**\
+Matthews Correlation Coefficient (MCC): 0.5809139245821947\
+Accuracy: 0.7988826815642458
