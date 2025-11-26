@@ -176,17 +176,13 @@ def input_getter02():
 def visualize_game(screen_array):
     colors = ['white', 'gray', 'violet', 'purple', 'pink']
     cmap = plt.cm.colors.ListedColormap(colors) #a color map
-    bounds = [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5]
-    norm = plt.cm.colors.BoundaryNorm(bounds, cmap.N)
 
     plt.figure(figsize = (max_x / 10, max_y / 5))
-    plt.imshow(screen_array, cmap = cmap, norm = norm)
+    plt.imshow(screen_array, cmap = cmap)
     
     plt.gca().invert_xaxis() 
     plt.gca().set_axis_off()
     plt.grid(False)
-    plt.xticks(np.arange(0, max_x + 1, 5))
-    plt.yticks(np.arange(0, max_y + 1, 2))
     plt.tight_layout()
     plt.show()
 
@@ -217,8 +213,8 @@ for i in range(0, len(output_values), 3):
     
     screen_map[(x, y)] = tile_type
 
-max_x = min_x = max(k[0] for k in screen_map.keys())
-max_y = min_y = max(k[1] for k in screen_map.keys())
+max_x = max(k[0] for k in screen_map.keys())
+max_y = max(k[1] for k in screen_map.keys())
 
 screen_array = np.zeros((max_y + 1, max_x + 1), dtype=int)
 
