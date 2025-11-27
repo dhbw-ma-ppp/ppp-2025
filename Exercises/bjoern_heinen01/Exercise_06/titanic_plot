@@ -1,0 +1,69 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sys import path as system_path
+
+df = pd.read_csv(system_path[0] + '/titanic.csv')
+
+print(df.head())
+print(df.info())
+# AGE 714
+# Cabin 204
+# Embarked 889
+
+print("age_mean:",df["Age"].mean())
+
+df["isMale"] = df["Sex"].map({"female": 0, "male": 1})
+
+überlebensrate = df.groupby('Sex')['Survived'].mean().reset_index() 
+
+plt.figure(figsize=(8, 5))
+plt.bar(überlebensrate['Sex'], überlebensrate['Survived']*100, color=['blue', 'pink'])
+plt.title('Überlebenswahrscheinlichkeit nach Geschlecht')
+plt.xlabel('Geschlecht')
+plt.ylabel('Überlebenswahrscheinlichkeit (%)')
+plt.ylim(0, 100)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+
+
+überlebensrate = df.groupby('Sex')['Survived'].mean().reset_index()
+max_age = df['Age'].max()
+bins = [x*10 for x in range(int(max_age+1) // 10)]
+labels = [str(x) for x in bins[:-1]] 
+df['Altersgruppe'] = pd.cut(df['Age'], bins=bins, labels=labels, right=False)
+
+überlebensrate_alter = df.groupby('Altersgruppe')['Survived'].mean().reset_index()
+überlebensrate_alter['Überlebenswahrscheinlichkeit (%)'] = überlebensrate_alter['Survived'] * 100
+
+plt.figure(figsize=(8, 5))
+plt.bar(überlebensrate_alter['Altersgruppe'], überlebensrate_alter['Überlebenswahrscheinlichkeit (%)'], color='skyblue')
+plt.title('Überlebenswahrscheinlichkeit nach Altersgruppe')
+plt.xlabel('Altersgruppen')
+plt.ylabel('Überlebenswahrscheinlichkeit (%)')
+plt.ylim(0, 100) 
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+
+
+überlebensraten = df.groupby('Pclass')['Survived'].mean().reset_index() 
+
+plt.figure(figsize=(8, 5))
+plt.bar(["Erste", "Zweite", "Dritte"], überlebensraten['Survived']*100, color=['blue', 'pink'])
+plt.title('Überlebenswahrscheinlichkeit nach Klasse')
+plt.xlabel('Klassen')
+plt.ylabel('Überlebenswahrscheinlichkeit (%)')
+plt.ylim(0, 100)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.show()
+
+
+"""
+Man sieht, dass Frauen eine deutlich höhere Überlebenschance hatten als Männer.
+Außerdem sieht man, dass die Klasse der Passagiere entscheidend für die Überlebenschance ist. 
+Besonders ganz junge Menschen hatten eine höhere überlebenschance, wobei Menschen zwischen 20 und 30 Jahren
+widerum eher geringe überlebenschancen haben. 
+"""
