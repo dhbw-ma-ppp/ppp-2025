@@ -35,12 +35,12 @@ plt.ylabel("Count")
 plt.title("Age Distribution")
 plt.savefig("age_distribution.png")
 
-#Age distribution
+#Survival Rate
 surv_rate = df["Survived"].mean()
 print(f"Survival Rate: {surv_rate:.3f}")
 # Survival Rate: 0.384
 
-#survival by age
+#Survival by age
 age_survival = df.groupby("Age")["Survived"].mean()
 plt.figure()
 plt.bar(age_survival.index, age_survival.values)
