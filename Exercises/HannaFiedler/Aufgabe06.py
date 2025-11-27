@@ -97,7 +97,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, stratif
 #Train Decision Tree
 titanic_pipeline = Pipeline([
     ('scaler', StandardScaler()),
-    ('classifier', tree.DecisionTreeClassifier())  # Platzhalter, wird durch GridSearch ersetzt
+    ('classifier', tree.DecisionTreeClassifier())
 ])
 
 #Hyperparameter grid for different classifiers
