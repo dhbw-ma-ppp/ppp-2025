@@ -1,0 +1,66 @@
+import pandas as pd
+from sys import path as system_path
+from sklearn.model_selection import train_test_split
+from sklearn import tree
+from sklearn.metrics import accuracy_score, matthews_corrcoef
+
+df = pd.read_csv(system_path[0] + '/titanic.csv')
+
+df["isMale"] = df["Sex"].map({"female": 0, "male": 1})
+
+features = ["Pclass", "isMale", "Age", "SibSp", "Parch", "Fare"]
+feature_data, result_data = df[features], df["Survived"]
+
+df["Age"] = df["Age"].fillna(df["Age"].median())
+
+# split data
+feature_data_train, feature_data_test, result_data_train, result_data_test = train_test_split(
+    feature_data, result_data, test_size=0.2, random_state=42
+)
+
+best_accuracy = 0
+best_mcc = None
+best_depth = None
+best_max_leaf_node = None
+best_max_features = None
+best_min_samples_split = None
+for depth in [1,2,3,4,5,6,7,12,20,30,40,45,50,55,60,None]:
+    for max_features in range(1,5):
+        for max_leaf_node in range(2, 25):
+            for min_samples_split in range(2,10):
+                dt_classifier = tree.DecisionTreeClassifier(max_depth=depth, 
+                                                            max_leaf_nodes=max_leaf_node,
+                                                            max_features=max_features,
+                                                            min_samples_split=min_samples_split)
+
+                dt_classifier.fit(feature_data_train, result_data_train)
+
+                predictions = dt_classifier.predict(feature_data_test)
+
+                accuracy = accuracy_score(result_data_test, predictions)
+                if best_accuracy < accuracy:
+                    best_accuracy = accuracy
+                    best_depth = depth
+                    best_max_leaf_node = max_leaf_node
+                    best_max_features = max_features
+                    best_min_samples_split = min_samples_split
+                    best_mcc = matthews_corrcoef(result_data_test, predictions)
+
+
+print(f'best accuracy: {best_accuracy:.3f}')
+print(f"best_mcc: {best_mcc}")
+print(f"best_depth: {best_depth}")
+print(f"best_max_leaf_node: {best_max_leaf_node}")
+print(f"best_max_features: {best_max_features}")
+print(f"best_min_samples_split: {best_min_samples_split}")
+
+
+"""
+Bestes Ergebnis:
+best accuracy: 0.854
+best_mcc: 0.7002267409236707
+best_depth: 55
+best_max_leaf_node: 23
+best_max_features: 3
+best_min_samples_split: 4
+"""
