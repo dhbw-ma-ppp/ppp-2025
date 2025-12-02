@@ -1,5 +1,5 @@
-from utils.test import test_function
-from utils.numbers import can_be_interpreted_as_number
+from helpers.test import test_function
+from helpers.numbers import can_be_interpreted_as_number
 
 # Write a function that takes as input a list of integers and returns a single integer number.
 # the numbers passed as argument form the working memory of a simulated computer.

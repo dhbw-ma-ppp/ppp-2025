@@ -1,8 +1,3 @@
-from helpers.user import get_user_input
-from enum import (
-    Enum,
-)  # Recherche, Opcode.ADD == 1 == False mit Enum (nur der Value!), Iterierbarkeit, zusätzliche properties wie Opcode.ADD.name, oder Opcode.Add.value
-
 # Extend the simulated computer from the second week:
 # You will need to support a number of additional opcodes:
 # - 3: read a single integer as input and save it to the position given
@@ -52,158 +47,90 @@ from enum import (
 # And here's some test cases:
 #   3,9,8,9,10,9,4,9,99,-1,8 -- test whether the input is equal to 8 (using position mode)
 #   3,3,1107,-1,8,3,4,3,99 -- test whether the input is less than 8 (using immediate mode)
-#   3,3,1105,-1,9,1101,0,0,12,4,12,99,1 -- test whether the input is 0 using jump instructions (if input != 0 --> Output == 1 else 0, because 1105,-1,9 jumps to index 9 if !== 0)
+#   3,3,1105,-1,9,1101,0,0,12,4,12,99,1 -- test whether the input is 0 using jump instructions
 #
 # Finally, run you code for the following instructions; when asked for input provide the number '5'. The program should print a single number when executed.
 # Please take note of that number in your PR, so I don't need to run all the files myself :)
-# fmt:off
 commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,224,4,224,1002,223,8,223,101,7,224,224,1,224,223,223,1102,66,6,225,1102,22,54,225,1,65,35,224,1001,224,-86,224,4,224,102,8,223,223,101,6,224,224,1,224,223,223,1102,20,80,225,101,92,148,224,101,-162,224,224,4,224,1002,223,8,223,101,5,224,224,1,224,223,223,1102,63,60,225,1101,32,48,225,2,173,95,224,1001,224,-448,224,4,224,102,8,223,223,1001,224,4,224,1,224,223,223,1001,91,16,224,101,-79,224,224,4,224,1002,223,8,223,101,3,224,224,1,224,223,223,1101,13,29,225,1101,71,70,225,1002,39,56,224,1001,224,-1232,224,4,224,102,8,223,223,101,4,224,224,1,223,224,223,1101,14,59,225,102,38,143,224,1001,224,-494,224,4,224,102,8,223,223,101,3,224,224,1,224,223,223,1102,30,28,224,1001,224,-840,224,4,224,1002,223,8,223,101,4,224,224,1,223,224,223,4,223,99,0,0,0,677,0,0,0,0,0,0,0,0,0,0,0,1105,0,99999,1105,227,247,1105,1,99999,1005,227,99999,1005,0,256,1105,1,99999,1106,227,99999,1106,0,265,1105,1,99999,1006,0,99999,1006,227,274,1105,1,99999,1105,1,280,1105,1,99999,1,225,225,225,1101,294,0,0,105,1,0,1105,1,99999,1106,0,300,1105,1,99999,1,225,225,225,1101,314,0,0,106,0,0,1105,1,99999,107,677,226,224,1002,223,2,223,1005,224,329,1001,223,1,223,8,226,226,224,102,2,223,223,1006,224,344,101,1,223,223,7,226,677,224,1002,223,2,223,1005,224,359,101,1,223,223,1007,677,226,224,1002,223,2,223,1005,224,374,1001,223,1,223,1007,677,677,224,1002,223,2,223,1006,224,389,101,1,223,223,1008,226,226,224,1002,223,2,223,1005,224,404,1001,223,1,223,108,677,226,224,1002,223,2,223,1006,224,419,1001,223,1,223,1108,677,226,224,102,2,223,223,1006,224,434,1001,223,1,223,108,226,226,224,1002,223,2,223,1005,224,449,101,1,223,223,7,677,677,224,1002,223,2,223,1006,224,464,1001,223,1,223,8,226,677,224,1002,223,2,223,1005,224,479,1001,223,1,223,107,226,226,224,102,2,223,223,1006,224,494,101,1,223,223,1007,226,226,224,1002,223,2,223,1005,224,509,1001,223,1,223,1107,226,677,224,102,2,223,223,1005,224,524,1001,223,1,223,108,677,677,224,1002,223,2,223,1005,224,539,101,1,223,223,1107,677,226,224,102,2,223,223,1005,224,554,1001,223,1,223,107,677,677,224,1002,223,2,223,1005,224,569,101,1,223,223,8,677,226,224,102,2,223,223,1005,224,584,1001,223,1,223,7,677,226,224,102,2,223,223,1006,224,599,101,1,223,223,1008,677,677,224,1002,223,2,223,1005,224,614,101,1,223,223,1008,677,226,224,102,2,223,223,1006,224,629,1001,223,1,223,1108,677,677,224,102,2,223,223,1006,224,644,101,1,223,223,1108,226,677,224,1002,223,2,223,1005,224,659,1001,223,1,223,1107,226,226,224,102,2,223,223,1006,224,674,1001,223,1,223,4,223,99,226]
-# fmt:on
 
 
-class Opcode(Enum):
-    ADD = 1
-    MULTIPLY = 2
-    INPUT = 3
-    OUTPUT = 4
-    JUMP_IF_TRUE = 5
-    JUMP_IF_FALSE = 6
-    LESS_THAN = 7
-    EQUALS = 8
-    HALT = 99
 
-    @property
-    def param_count(self):
-        return {
-            Opcode.ADD: 3,
-            Opcode.MULTIPLY: 3,
-            Opcode.INPUT: 1,
-            Opcode.OUTPUT: 1,
-            Opcode.JUMP_IF_TRUE: 2,
-            Opcode.JUMP_IF_FALSE: 2,
-            Opcode.LESS_THAN: 3,
-            Opcode.EQUALS: 3,
-            Opcode.HALT: 0,
-        }[self]
+def simulating_a_computer(arr):
+    instruction_ptr = 0
+    ergebnis = None
 
+    while instruction_ptr < len(arr):
+        opcode = arr[instruction_ptr] % 100           #-> Letzten 2 Zahlen
+        mode1 = (arr[instruction_ptr] // 100) % 10    #-> 3. letzte Zahl
+        mode2 = (arr[instruction_ptr] // 1000) % 10   #-> 4. letzte Zahl
 
-def calculate_number_through_memory_list(  # TBD: maybe write as class
-    memory_integer_list: list[int],
-    inputs: list[int] | None = None,
-    unbind_lists: bool = True,
-    _opcode_index: int = 0,
-    _output: list[int] | None = None,
-) -> int:
-    if inputs is None:
-        inputs = []
-    if _output is None:
-        _output = []
+        match opcode:
+            case 1 | 2: #-> in Zeile 72 wird der Unterschied gemacht, ob opcode 1 oder 2
+                p1 = get_parameter(arr, instruction_ptr + 1, mode1)
+                p2 = get_parameter(arr, instruction_ptr + 2, mode2)
+                target = arr[instruction_ptr + 3]
+                arr[target] = p1 + p2 if opcode == 1 else p1 * p2
+                instruction_ptr += 4
 
-    if unbind_lists:  # unbinds lists
-        memory_integer_list, inputs = [
-            memory_integer_list.copy(),
-            inputs.copy(),
-        ]  # rebinds, unbinds old
+            case 3:
+                target = arr[instruction_ptr + 1]
+                try:
+                    num = int(input("Geben Sie eine Zahl ein: "))
+                    arr[target] = num
+                except ValueError:
+                    print("Sie müssen eine Zahl eingeben!")
+                    break
+                instruction_ptr += 2
 
-    """
-    **Gathering values**
-    - actual_opcode, modes, last_param_index
-    - new_instruction_pointer_index (as first idea of new pointer_index)
-    """
-    opcode_raw: int = memory_integer_list[_opcode_index]
-    opcode_code: int = opcode_raw % 100
-    try:
-        actual_opcode: Opcode = Opcode(opcode_code)
-    except ValueError:
-        raise RuntimeError(f"No valid opcode provided! Got {opcode_code}")
-    modes: list[int] = [int(d) for d in str(opcode_raw // 100)[::-1]]
-    last_param_index: int = _opcode_index + actual_opcode.param_count
-    new_instruction_pointer_index: int = last_param_index + 1
+            case 4:
+                p1 = get_parameter(arr, instruction_ptr + 1, mode1)
+                ergebnis = p1
+                print("Ausgabe:", ergebnis)
+                instruction_ptr += 2
 
-    """
-    **Define scope-dependent functions**
-    """
+            case 5:
+                p1 = get_parameter(arr, instruction_ptr + 1, mode1)
+                p2 = get_parameter(arr, instruction_ptr + 2, mode2)
+                instruction_ptr = p2 if p1 != 0 else instruction_ptr + 3
 
-    def read_param(param_num) -> int:
-        param: int = memory_integer_list[_opcode_index + param_num]
-        if modes[param_num - 1] if param_num <= len(modes) else 0:
-            return param
-        else:
-            return memory_integer_list[param]
+            case 6:
+                p1 = get_parameter(arr, instruction_ptr + 1, mode1)
+                p2 = get_parameter(arr, instruction_ptr + 2, mode2)
+                instruction_ptr = p2 if p1 == 0 else instruction_ptr + 3
 
-    def write(
-        value,
-    ) -> (
-        None
-    ):  # takes the last parameter as write index, should only be called when applicable of course
-        memory_integer_list[memory_integer_list[last_param_index]] = value
+            case 7 | 8: #-> in Zeile 101 und 103 wird geguckt, ob opcode 7 oder 8 ist
+                p1 = get_parameter(arr, instruction_ptr + 1, mode1)
+                p2 = get_parameter(arr, instruction_ptr + 2, mode2)
+                target = arr[instruction_ptr + 3]
+                if opcode == 7:
+                    arr[target] = 1 if p1 < p2 else 0
+                else:
+                    arr[target] = 1 if p1 == p2 else 0
+                instruction_ptr += 4
 
-    """
-    **Compute**
-    """
-    match actual_opcode:
-        case Opcode.HALT:
-            return _output if _output else memory_integer_list[0]
-        case Opcode.ADD:
-            write(read_param(1) + read_param(2))
-        case Opcode.MULTIPLY:
-            write(read_param(1) * read_param(2))
-        case Opcode.INPUT:
-            input = (
-                inputs.pop(0)
-                if inputs
-                else get_user_input("Please enter an integer: ", type=int)
-            )
-            write(input)
-        case Opcode.OUTPUT:
-            new_output = read_param(1)
-            _output.append(new_output)
-        case Opcode.JUMP_IF_TRUE | Opcode.JUMP_IF_FALSE:
-            if (actual_opcode == Opcode.JUMP_IF_TRUE and read_param(1) != 0) or (
-                actual_opcode == Opcode.JUMP_IF_FALSE and read_param(1) == 0
-            ):  # better readable than read_param(1) != 0 if actual_opcode == Opcode.JUMP_IF_TRUE else read_param(1) == 0
-                new_instruction_pointer_index = read_param(
-                    2
-                )  # override previous assumption
-        case Opcode.LESS_THAN | Opcode.EQUALS:
-            if (
-                actual_opcode == Opcode.LESS_THAN and read_param(1) < read_param(2)
-            ) or (actual_opcode == Opcode.EQUALS and read_param(1) == read_param(2)):
-                write(1)
-            else:
-                write(0)
-        case _:
-            raise NotImplementedError(f"Opcode '{opcode}' is not implemented yet.")
-    """
-    **Repeat**
-    """
-    return calculate_number_through_memory_list(
-        memory_integer_list,
-        inputs=inputs,
-        unbind_lists=False,
-        _opcode_index=new_instruction_pointer_index,
-        _output=_output,
-    )  # new unbind not needed, --> a little better perfomance. for best perfomance tho, consider using while in the future
+            case 99:
+                return ergebnis
+
+            case _:
+                print("Fehler: unbekannter Opcode", opcode)
+                break
+
+    return ergebnis
+
+    
 
 
-def failed(operation: str) -> str:
-    return f"❌ test for {operation} failed"
 
 
-memory_list = [3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8]
-assert calculate_number_through_memory_list(memory_list, [8]) == [1], failed("8 == 8")
-assert calculate_number_through_memory_list(memory_list, [9]) == [0], failed("9 == 8")
+def get_parameter(arr, instruction_ptr, mode):    #Returnt die Zahl, abhängig vom mode
+    if mode == 0:
+        return arr[arr[instruction_ptr]]        
+    elif mode == 1:
+        return arr[instruction_ptr] 
 
-memory_list = [3, 3, 1107, -1, 8, 3, 4, 3, 99]
-assert calculate_number_through_memory_list(memory_list, [7]) == [1], failed("7 < 8")
-assert calculate_number_through_memory_list(memory_list, [8]) == [0], failed("8 < 8")
 
-memory_list = [3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1]
-assert calculate_number_through_memory_list(memory_list, [-5]) == [1], failed("-5 != 0")
-assert calculate_number_through_memory_list(memory_list, [0]) == [0], failed("0 != 0")
 
-assert calculate_number_through_memory_list(commands, [5]) == [16694270], failed(
-    "$commands(5)"
-)  # Output for homework: 16694270
+#Versuche
+print(f"Das Ergebnis der Funktion ist: {simulating_a_computer(commands)}") 
 
-print("✅ All tests passed! :]")
+# -> Das Ergebnis der Funktion ist: 16694270
