@@ -96,6 +96,7 @@ class game:
         ]) 
         self.fig, self.ax = plt.subplots()
         self.im = self.ax.imshow(self.pixels, cmap=self.cmap, vmin=0, vmax=4)
+        self.ax.axis("off")
         plt.ion()
         plt.show()
 
@@ -103,7 +104,7 @@ class game:
         #print(self.score)
         self.update_screen()
         if self.manual_input == True:
-            given_input = input("plase input \n 1: For moving right \n 0 for staying still \n -1 for moving left: \n ")
+            given_input = input("please input \n 1: For moving right \n 0 for staying still \n -1 for moving left: \n ")
             if given_input == "1" or given_input == "-1" or given_input == "0":
                 return int(given_input)
             else: 
@@ -147,8 +148,9 @@ class game:
 
 if __name__ == "__main__":
     from pathlib import Path
-    with open(Path('./Exercises/benedict_volker/Aufgabe5/breakout_commands.txt').absolute(), 'r') as ifile:
+    with open(Path("data/breakout_commands.txt"), "r") as ifile:
         content = ifile.readlines()
+
 
     commands = []
     for element in content:
