@@ -51,63 +51,92 @@
 #
 # Finally, run you code for the following instructions; when asked for input provide the number '5'. The program should print a single number when executed.
 # Please take note of that number in your PR, so I don't need to run all the files myself :)
-#
-# commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,224,4,224,1002,223,8,223,101,7,224,224,1,224,223,223,1102,66,6,225,1102,22,54,225,1,65,35,224,1001,224,-86,224,4,224,102,8,223,223,101,6,224,224,1,224,223,223,1102,20,80,225,101,92,148,224,101,-162,224,224,4,224,1002,223,8,223,101,5,224,224,1,224,223,223,1102,63,60,225,1101,32,48,225,2,173,95,224,1001,224,-448,224,4,224,102,8,223,223,1001,224,4,224,1,224,223,223,1001,91,16,224,101,-79,224,224,4,224,1002,223,8,223,101,3,224,224,1,224,223,223,1101,13,29,225,1101,71,70,225,1002,39,56,224,1001,224,-1232,224,4,224,102,8,223,223,101,4,224,224,1,223,224,223,1101,14,59,225,102,38,143,224,1001,224,-494,224,4,224,102,8,223,223,101,3,224,224,1,224,223,223,1102,30,28,224,1001,224,-840,224,4,224,1002,223,8,223,101,4,224,224,1,223,224,223,4,223,99,0,0,0,677,0,0,0,0,0,0,0,0,0,0,0,1105,0,99999,1105,227,247,1105,1,99999,1005,227,99999,1005,0,256,1105,1,99999,1106,227,99999,1106,0,265,1105,1,99999,1006,0,99999,1006,227,274,1105,1,99999,1105,1,280,1105,1,99999,1,225,225,225,1101,294,0,0,105,1,0,1105,1,99999,1106,0,300,1105,1,99999,1,225,225,225,1101,314,0,0,106,0,0,1105,1,99999,107,677,226,224,1002,223,2,223,1005,224,329,1001,223,1,223,8,226,226,224,102,2,223,223,1006,224,344,101,1,223,223,7,226,677,224,1002,223,2,223,1005,224,359,101,1,223,223,1007,677,226,224,1002,223,2,223,1005,224,374,1001,223,1,223,1007,677,677,224,1002,223,2,223,1006,224,389,101,1,223,223,1008,226,226,224,1002,223,2,223,1005,224,404,1001,223,1,223,108,677,226,224,1002,223,2,223,1006,224,419,1001,223,1,223,1108,677,226,224,102,2,223,223,1006,224,434,1001,223,1,223,108,226,226,224,1002,223,2,223,1005,224,449,101,1,223,223,7,677,677,224,1002,223,2,223,1006,224,464,1001,223,1,223,8,226,677,224,1002,223,2,223,1005,224,479,1001,223,1,223,107,226,226,224,102,2,223,223,1006,224,494,101,1,223,223,1007,226,226,224,1002,223,2,223,1005,224,509,1001,223,1,223,1107,226,677,224,102,2,223,223,1005,224,524,1001,223,1,223,108,677,677,224,1002,223,2,223,1005,224,539,101,1,223,223,1107,677,226,224,102,2,223,223,1005,224,554,1001,223,1,223,107,677,677,224,1002,223,2,223,1005,224,569,101,1,223,223,8,677,226,224,102,2,223,223,1005,224,584,1001,223,1,223,7,677,226,224,102,2,223,223,1006,224,599,101,1,223,223,1008,677,677,224,1002,223,2,223,1005,224,614,101,1,223,223,1008,677,226,224,102,2,223,223,1006,224,629,1001,223,1,223,1108,677,677,224,102,2,223,223,1006,224,644,101,1,223,223,1108,226,677,224,1002,223,2,223,1005,224,659,1001,223,1,223,1107,226,226,224,102,2,223,223,1006,224,674,1001,223,1,223,4,223,99,226]
 
-def computer_simulation(x: list):
-    ip = 0 #instruction pointer starts at 0
-    while True:
-        instr = str(x[ip]).zfill(5)  # padding with zeros
-        opcode = int(instr[-2:])
-        p1 = int(instr[-3])
-        p2 = int(instr[-4])
-        # third param always position mode
-        def get_param(offset, mode):
-            val = x[ip + offset]
-            return val if mode == 1 else x[val]
 
-        match opcode:
-            case 1:  # add
-                x[x[ip + 3]] = get_param(1, p1) + get_param(2, p2)
-                ip += 4
-            case 2:  # multiply
-                x[x[ip + 3]] = get_param(1, p1) * get_param(2, p2)
-                ip += 4
-            case 3:  # input
-                while True:
-                    user_input = input("OPCODE 3 // ENTER INTEGER: ")
-                    try:
-                        num = int(user_input)
-                        break
-                    except ValueError:
-                        print("INVALID INPUT.")
-                x[x[ip + 1]] = num
-                ip += 2
-            case 4:  # output
-                print(f"OUTPUT: {get_param(1, p1)}")
-                ip += 2
-            case 5:  # jump-if-true
-                if get_param(1, p1) != 0:
-                    ip = get_param(2, p2)
-                else:
-                    ip += 3
-            case 6:  # jump-if-false
-                if get_param(1, p1) == 0:
-                    ip = get_param(2, p2)
-                else:
-                    ip += 3
-            case 7:  # less than
-                x[x[ip + 3]] = 1 if get_param(1, p1) < get_param(2, p2) else 0
-                ip += 4
-            case 8:  # equals
-                x[x[ip + 3]] = 1 if get_param(1, p1) == get_param(2, p2) else 0
-                ip += 4
-            case 99:  # stop
-                print(f"Program halted. Value at position 0: {x[0]}")
-                break
-            case _:
-                print(f"Unknown opcode {opcode}")
-                break
+def get_mode(parameters, parameter_index):
+    if parameter_index <= len(parameters) and len(parameters) > 0:
+        mode = int(parameters[-parameter_index])
+    else:
+        mode = 0
+    return mode
 
-computer_simulation(commands)
+def get_adresses_based_on_opcode(cmds, parameters, *positions_to_read):
+    parameter_index = 1
+    addresses_to_use = []
+
+    for position in positions_to_read:
+        mode = get_mode(parameters, parameter_index)
+        if mode == 0:
+            addresses_to_use.append(cmds[position])
+        else:
+            addresses_to_use.append(position)
+        parameter_index +=1
+    
+    return addresses_to_use
+
+
+
+def operate_on_given_opcodes(cmds):
+    instruction_ptr = 0
+    while instruction_ptr < len(cmds):
+        instructions = str(cmds[instruction_ptr])
+        opcode = instructions[-2:]
+        parameters = instructions[:-2]
+
+        match int(opcode):
+            case 1:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1, instruction_ptr+2, instruction_ptr+3)
+                cmds[adress[2]] = cmds[adress[0]] + cmds[adress[1]]
+                instruction_ptr += 4
+            case 2:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1, instruction_ptr+2, instruction_ptr+3)
+                cmds[adress[2]] = cmds[adress[0]] * cmds[adress[1]]
+                instruction_ptr += 4
+            case 3:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1)
+                try:
+                    user_input = int(input("Please enter a single integer: "))
+                except ValueError:
+                    print("that was not an integer!. Thats not okay!")
+                    raise ValueError
+                cmds[adress[0]] = user_input
+                instruction_ptr += 2
+            case 4:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1)
+                print(cmds[adress[0]])
+                instruction_ptr += 2
+            case 5:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1, instruction_ptr+2)
+                if cmds[adress[0]] != 0:
+                    instruction_ptr = cmds[adress[1]]
+                else:
+                    instruction_ptr += 3
+            case 6:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1, instruction_ptr+2)
+                if cmds[adress[0]] == 0:
+                    instruction_ptr = cmds[adress[1]]
+                else:
+                    instruction_ptr += 3
+            case 7:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1, instruction_ptr+2, instruction_ptr+3)
+                if cmds[adress[0]] < cmds[adress[1]]:
+                    cmds[adress[2]] = 1
+                else: 
+                    cmds[adress[2]] = 0
+                instruction_ptr += 4
+            case 8:
+                adress = get_adresses_based_on_opcode(cmds, parameters, instruction_ptr+1, instruction_ptr+2, instruction_ptr+3)
+                if cmds[adress[0]] == cmds[adress[1]]:
+                    cmds[adress[2]] = 1
+                else: 
+                    cmds[adress[2]] = 0
+                instruction_ptr += 4
+            case 99:
+                print("Ende")
+                return cmds[0]
+
+operate_on_given_opcodes(commands)
+
+# Ergebnis:
+# 16694270
