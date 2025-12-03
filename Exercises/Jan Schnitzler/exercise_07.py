@@ -1,5 +1,5 @@
 import numpy as np
-import heapq
+import heapq 
 
 def find_lowest_risk_path(risk_grid):
     rows, cols = len(risk_grid), len(risk_grid[0])
@@ -30,7 +30,7 @@ def find_lowest_risk_path(risk_grid):
                 new_risk = current_risk + risk_array[n_row, n_col]
                 if (new_risk < total_risk[n_row, n_col]):
                     total_risk[n_row, n_col] = new_risk
-                    heapq.heappush(priority_queue, (new_risk, n_row, n_col))
+                    heapq.heappush(priority_queue, (new_risk, n_row, n_col)) 
 
     return int(total_risk[rows - 1, cols - 1])
 
