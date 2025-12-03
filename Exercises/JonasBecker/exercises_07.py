@@ -44,5 +44,5 @@ with open("./exercise_cave.txt") as f:
 # Daten in ein Grid überführen
 grid = np.array([[int(c) for c in line] for line in lines], dtype=np.int32)
 
-result = lowest_risk(grid)
-print(result)
+cost = lowest_risk(grid)
+print(f"Lowest Cost found to get from top-left to bottom-right without using diagonals: {cost}")
