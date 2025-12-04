@@ -45,15 +45,54 @@
 #
 # BONUS: (no extra points, just for fun)
 # make a movie of playing the game :)
-
-
+#
+#
+# COMPLETE INT COMPUTER
+# This is only relevant if you decide to extend your own implementation with the necessary features.
+# If you decide to use my implementation you can ignore this part.
+#
+#
+# - The computer needs to implement memory much /larger/ than the set of initial commands.
+#   Any memory address not part of the initial commands can be assumed to be initialized to 0.
+#   (only positive addresses are valid).
+# - You need to support a new parameter mode, 'relative mode', denoted as mode 2 in the 'mode' part
+#   of the instructions.
+#   Relative mode is similar to position mode (the first access mode you implemented). However, 
+#   parameters in relative mode count not from 0, but from a value called 'relative offset'. 
+#   When the computer is initialized, the relative offset is initialized to 0, and as long as it remains
+#   0 relative mode and position mode are identical.
+#   In general though parameters in relative mode address the memory location at 'relative offset + parameter value'.
+#   EXAMPLE: if the relative offset is 50, the mode is 2, and the value you read from memory is 7 you should 
+#     retrieve data from the memory address 57.
+#     Equally, if you read -7, you should retrieve data from the memory address 43.
+#   This applies to both read- and write operations.
+# - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
+#   the offset increases by the value of the parameter (or decreases if that value is negative).
 import operator
-from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt 
 
+first_run = True
+koordinaten = []
+tiles = {}
+output_list = []
+
+ball_x = 0
+paddle_x = 0
+plt.ion()
+
+# Computer
 class IntComputer:
     def __init__(self, input_getter, output_collector):
+        
+
         def get_input(modes):
+            global first_run
+            if first_run == True: 
+                draw_game()
+            first_run = False
+
             target_mode = modes % 10
             if target_mode == 2:
                 target = self.memory.get(self.ip, 0) + self.relative_mode_offset
@@ -91,7 +130,7 @@ class IntComputer:
                 target = self.memory.get(self.ip, 0) + self.relative_mode_offset
             else:
                 target = self.memory.get(self.ip, 0)
-            self.memory[target] = int(func(x, y))
+            self.memory[target] = int(func(int(x), int(y)))
             self.ip += 1
         return f
 
@@ -137,110 +176,110 @@ class IntComputer:
             opcode_function = self.function_map[opcode]
             opcode_function(modes)
 
-def output_collector(value):
-    output_values.append(value)
+# Funktionen
+def draw_game():
+    x_wall = []
+    y_wall = []
 
-output_buffer = []
-game_state = {
-    'score': 0,
-    'paddle_x': 0,
-    'ball_x': 0,
-}
-def output_collector02(value):
-    global output_buffer
-    output_buffer.append(value)
+    for (x,y), tile_type in tiles.items():
+        if tile_type == 1:
+            x_wall.append(x)
+            y_wall.append(y)
+        elif tile_type == 0:
+            continue
+        else:
+            update_tiles(x,y,tile_type)
 
-    if len(output_buffer) == 3:
-        x, y, tile_type = output_buffer
-        output_buffer = []
+    if x_wall and y_wall: #sorg dafür, dass die Wall schön zusammen ist
 
-        if x == - 1 and y == 0:
-            game_state['score'] = tile_type
+        max_y, max_x = max(y_wall), max(x_wall)
+        min_y, min_x = min(y_wall), min(x_wall)
+        sides = []
+        bottom = []
 
-        elif tile_type == 3:
-            game_state['paddle_x'] = x
-        elif tile_type == 4:
-            game_state['ball_x'] = x
+        sides += [max_y, min_y]
+        bottom += [max_x, min_x]
 
-def input_getter02():
-    ball_x = game_state['ball_x']
-    paddle_x = game_state['paddle_x']
+        def plot_it(x, y):
+            plt.plot(x,y, color="pink", marker = "s", linewidth = 10)
 
-    if ball_x > paddle_x:
-        return 1
-    elif ball_x < paddle_x:
-        return -1
-    else:
+        plot_it([max_x, max_x], sides)
+        plot_it([min_x, min_x], sides)
+        plot_it(bottom, [min_y, min_y])
+    
+    ax = plt.gca()
+    ax.invert_yaxis()
+    plt.axis("off")
+    plt.draw()
+
+def update_tiles(x,y,tile_type):
+        global ball_x
+        global paddle_x
+        color_block = None
+        marker_block = None
+        size = None
+
+        match tile_type:
+            case 2: 
+                r = float((y * 0.05) % 256) 
+                g = float((y * 0.01) % 256) 
+                b = float((y * 0.03) % 256) # für den Farbverlauf
+
+                color_block = (r,g,b)
+                marker_block = "s"
+                size = 30
+            case 3: 
+                color_block = "black"
+                marker_block = "_"
+                size = 40
+                paddle_x = x
+            case 4: 
+                color_block = "pink"    
+                marker_block = "o"
+                size = 40
+                ball_x = x
+            case 0:
+                color_block = "white"
+                marker_block = "s"
+                size = 50
+            case _:
+                return
+        
+        plt.scatter(x, y, color=color_block, marker=marker_block, s=size) 
+
+def collect_output(output):
+    output_list.append(output)
+
+    if len(output_list) == 3:
+        x,y,tile_type = output_list
+        output_list.clear()
+
+        if x == -1 and y == 0:
+            plt.title(f"Score: {tile_type}")
+            return
+        
+        if not first_run:
+            update_tiles(x,y,tile_type)
+            plt.pause(0.01)
+            return
+
+        tiles[(x,y)] = tile_type
+
+def auto_player():
+    if ball_x == paddle_x:
         return 0
+    elif ball_x > paddle_x:
+        return 1
+    else:
+        return -1
 
-def visualize_game(screen_array):
-    colors = ['white', 'gray', 'violet', 'purple', 'pink']
-    cmap = plt.cm.colors.ListedColormap(colors) #a color map
+#Start
+with open("Exercises/EvelynThiessen/Ex_05/breakout_commands.txt", "r") as commands_file: 
+    commands = commands_file.read()
+    commands = commands.split("\n")
 
-    plt.figure(figsize = (max_x / 10, max_y / 5))
-    plt.imshow(screen_array, cmap = cmap)
-    
-    plt.gca().invert_xaxis() 
-    plt.gca().set_axis_off()
-    plt.grid(False)
-    plt.tight_layout()
-    plt.show()
+commands = list(map(int, commands))
+int_computer = IntComputer(auto_player, collect_output)
+int_computer.run(commands)
 
-with open("C:/Users/X1 Yoga/OneDrive/Dokumente/DHBW/Python/Programme/breakout_commands.txt", 'r') as f:
-    commands = [int(x) for x in f.read().split('\n')]
-
-output_values = []
-
-#Part 1
-
-computer01 = IntComputer(None, output_collector)
-computer01.run(commands)
-
-#Part 2
-commands[0] = 2
-
-computer02 = IntComputer(input_getter02, output_collector02)
-computer02.run(commands)
-
-final_score = game_state['score']
-
-print("The final score is:", final_score) #The final score is: 17159
-
-screen_map = {}
-score = 0
-for i in range(0, len(output_values), 3):
-    x, y, tile_type = output_values[i:i+3]
-    
-    screen_map[(x, y)] = tile_type
-
-max_x = max(k[0] for k in screen_map.keys())
-max_y = max(k[1] for k in screen_map.keys())
-
-screen_array = np.zeros((max_y + 1, max_x + 1), dtype=int)
-
-for (x, y), tile in screen_map.items():
-    screen_array[y, x] = tile
-
-visualize_game(screen_array)
-
-# COMPLETE INT COMPUTER
-# This is only relevant if you decide to extend your own implementation with the necessary features.
-# If you decide to use my implementation you can ignore this part.
-#
-#
-# - The computer needs to implement memory much /larger/ than the set of initial commands.
-#   Any memory address not part of the initial commands can be assumed to be initialized to 0.
-#   (only positive addresses are valid).
-# - You need to support a new parameter mode, 'relative mode', denoted as mode 2 in the 'mode' part
-#   of the instructions.
-#   Relative mode is similar to position mode (the first access mode you implemented). However, 
-#   parameters in relative mode count not from 0, but from a value called 'relative offset'. 
-#   When the computer is initialized, the relative offset is initialized to 0, and as long as it remains
-#   0 relative mode and position mode are identical.
-#   In general though parameters in relative mode address the memory location at 'relative offset + parameter value'.
-#   EXAMPLE: if the relative offset is 50, the mode is 2, and the value you read from memory is 7 you should 
-#     retrieve data from the memory address 57.
-#     Equally, if you read -7, you should retrieve data from the memory address 43.
-#   This applies to both read- and write operations.
-# - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
-#   the offset increases by the value of the parameter (or decreases if that value is negative).
+# High-Score: 17159

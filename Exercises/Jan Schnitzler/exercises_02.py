@@ -21,13 +21,45 @@
 # position, which is again 0, so you write the result to position 0. You then step forward by 4 steps, arriving at 99
 # and ending the program. The final memory looks like [2, 0, 0, 0, 99]. Your function should return 2.
 
+def maschine_funktion(speicher):
+    position = 0
+    while position < len(speicher):
+        opcode = speicher[position]
+
+        if opcode == 99:
+            break
+
+        elif opcode == 1:
+            pos1 = speicher[position + 1]
+            pos2 = speicher[position + 2]
+            pos3 = speicher[position + 3]
+            speicher[pos3] = speicher[pos1] + speicher[pos2]
+
+        elif opcode == 2:
+            pos1 = speicher[position + 1]
+            pos2 = speicher[position + 2]
+            pos3 = speicher[position + 3]
+
+            speicher[pos3] = speicher[pos1] * speicher[pos2]
+        else:
+            raise ValueError("Ungültiger Opcode: {}".format(opcode))
+        
+        position += 4
+
+    return speicher[0]
+
+
 # Here's another testcase:
 # [1, 1, 1, 4, 99, 5, 6, 0, 99] should become [30, 1, 1, 4, 2, 5, 6, 0, 99]
 # Your function should return 30.
+testcase = [1, 1, 1, 4, 99, 5, 6, 0, 99]
+print("Ergebnis Test: ",maschine_funktion(testcase))  
 
 
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
+
+print("Ergebnis: ", maschine_funktion(commands))
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -38,3 +70,35 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
+
+def filter_strings(*args):
+    numbers = []
+    single_chars = []
+
+    for arg in args:
+        try:
+            float(arg)  # Try to convert to a number
+            numbers.append(arg)
+        except ValueError:
+            if len(arg) == 1:
+                single_chars.append(arg)
+
+    return numbers, single_chars
+
+# Tests
+test1 = filter_strings("123", "a", "hello", "4.56", "b", "world", "7")
+print(test1)  # (['123', '4.56', '7'], ['a', 'b'])
+
+test2 = filter_strings("1", "2", "3", "4", "5")
+print(test2)  # (['1', '2', '3', '4', '5'], [])
+
+test3 = filter_strings("x", "y", "z")
+print(test3)  # ([], ['x', 'y', 'z'])
+
+#Eingabe strings
+print("Geben Sie mehrere Strings ein, getrennt durch Kommas:")
+user_input = input()
+input_list = [s.strip() for s in user_input.split(",")]
+numbers, single_chars = filter_strings(*input_list)
+print("Zahlen:", numbers)
+print("Einzelne Zeichen:", single_chars)

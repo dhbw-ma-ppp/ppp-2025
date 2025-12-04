@@ -1,0 +1,12 @@
+- Solve the exercise described at https://adventofcode.com/2021/day/15 using the data at `data/exercise_cave.txt` as input. Prepare a PR as usual.
+
+- Prepare for next Friday by forming groups of 2 or 3, and deciding on the rough outline of the analytical app you'd like to build. 
+  - Take a look at the datasets available e.g. at
+    - https://www.kaggle.com/datasets
+    - https://archive.ics.uci.edu/datasets
+    - https://scikit-learn.org/1.5/datasets/toy_dataset.html
+  - Have some initial idea of what you want to achieve
+  - No need to prepare any code yet. You will have the entire lecture on Friday to start working.
+  - But prepare a plan already -- agree on what you want to achieve, split that into (small) units of work, and potentially discuss who will be responsible for what. Keep track of what you need to do by creating a 'Project' in Github for your team (I'd recommend the 'Kanban' template) and list your work packages there.
+
+
