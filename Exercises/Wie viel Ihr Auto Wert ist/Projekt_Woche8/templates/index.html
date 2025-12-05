@@ -14,20 +14,22 @@
             <h1>Preisspecifier</h1>
         </div>
     </header>
+
     <main>
-        <div>
-            <h2>Mein Versuch daten zu plotten</h2>
-            <div id="first_plot">
-            {{ plot_html|safe }}
-            </div>
-        </div>
+        <h1>Data-Plot-Auto-Dashboard</h1>
+        <div class="plot">{{ price_plot|safe }}</div>
+        <div class="plot">{{ mileage_plot|safe }}</div>
+        <div class="plot">{{ box_plot|safe }}</div>
+        <div class="plot">{{ category_plot|safe }}</div>
+        <div class="plot">{{ fuel_plot|safe }}</div>
     </main>
-    <aside></aside>
+
     <footer>
         <div id="footer_div">
         <a>Impressum</a>
         <a>Über uns</a>
         </div>
     </footer>
+
 </body>
 </html>
