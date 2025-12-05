@@ -10,15 +10,20 @@ pipeline = pipeline(
     dtype=None
 )
 
-question = "Which items were bought?"
-answers = []
+question1 = "What ist the total amount?"
+question2 = "company"
 
-for i, sample in enumerate(train_batch):
-    image = sample["image"]
-    result = pipeline(image=image, question= question)
-    answers.append(result)
+# for i, sample in enumerate(train_batch):
+#    image = sample["image"]
+#    result1 = pipeline(image=image, question= question1)
+#    result2 = pipeline(image=image, question= question2)
 
-    print(f"Bild {i+1}:")
-    print("Ground truth:", sample["text"])
-    print("Predicted  :", result)
+def get_amount(image):
+    image_rgb = image.convert("RGB")
+    result1 = pipeline(image=image, question= question1)
+    result2 = pipeline(image=image, question= question2)
+
+    print("Predicted Total :", result1)
+    print("Predicetd Store  :", result2)
     print("-"*50)
+    return result1, result2
