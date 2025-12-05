@@ -10,7 +10,8 @@ data = pd.read_csv('StudentPerformanceFactors.csv')
 model = joblib.load('student_performance_model.joblib')
 model_columns = joblib.load('model_columns.joblib')
 metrics = joblib.load('evaluation_metrics.joblib')
-feature_importances = joblib.load('feature_importances.joblib')
+label_encoders = joblib.load('label_encoders.joblib') # Encoder laden
+# feature_importances = joblib.load('feature_importances.joblib') # Diese Zeile sollte bereits entfernt sein
 
 
 # Get options for dropdowns from the dataset
@@ -24,25 +25,27 @@ def main():
     form_data = {}
 
     if request.method == 'POST':
-        # This part handles the prediction form
         if 'predict' in request.form:
             form_data = request.form.to_dict()
             
-            # Convert numerical fields to numbers, with defaults
-            numerical_inputs = {
-                'Hours_Studied': float(form_data.get('Hours_Studied', 0)),
-                'Attendance': float(form_data.get('Attendance', 0)),
-                'Previous_Scores': float(form_data.get('Previous_Scores', 0)),
-                'Sleep_Hours': float(form_data.get('Sleep_Hours', 0)),
-                'Tutoring_Sessions': float(form_data.get('Tutoring_Sessions', 0)),
-                'Physical_Activity': float(form_data.get('Physical_Activity', 0)),
-            }
-            
-            # Prepare data for prediction
-            input_df = pd.DataFrame([form_data], columns=model_columns)
+            # Kopie für die Umwandlung erstellen
+            prediction_data = form_data.copy()
 
-            for col, val in numerical_inputs.items():
-                input_df[col] = val
+            # KATEGORISCHE WERTE UMWANDELN
+            for col, le in label_encoders.items():
+                if col in prediction_data:
+                    # Den Textwert aus dem Formular in eine Zahl umwandeln
+                    prediction_data[col] = le.transform([prediction_data[col]])[0]
+
+            # NUMERISCHE WERTE UMWANDELN
+            for col in model_columns:
+                if col not in label_encoders and col in prediction_data:
+                    # Konvertiere den Wert zu float, wenn es keine kategoriale Spalte ist
+                    prediction_data[col] = float(prediction_data[col])
+
+
+            # DataFrame für die Vorhersage erstellen
+            input_df = pd.DataFrame([prediction_data], columns=model_columns)
 
             # Predict
             pred_value = model.predict(input_df)[0]
@@ -53,8 +56,8 @@ def main():
         prediction=prediction, 
         dropdown_options=dropdown_options, 
         form_data=form_data,
-        metrics=metrics,
-        feature_importances=feature_importances
+        metrics=metrics
+        # feature_importances=feature_importances # Diese Zeile sollte bereits entfernt sein
     )
 
 @app.route("/notebook")

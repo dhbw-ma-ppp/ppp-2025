@@ -79,13 +79,9 @@
                         <p><strong>R² Score:</strong> {{ metrics.r2 | round(4) }}</p>
                         <p><strong>RMSE:</strong> {{ metrics.rmse | round(4) }}</p>
                         <p class="text-sm text-gray-500 mt-2">
-                            Metrics calculated on a 20% test set. The final model is trained on all data.
+                            Metrics calculated on a 10% test set. The final model is trained on all data.
                         </p>
                     </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4">Top 10 Feature Importances</h2>
-                    <canvas id="featureImportanceChart"></canvas>
                 </div>
             </div>
         </div>
@@ -101,42 +97,5 @@
             </a>
         </div>
     </div>
-    
-    <script>
-        const ctx = document.getElementById('featureImportanceChart');
-        const featureImportances = {{ feature_importances | tojson }};
-        
-        // Sort features by importance
-        const sortedFeatures = Object.entries(featureImportances).sort(([,a],[,b]) => b-a).slice(0, 10);
-        const labels = sortedFeatures.map(item => item[0]);
-        const data = sortedFeatures.map(item => item[1]);
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Importance',
-                    data: data,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                scales: {
-                    x: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    </script>
 </body>
 </html>

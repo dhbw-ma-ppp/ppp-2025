@@ -13,7 +13,7 @@ from sklearn.pipeline import Pipeline
 import time
 
 # --- 1. Daten laden und erste Übersicht ---
-data = pd.read_csv('C:\\Users\\jansc\\Documents\\Python Projekte\\Github\\ppp-2025\\Exercises\\student_performance_factors_J,M,F\\StudentPerformanceFactors.csv')
+data = pd.read_csv('StudentPerformanceFactors.csv')
 print("Daten-Dimensionen:", data.shape)
 print("Erste Zeilen der Daten:")
 print(data.head())
