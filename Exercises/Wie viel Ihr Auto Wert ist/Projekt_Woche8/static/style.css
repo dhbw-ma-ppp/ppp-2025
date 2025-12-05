@@ -2,7 +2,7 @@ body {
     color: white;
     background-color: black;
     font-family: 'Orbitron';
-    
+    margin-bottom: 50px;
 }
 
 header {
@@ -23,14 +23,14 @@ main{
     right: 0;
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 50px; 
     padding: 10px;
     background-color: #111; 
+    height: 50px;
 }
 
-#first_plot{
-    height: 800px;
-    width: 800px;
+.plot{
     background-color: #111;
     font-family: 'Orbitron';
 }
