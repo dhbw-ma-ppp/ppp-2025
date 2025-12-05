@@ -29,8 +29,7 @@ new_feature_name = "Has turbo engine"
 df[new_feature_name] = df[feature].map(lambda txt: "Turbo" in txt)
 
 
-# mapping
-
+# mapping the Features to numerous values
 for feature, map in [
     ("Leather interior", {"No":0, "Yes":1}),
     # soritert nach Anzahl der Türen
@@ -52,24 +51,19 @@ hot_encoding_features = [
     "Fuel type", # später mal testen in einem feature
     "Drive wheels",
     ]
-# ordinal encoding
-# one hot encoding
-# value encoding
 
 encoder = OneHotEncoder(sparse_output=False)
 encoded_features = encoder.fit_transform(df[hot_encoding_features])
 encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(hot_encoding_features))
 
-df = df.drop(columns=hot_encoding_features)  # Alte Spalte entfernen
-df = pd.concat([df, encoded_df], axis=1)  # Neue Features hinzufügen
+df = df.drop(columns=hot_encoding_features) 
+df = pd.concat([df, encoded_df], axis=1) 
 
+if __name__ == "__main__":
+    print(df.head())
+    print(df.info())
 
-# Diesel, Petrol, Hybrid, E
-# Alle Gase
-print(df.head())
-print(df.info())
-
-if False:
-    feature = "Doors"
-    for name in df[feature].unique():
-        print(name)
+    if False:
+        feature = "Doors"
+        for name in df[feature].unique():
+            print(name)
