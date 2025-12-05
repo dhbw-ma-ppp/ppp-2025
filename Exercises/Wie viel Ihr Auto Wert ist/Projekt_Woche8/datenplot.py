@@ -2,14 +2,21 @@ from flask import Flask, render_template
 import plotly.graph_objects as go
 import plotly.express as px
 
-from .data.data import df as car_price_prediction_data
+
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "data"))
+
+from data import df as car_price_data
+
+
+
 
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    print (car_price_prediction_data)
+    print (car_price_data)
     # Plot erstellen
     x = 1
     y = 1

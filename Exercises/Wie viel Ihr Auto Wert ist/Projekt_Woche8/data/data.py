@@ -1,10 +1,6 @@
 import pandas as pd
 from sys import path as system_paths
-<<<<<<< Updated upstream
 from sklearn.preprocessing import OneHotEncoder
-=======
-
->>>>>>> Stashed changes
 
 # load data
 df = pd.read_csv(system_paths[0]+"/car_price_prediction.csv")
