@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Phish 'n Chips</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Hintergrundvideo -->
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="3296399-uhd_4096_2160_25fps.mp4" type="video/mp4">
+    Dein Browser unterstützt das Video-Tag nicht.
+  </video>
+
+  <div class="content">
+    <h1>Phish 'n Chips</h1>
+    <p>Let's catch all the phish!</p>
+
+    <!-- Formular -->
+    <form id="phishForm">
+      <div class="textfield">
+        <input type="text" id="subjectField" placeholder="Subject eingeben" />
+      </div>
+
+      <div class="textfield">
+        <input type="text" id="mailField" placeholder="Mail eingeben" />
+      </div>
+
+      <button type="submit" class="send-btn">Absenden</button>
+
+      <div class="animation-container" id="fishAnimation">
+        <img src="chef-154396_1280.png" alt="Animation" />
+      </div>
+    </form>
+  </div>
+
+  <!-- JS -->
+  <script src="script.js"></script>
+</body>
+</html>

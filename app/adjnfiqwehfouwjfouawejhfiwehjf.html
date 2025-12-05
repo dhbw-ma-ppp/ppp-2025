@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phish 'n Chips</title>
+
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+
+      video#bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+
+      .content {
+        position: relative;
+        text-align: center;
+        color: white;
+        margin-top: 140px;
+      }
+
+      .content h1 {
+        font-size: 4rem;
+        margin: 0.2em 0;
+      }
+
+      .content p {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+      }
+
+      .textfield {
+        margin-bottom: 10px;
+      }
+
+      .textfield input[type="text"] {
+        width: 350px;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        font-size: 1.2rem;
+      }
+
+      .send-btn {
+        margin-top: 40px;
+        padding: 15px 40px;
+        font-size: 1.4rem;
+        border: none;
+        border-radius: 8px;
+        background-color: #00ffaa;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: bold;
+      }
+
+      .send-btn:hover {
+        background-color: #00dd88;
+      }
+
+      /* Animation Container */
+      .animation-container {
+        width: 100%;
+        height: 60px;
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px;
+      }
+
+      .animation-container img {
+        position: absolute;
+        left: -150px;
+        top: 0;
+        height: 60px;
+        transform: rotate(20deg);
+      }
+
+      .animation-start img {
+        animation: swim 4s linear forwards;
+      }
+
+      @keyframes swim {
+        from {
+          left: -200px;
+        }
+        to {
+          left: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <video id="bg-video" autoplay muted loop playsinline>
+      <source src="3296399-uhd_4096_2160_25fps.mp4" type="video/mp4" />
+    </video>
+
+    <div class="content">
+      <h1>Phish 'n Chips</h1>
+      <p>Let's catch all the phish!</p>
+
+      <!-- Subject -->
+      <form id="phishForm">
+        <div class="textfield">
+          <input type="text" id="subjectField" placeholder="Subject eingeben" />
+        </div>
+
+        <!-- Mail Text -->
+        <div class="textfield">
+          <input type="text" id="mailField" placeholder="Mail eingeben" />
+        </div>
+
+        <!-- Absenden Button -->
+        <button type="submit" class="send-btn">Absenden</button>
+
+        <!-- Animation -->
+        <div class="animation-container" id="fishAnimation">
+          <img src="chef-154396_1280.png" alt="Fish" />
+        </div>
+      </form>
+    </div>
+
+    <script>
+      /* ---------------------- Zufällige Bilder ---------------------- */
+
+      const phishingImages = [
+        "chef-154396_1280.png",
+        "chef-154396_1280.png",
+        "chef-154396_1280.png",
+      ];
+
+      const safeImages = ["4250480-1.jpg", "4250480-1.jpg", "4250480-1.jpg"];
+
+      /* ---------------------- Popup Funktion ---------------------- */
+
+      function showPopup(message, images) {
+        const popup = document.createElement("div");
+        popup.style.position = "fixed";
+        popup.style.top = "50%";
+        popup.style.left = "50%";
+        popup.style.transform = "translate(-50%, -50%)";
+        popup.style.background = "white";
+        popup.style.padding = "25px";
+        popup.style.borderRadius = "12px";
+        popup.style.boxShadow = "0 0 20px rgba(0,0,0,0.4)";
+        popup.style.zIndex = "9999";
+        popup.style.textAlign = "center";
+        popup.style.minWidth = "350px";
+
+        const img = images[Math.floor(Math.random() * images.length)];
+
+        popup.innerHTML = `
+        <h2>${message}</h2>
+        <img src="${img}" style="width:200px; margin-top:15px;">
+        <br><br>
+        <button onclick="this.parentElement.remove()" style="
+          padding:12px 25px;
+          background:#00aaff;
+          border:none;
+          border-radius:8px;
+          color:white;
+          cursor:pointer;
+          font-size:1.1rem;
+        ">OK</button>
+      `;
+
+        document.body.appendChild(popup);
+      }
+
+      /* ---------------------- Animation ---------------------- */
+
+      function startFishAnimation() {
+        const anim = document.getElementById("fishAnimation");
+        anim.classList.add("animation-start");
+
+        setTimeout(() => {
+          anim.classList.remove("animation-start");
+        }, 4000);
+      }
+
+      /* ---------------------- FORM HANDLER ---------------------- */
+
+      document
+        .getElementById("phishForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          startFishAnimation(); // Animation starten
+
+          const subject = document.getElementById("subjectField").value;
+          const email = document.getElementById("mailField").value;
+
+          /*  ---------------------------------------------------------
+          🔥 HIER VERBINDEST DU DEIN ML-MODELL
+          ---------------------------------------------------------
+          Wenn du z.B. FastAPI oder Flask verwendest:
+          
+          fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              subject: subject,
+              email: email
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.prediction === "phishing") {
+              showPopup("⚠️ You are cooked like a fish!", phishingImages);
+            } else {
+              showPopup("🟢 The mail is vamlid!", safeImages);
+            }
+          });
+      ---------------------------------------------------------- */
+
+          /* Dummy fake example until your backend is ready */
+          setTimeout(() => {
+            const isPhish = Math.random() > 0.5;
+
+            if (isPhish) {
+              showPopup("⚠️ You are cooked like a fish!", phishingImages);
+            } else {
+              showPopup("🟢 The mail is valid!", safeImages);
+            }
+          }, 1500);
+        });
+    </script>
+  </body>
+</html>
