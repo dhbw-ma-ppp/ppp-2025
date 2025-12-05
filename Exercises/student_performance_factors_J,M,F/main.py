@@ -9,5 +9,6 @@ from sklearn.preprocessing import MinMaxScaler,StandardScaler, LabelEncoder
 from sklearn.metrics import mean_squared_error, r2_score
 
 # Load the dataset
-data = pd.read_csv('student_performance.csv')
+data = pd.read_csv('StudentPerformanceFactors.csv')
+print(data.shape)
 
