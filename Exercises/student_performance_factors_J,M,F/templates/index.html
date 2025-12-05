@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Performance Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="container mx-auto p-4">
+        <div class="text-4xl p-4 text-center font-bold">
+            Student Performance Predictor
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Prediction Form -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4">Predict Your Exam Score</h2>
+                <form method="post">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        <!-- Numerical Inputs -->
+                        <div>
+                            <label for="Hours_Studied" class="block text-sm font-medium">Hours Studied</label>
+                            <input type="number" name="Hours_Studied" value="{{ form_data.get('Hours_Studied', 20) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        <div>
+                            <label for="Attendance" class="block text-sm font-medium">Attendance (%)</label>
+                            <input type="number" name="Attendance" value="{{ form_data.get('Attendance', 80) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        <div>
+                            <label for="Previous_Scores" class="block text-sm font-medium">Previous Scores</label>
+                            <input type="number" name="Previous_Scores" value="{{ form_data.get('Previous_Scores', 75) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                        <div>
+                            <label for="Sleep_Hours" class="block text-sm font-medium">Sleep Hours</label>
+                            <input type="number" name="Sleep_Hours" value="{{ form_data.get('Sleep_Hours', 7) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                         <div>
+                            <label for="Tutoring_Sessions" class="block text-sm font-medium">Tutoring Sessions</label>
+                            <input type="number" name="Tutoring_Sessions" value="{{ form_data.get('Tutoring_Sessions', 1) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+                         <div>
+                            <label for="Physical_Activity" class="block text-sm font-medium">Physical Activity (hours/week)</label>
+                            <input type="number" name="Physical_Activity" value="{{ form_data.get('Physical_Activity', 3) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                        </div>
+
+                        <!-- Categorical Inputs -->
+                        {% for col, options in dropdown_options.items() %}
+                        <div>
+                            <label for="{{ col }}" class="block text-sm font-medium">{{ col.replace('_', ' ') }}</label>
+                            <select name="{{ col }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                {% for option in options %}
+                                <option value="{{ option }}" {% if form_data.get(col) == option %}selected{% endif %}>{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button type="submit" name="predict" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">
+                            Predict Score
+                        </button>
+                    </div>
+                </form>
+
+                {% if prediction is not none %}
+                <div class="mt-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg">
+                    <p class="font-bold text-lg">Predicted Exam Score: {{ prediction }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Model Info -->
+            <div class="space-y-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4">Model Performance</h2>
+                    <div class="space-y-2">
+                        <p><strong>R² Score:</strong> {{ metrics.r2 | round(4) }}</p>
+                        <p><strong>RMSE:</strong> {{ metrics.rmse | round(4) }}</p>
+                        <p class="text-sm text-gray-500 mt-2">
+                            Metrics calculated on a 20% test set. The final model is trained on all data.
+                        </p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-semibold mb-4">Top 10 Feature Importances</h2>
+                    <canvas id="featureImportanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('featureImportanceChart');
+        const featureImportances = {{ feature_importances | tojson }};
+        
+        // Sort features by importance
+        const sortedFeatures = Object.entries(featureImportances).sort(([,a],[,b]) => b-a).slice(0, 10);
+        const labels = sortedFeatures.map(item => item[0]);
+        const data = sortedFeatures.map(item => item[1]);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Importance',
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
