@@ -3,7 +3,7 @@ from sys import path as system_paths
 from sklearn.preprocessing import OneHotEncoder
 
 # load data
-car_price_prediction_data = pd.read_csv(system_paths[0]+"/car_price_prediction.csv")
+df = pd.read_csv(system_paths[0]+"/car_price_prediction.csv")
 
 
 # delete unecessary features
@@ -13,13 +13,20 @@ unecessary_features = [
     "Color", # später testen, cast auf 3 featrues (rgb)
 ]
 for feature in unecessary_features:
-    car_price_prediction_data = car_price_prediction_data.drop(feature, axis="columns")
+    df = df.drop(feature, axis="columns")
+
+# delete important features which are not convertable
+important_features = [
+    "Model",
+    #"Manufacturer"
+]
+for feature in important_features:
+    df = df.drop(feature, axis="columns")
 
 # split_features
 feature = "Engine volume"
 new_feature_name = "Has turbo engine"
-car_price_prediction_data[new_feature_name] = car_price_prediction_data[feature].map(lambda txt: "Turbo" in txt)
-#car_price_prediction_data.add(car_price_prediction_data[feature].map(lambda txt: "Turbo" in txt))
+df[new_feature_name] = df[feature].map(lambda txt: "Turbo" in txt)
 
 
 # mapping
@@ -35,29 +42,34 @@ for feature, map in [
     ("Gear box type",{"Manual":0,"Tiptronic":1,"Variator":2,"Automatic":3}) ,
     ("Mileage", lambda txt: int(txt[:-2]))
 ]:
-    car_price_prediction_data[feature] = car_price_prediction_data[feature].map(map)
+    df[feature] = df[feature].map(map)
 
 
 hot_encoding_features = [
     "Manufacturer",
-    "Model",
+    #"Model",
     "Category",
+    "Fuel type", # später mal testen in einem feature
     "Drive wheels",
     ]
 # ordinal encoding
 # one hot encoding
 # value encoding
 
-#OneHotEncoder(host_encoding_features)
+encoder = OneHotEncoder(sparse_output=False)
+encoded_features = encoder.fit_transform(df[hot_encoding_features])
+encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(hot_encoding_features))
 
+df = df.drop(columns=hot_encoding_features)  # Alte Spalte entfernen
+df = pd.concat([df, encoded_df], axis=1)  # Neue Features hinzufügen
 
 
 # Diesel, Petrol, Hybrid, E
 # Alle Gase
-print(car_price_prediction_data.head())
-print(car_price_prediction_data.info())
+print(df.head())
+print(df.info())
 
-
-feature = "Fuel type"
-for name in car_price_prediction_data[feature].unique():
-    print(name)
+if False:
+    feature = "Doors"
+    for name in df[feature].unique():
+        print(name)
