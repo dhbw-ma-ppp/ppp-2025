@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div id="h1">
+            <h1>Preisspecifier</h1>
+        </div>
+    </header>
+    <main>
+        <div>
+            <h2>Mein Versuch daten zu plotten</h2>
+            <div id="first_plot">
+            {{ plot_html|safe }}
+            </div>
+        </div>
+    </main>
+    <aside></aside>
+    <footer>
+        <div id="footer_div">
+        <a>Impressum</a>
+        <a>Über uns</a>
+        </div>
+    </footer>
+</body>
+</html>
