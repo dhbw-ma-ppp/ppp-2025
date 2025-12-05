@@ -37,7 +37,7 @@ X_v2_train, X_v2_test, y_v2_train, y_v2_test = train_test_split(X_v2, y_v2, test
 # --- Bringing Features on one Level per Standartscale ---
 print('Scaling Features...')
 scaler = StandardScaler()
-scaled_features = ['Previous qualification (grade)','Admission grade','Curricular units 1st sem (grade)','Curricular units 2nd sem (grade)','Unemployment rate','Inflation rate', 'GDP']
+scaled_features = ['Previous qualification (grade)','Admission grade','Curricular units 1st sem (grade)','Curricular units 2nd sem (grade)','Unemployment rate','Inflation rate', 'GDP', 'Marital Status','Application mode','Application order', 'Course','Daytime/evening attendance', 'Previous qualification','Nacionality', 'Mother\'s qualification', 'Father\'s qualification', 'Mother\'s occupation', "Father's occupation", 'Displaced', 'Educational special needs', 'Debtor', 'Tuition fees up to date', 'Gender', 'Scholarship holder', 'Age at enrollment', 'International', 'Curricular units 1st sem (credited)', 'Curricular units 1st sem (enrolled)', 'Curricular units 1st sem (evaluations)', 'Curricular units 1st sem (approved)', 'Curricular units 1st sem (without evaluations)','Curricular units 2nd sem (credited)', 'Curricular units 2nd sem (enrolled)', 'Curricular units 2nd sem (evaluations)', 'Curricular units 2nd sem (approved)', 'Curricular units 2nd sem (without evaluations)'         ]
 full_df[scaled_features] = scaler.fit_transform(full_df[scaled_features])
 
 # --- Printing for Overview ---
