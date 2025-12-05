@@ -10,13 +10,13 @@ from data import df as car_price_data
 
 
 
-
+print (car_price_data)
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    print (car_price_data)
+    
     # Plot erstellen
     x = 1
     y = 1
