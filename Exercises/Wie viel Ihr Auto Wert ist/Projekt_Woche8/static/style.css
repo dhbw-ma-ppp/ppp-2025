@@ -1,0 +1,36 @@
+body {
+    color: white;
+    background-color: black;
+    font-family: 'Orbitron';
+    
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    background-color: #111;
+}
+
+main{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#footer_div {
+    position: fixed;
+    bottom: 0; 
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 50px; 
+    padding: 10px;
+    background-color: #111; 
+}
+
+#first_plot{
+    height: 800px;
+    width: 800px;
+    background-color: #111;
+    font-family: 'Orbitron';
+}
