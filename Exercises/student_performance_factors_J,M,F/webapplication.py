@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_from_directory
 import pandas as pd
 import joblib
 import json
@@ -49,10 +49,15 @@ def main():
             prediction = round(pred_value, 2)
 
     return render_template(
-        'index.html', 
+        'index.html',
         prediction=prediction, 
         dropdown_options=dropdown_options, 
         form_data=form_data,
         metrics=metrics,
         feature_importances=feature_importances
     )
+
+@app.route("/notebook")
+def notebook():
+    # Serve the converted HTML version of the notebook from the templates folder
+    return send_from_directory('templates', 'visualisation.html')

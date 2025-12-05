@@ -89,8 +89,19 @@
                 </div>
             </div>
         </div>
-    </div>
 
+        <!-- Link to Notebook -->
+        <div class="mt-8 text-center bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-2">Detaillierte Datenanalyse</h3>
+            <p class="text-gray-600 mb-4">
+                Entdecken Sie die zugrundeliegenden Muster und Korrelationen in unserem interaktiven Jupyter Notebook.
+            </p>
+            <a href="/notebook" target="_blank" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+                Analyse ansehen
+            </a>
+        </div>
+    </div>
+    
     <script>
         const ctx = document.getElementById('featureImportanceChart');
         const featureImportances = {{ feature_importances | tojson }};
