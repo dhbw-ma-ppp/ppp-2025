@@ -7,104 +7,78 @@ df:pd.DataFrame = pd.read_csv(system_paths[0]+"/car_price_prediction.csv")
 
 # delete opal astra
 to_great_prices = 10_000_000
-df = df.query("Price < 160000").reset_index(drop=True)
-#df = df.query("Price > 1000").reset_index(drop=True)
+df = df.query("Price < 100_000").reset_index(drop=True)
+df = df.query("Price > 1000").reset_index(drop=True)
 
-df = df.drop("Wheel", axis="columns")
-
-#df = df.drop("Airbags", axis="columns")
-#df["Prod. year"] = df["Prod. year"] - 2000
-
-# ToDo
-
-
-# delete unecessary features
-unecessary_features = [
+# delete features
+for feature in [
     "ID",
-    "Levy"
-]
-for feature in unecessary_features:
-    df = df.drop(feature, axis="columns")
-
-# delete important features which are not convertable
-important_features = [
-    "Model",
-    "Manufacturer",
-    "Color",
-    "Category",
-    "Fuel type",
-    #"Leather interior",
+    "Levy",
     "Doors",
-    #"Mileage"
-    #"Gear box type"
-]
-for feature in important_features:
+]:
     df = df.drop(feature, axis="columns")
-
-# split_features
-if False:
-    feature = "Engine volume"
-    new_feature_name = "Has turbo engine"
-    df[new_feature_name] = df[feature].map(lambda txt: "Turbo" in txt)
-
 
 # mapping the Features to numerous values
 for feature, map in [
     ("Leather interior", {"No":0, "Yes":1}),
-    # soritert nach Anzahl der Türen
-    #("Doors", {"02-Mar":2, "04-May":4, ">5": 6}),
-    #("Wheel", {"Left wheel":0, "Right-hand drive":1}),
+    ("Wheel", {"Left wheel":0, "Right-hand drive":1}),
     ("Airbags", int),
     #("Airbags", lambda txt: (1-int(txt) % 2)*100000), # todo believe in grade airbags
     ("Engine volume", lambda txt: float(txt.replace("Turbo",""))),
     # sortiert nach automatisierung
-    ("Gear box type",{"Manual":0,"Tiptronic":1,"Variator":2,"Automatic":3}) ,
     ("Mileage", lambda txt: int(txt[:-2])),
-    ("Drive wheels", lambda txt: txt == "Rear")
+    ("Drive wheels", lambda txt: int(txt == "Rear")),
+    ("Gear box type", {"Automatic":0, "Tiptronic":1, "Manual":2, "Variator":3})
 ]:
     df[feature] = df[feature].map(map)
 
-#df = df.query("Mileage < 10000").reset_index(drop=True)
+
+# Drop the top 10 most expensive cars from each unique feature values
+
+indices_to_drop = []
+for feature in df.columns:
+    unique_feature_values = df[feature].unique()
+
+    # skip features which have to many unique values
+    if len(unique_feature_values) > 24:
+        continue
+
+    for unique_feature_value in unique_feature_values:
+        top_entries = df[df[feature] == unique_feature_value].nlargest(10, 'Price')
+        indices_to_drop.extend(top_entries.index)
+    
+df = df.drop(indices_to_drop)
+df = df.dropna()
+
+# multiple values in price order
+for feature in [
+    "Color",
+    "Model",
+    "Manufacturer",
+    "Category",
+    "Fuel type",
+    "Wheel",
+    "Gear box type",
+    "Airbags"
+]:
+    sorted_features = df.groupby(feature)['Price'].median().sort_values()
+    maping = {feature: index for index, feature in enumerate(sorted_features.index)}
+    df[feature] = df[feature].map(maping)
 
 
+# Clean data from exceptions
+df = df[~(df['Prod. year'] < 1985)]
+df = df[~((df['Engine volume'] > 10))] # enable
 
-hot_encoding_features = [
-        "Manufacturer",
-        "Model",
-        "Category",
-        "Fuel type", # später mal testen in einem feature
-        #"Drive wheels",
-        "Color",
-        #"Gear box type"
-        ]
-for feature in important_features:
-    if feature in hot_encoding_features:
-        hot_encoding_features.remove(feature)
-
-if True:
-    encoder = OneHotEncoder(sparse_output=False)
-    encoded_features = encoder.fit_transform(df[hot_encoding_features])
-    encoded_df = pd.DataFrame(encoded_features, columns=encoder.get_feature_names_out(hot_encoding_features))
-
-    df = df.drop(columns=hot_encoding_features) 
-
-    df = pd.concat([df, encoded_df], axis=1) 
-else:
-    df = df.drop(hot_encoding_features, axis="columns")
-
-
-
+print(df.info())
+df = df.dropna()
 if __name__ == "__main__":
     print(df.head())
     print(df.info())
 
-    if False:
-        feature = "Doors"
-        for name in df[feature].unique():
-            print(name)
-
 
     for feature in df.columns.tolist():
+
         print(feature)
         import matplotlib.pyplot as plt
         plt.figure(figsize=(10, 6))
@@ -114,3 +88,10 @@ if __name__ == "__main__":
         plt.ylabel('Price (in Euro)')
         plt.grid(True)
         plt.show()
+
+        nan_spalten = df.isna().any()
+        print("Nan Spalten:")
+        print(nan_spalten)
+        print(df.shape)
+
+#todo wie wichtig ist petrol?
