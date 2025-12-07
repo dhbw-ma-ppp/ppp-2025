@@ -12,9 +12,9 @@ model = RandomForestRegressor(random_state=42)
 
 # Parameter, die optimiert werden sollen
 param_grid = {
-    'n_estimators': [50, 75, 100, 150, 200,220], 
-    'max_depth': [None, *[x for x in range(5,21)], 25, 40], 
-    'min_samples_split': [1, 2, 3, 4, 5, 7, 10],
+    'n_estimators': [50, 75, 100, 150, 200,220,300,303,340,350,360,375,400], 
+    'max_depth': [None, 5,10,15,20, 25,26,27,28,29,30,31,32, 40], 
+    'min_samples_split': [1, 2, 3],
     'max_features': ['auto', 'sqrt', 'log2']
 }
 if False:
@@ -32,9 +32,9 @@ if False:
         'max_features': ['auto', 'sqrt']
     }
 param_grid = {
-    'n_estimators': [210,220,230,240,250], 
-    'max_depth': [24,25,26,], 
-    'min_samples_split': [2, 3, 4],
+    'n_estimators': [50,100,300,350,400,450], 
+    'max_depth': [10,15,20,25,26,27,28,29,None], 
+    'min_samples_split': [2, 3],
     'max_features': ['sqrt']
 }
 # GridSearchCV erstellen
