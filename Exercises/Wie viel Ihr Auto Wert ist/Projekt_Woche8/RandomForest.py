@@ -49,14 +49,15 @@ best_params = grid_search.best_params_
 y_pred = best_model.predict(x_test)
 
 # Metriken ausgeben
-mse = mean_squared_error(y_test, y_pred)
-print(f"Beste Hyperparameter: {best_params}")
-print(f"MSE: {mse:.4f}")
-print(f"RMSE: {mse**0.5:.4f}")
+if __name__ == '__main__':
+    mse = mean_squared_error(y_test, y_pred)
+    print(f"Beste Hyperparameter: {best_params}")
+    print(f"MSE: {mse:.4f}")
+    print(f"RMSE: {mse**0.5:.4f}")
 
-# Feature Importances anzeigen
-importances = best_model.feature_importances_
-feature_importance_df = pd.DataFrame({'Feature': x.columns, 'Importance': importances})
-# Sortieren nach Importance in absteigender Reihenfolge
-feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
-print(feature_importance_df)
+    # Feature Importances anzeigen
+    importances = best_model.feature_importances_
+    feature_importance_df = pd.DataFrame({'Feature': x.columns, 'Importance': importances})
+    # Sortieren nach Importance in absteigender Reihenfolge
+    feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
+    print(feature_importance_df)

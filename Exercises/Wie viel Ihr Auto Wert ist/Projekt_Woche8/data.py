@@ -78,6 +78,12 @@ for feature, map in [
 
 feature_value_to_df_value = {}
 
+for unique_feature_value in unique_feature_values:
+    top_entries = df[df[feature] == unique_feature_value].nlargest(10, 'Price')
+    indices_to_drop.extend(top_entries.index)
+
+#df = df.drop(indices_to_drop)
+df = df.dropna()
 
 # multiple values in price order
 features_in_median_order = [
@@ -112,7 +118,7 @@ def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bo
         feature_value = feature_casts[feature](feature_value)
     # 
     if feature in features_in_median_order:
-        if feature_value in feature_value_to_df_value:
+        if feature_value in feature_value_to_df_value[feature]:
             return feature_value_to_df_value[feature][feature_value], True
         else:
             return feature_value_to_df_value[feature][None], False
@@ -121,7 +127,7 @@ def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bo
 
 df = df[~((df['Engine volume'] > 19))]
 
-print(df.info())
+# print(df.info())
 df = df.dropna()
 if __name__ == "__main__":
     print(df.head())
@@ -129,7 +135,6 @@ if __name__ == "__main__":
 
 
     for feature in df.columns.tolist():
-        break
         plt_feature(df, feature)
 
         nan_spalten = df.isna().any()

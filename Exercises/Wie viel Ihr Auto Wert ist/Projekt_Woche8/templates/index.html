@@ -1,35 +1,78 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Drag & Drop Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <header>
-        <div id="h1">
-            <h1>Preisspecifier</h1>
-        </div>
-    </header>
+  <header>
+    <h1>🚗 Car Price Dashboard</h1>
+  </header>
 
-    <main>
-        <h1>Data-Plot-Auto-Dashboard</h1>
-        <div class="plot">{{ price_plot|safe }}</div>
-        <div class="plot">{{ mileage_plot|safe }}</div>
-        <div class="plot">{{ box_plot|safe }}</div>
-        <div class="plot">{{ category_plot|safe }}</div>
-        <div class="plot">{{ fuel_plot|safe }}</div>
-    </main>
+  <main>
+    <!-- Feature Auswahl -->
+    <section id="features">
+      {% for feature in features %}
+        <div class="feature" draggable="true" data-feature="{{ feature }}">{{ feature }}</div>
+      {% endfor %}
+    </section>
 
-    <footer>
-        <div id="footer_div">
-        <a>Impressum</a>
-        <a>Über uns</a>
-        </div>
-    </footer>
+    <!-- Plot Grid -->
+    <section class="plot-grid">
+      <div class="plot-card">
+        <h2>Scatter vs Price</h2>
+        <div class="dropzone" id="scatter"></div>
+      </div>
+      <div class="plot-card">
+        <h2>Histogram</h2>
+        <div class="dropzone" id="histogram"></div>
+      </div>
+      <div class="plot-card">
+        <h2>Boxplot</h2>
+        <div class="dropzone" id="boxplot"></div>
+      </div>
+    </section>
 
+    <!-- Modelle -->
+    <section class="models">
+      <h2>Decision Tree & Random Forest</h2>
+      <img src="{{ url_for('plot_tree_png') }}" alt="Trees" class="model-img">
+      <h2>Vorhersagen auf Testdaten</h2>
+      <img src="{{ url_for('plot_predictions') }}" alt="Predictions" class="model-img">
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('.feature').forEach(el => {
+      el.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('feature', e.target.dataset.feature);
+      });
+    });
+
+    document.querySelectorAll('.dropzone').forEach(zone => {
+      zone.addEventListener('dragover', e => e.preventDefault());
+      zone.addEventListener('drop', async e => {
+        e.preventDefault();
+        const feature = e.dataTransfer.getData('feature');
+        const plotType = zone.id;
+
+        zone.innerHTML = `<p>Lade ${feature} (${plotType})...</p>`;
+
+        try {
+          const response = await fetch(`/plot_image?feature=${encodeURIComponent(feature)}&plot_type=${encodeURIComponent(plotType)}`);
+          if (!response.ok) {
+            zone.innerHTML = `<p>Fehler: ${await response.text()}</p>`;
+            return;
+          }
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          zone.innerHTML = `<img src="${url}" alt="${feature} ${plotType}" class="plot-img">`;
+        } catch (err) {
+          zone.innerHTML = `<p>Fehler beim Laden: ${err}</p>`;
+        }
+      });
+    });
+  </script>
 </body>
 </html>
