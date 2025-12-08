@@ -46,18 +46,16 @@ else:
     joblib.dump(model, MODEL_FILE_PATH)
 
 
-feature_importance_df = pd.DataFrame({'Feature': x.columns, 'Importance': model.feature_importances_})
-feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
-
-if __name__ == "__main__":
-    y_pred = model.predict(x_test)
-
+# Metriken ausgeben
+if __name__ == '__main__':
     mse = mean_squared_error(y_test, y_pred)
+    print(f"Beste Hyperparameter: {best_params}")
+    print(f"MSE: {mse:.4f}")
     print(f"RMSE: {mse**0.5:.4f}")
 
-    x_pred = model.predict(x_train)
-
-    mse = mean_squared_error(y_train, x_pred)
-    print(f"RMSE: {mse**0.5:.4f}")
-
+    # Feature Importances anzeigen
+    importances = best_model.feature_importances_
+    feature_importance_df = pd.DataFrame({'Feature': x.columns, 'Importance': importances})
+    # Sortieren nach Importance in absteigender Reihenfolge
+    feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
     print(feature_importance_df)

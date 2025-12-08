@@ -128,7 +128,7 @@ def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bo
 #df = df[~(df['Prod. year'] < 1985)]
 #df = df[~((df['Engine volume'] > 19))]
 
-print(df.info())
+# print(df.info())
 df = df.dropna()
 if __name__ == "__main__":
     print(df.head())
