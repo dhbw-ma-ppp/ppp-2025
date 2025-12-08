@@ -17,7 +17,7 @@ if False and __name__ == "__main__" and os.path.exists(MODEL_FILE_PATH):
     os.remove(MODEL_FILE_PATH)
 
 if os.path.exists(MODEL_FILE_PATH):
-    print("Load model from: {MODEL_FILE_PATH}")
+    print(f"Load model from: {MODEL_FILE_PATH}")
     model = joblib.load(MODEL_FILE_PATH)
 else:
     print("Train model with GridSearchCV...")
@@ -43,7 +43,7 @@ else:
     
     model = grid_search.best_estimator_
     
-    joblib.dump(model, MODEL_FILE_PATH)
+    joblib.dump(model, MODEL_FILE_PATH, compress=9)
 
 y_pred = y_pred = model.predict(x_test)
 feature_importance_df = pd.DataFrame({'Feature': x.columns, 'Importance': model.feature_importances_})
