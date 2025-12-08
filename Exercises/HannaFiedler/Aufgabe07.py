@@ -58,8 +58,11 @@ def print_result(best, optimal, visited):
     print("optimal:", optimal, "\n")
     print("Visited:", visited, "\n")
 
-
-risks = pd.read_csv("cavern.txt", dtype=str, header=None, names=["columns"])
+from sys import path as system_path
+for i in system_path:
+    print(i)
+print("done")
+risks = pd.read_csv(system_path[0]+"/cavern.txt", dtype=str, header=None, names=["columns"])
 risks = risks["columns"].apply(lambda x: pd.Series(list(x))).astype(int)
 risks = risks.to_numpy()
 print("The lowest total risk is:", int(find_lowest_risk(risks)))
