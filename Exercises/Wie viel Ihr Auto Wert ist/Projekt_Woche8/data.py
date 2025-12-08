@@ -42,7 +42,6 @@ for feature in df.columns:
         top_entries = df[df[feature] == unique_feature_value].nlargest(10, "Price")
         indices_to_drop.extend(top_entries.index)
     
-df = df.drop(indices_to_drop)
 df = df.dropna()
 
 feature_casts = {
@@ -125,8 +124,8 @@ def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bo
         return feature_value, True
 
 
-#df = df[~(df['Prod. year'] < 1985)]
-#df = df[~((df['Engine volume'] > 19))]
+df = df[~(df['Prod. year'] < 1985)]
+df = df[~((df['Engine volume'] > 19))]
 
 # print(df.info())
 df = df.dropna()
@@ -143,3 +142,11 @@ if __name__ == "__main__":
         print(nan_spalten)
         print(df.shape)
 #todo wie wichtig ist petrol?
+
+for feature in [
+    "Wheel",
+    "Drive wheels",
+    "Leather interior",
+    "Cylinders"
+]:
+    df = df.drop(feature, axis="columns")
