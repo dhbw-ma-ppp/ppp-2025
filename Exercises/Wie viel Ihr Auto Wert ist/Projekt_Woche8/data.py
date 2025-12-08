@@ -3,6 +3,7 @@ from sys import path as system_paths
 from sklearn.preprocessing import OneHotEncoder
 import matplotlib.pyplot as plt
 
+
 def plt_feature(df, feature):
     plt.figure(figsize=(10, 6))
     plt.scatter(df[feature], df['Price'], color='blue', marker='o')
@@ -30,8 +31,7 @@ for feature in [
 # Drop the top 10 most expensive cars from each unique feature values
 indices_to_drop = []
 for feature in df.columns:
-    #if feature == "Model":
-        #continue
+    
     unique_feature_values = df[feature].unique()
 
     # skip features which have to many unique values
@@ -74,10 +74,16 @@ for feature, map in [
 
 
 # delete models which were just once 5 times
-#df = df.groupby('Model').filter(lambda x: len(x) > 5)
+df = df.groupby('Model').filter(lambda x: len(x) > 5)
 
 feature_value_to_df_value = {}
 
+for unique_feature_value in unique_feature_values:
+    top_entries = df[df[feature] == unique_feature_value].nlargest(10, 'Price')
+    indices_to_drop.extend(top_entries.index)
+
+#df = df.drop(indices_to_drop)
+df = df.dropna()
 
 # multiple values in price order
 features_in_median_order = [
@@ -102,7 +108,6 @@ for feature in features_in_median_order:
     feature_value_to_df_value[feature][None] = medians.median()
 
 
-df = df[~(df['Prod. year'] < 1985)]
 
 def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bool]:
     if not feature in df.columns:
@@ -112,14 +117,16 @@ def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bo
         feature_value = feature_casts[feature](feature_value)
     # 
     if feature in features_in_median_order:
-        if feature_value in feature_value_to_df_value:
+        if feature_value in feature_value_to_df_value[feature]:
             return feature_value_to_df_value[feature][feature_value], True
         else:
             return feature_value_to_df_value[feature][None], False
     else:
         return feature_value, True
 
-df = df[~((df['Engine volume'] > 19))]
+
+#df = df[~(df['Prod. year'] < 1985)]
+#df = df[~((df['Engine volume'] > 19))]
 
 print(df.info())
 df = df.dropna()
@@ -129,7 +136,6 @@ if __name__ == "__main__":
 
 
     for feature in df.columns.tolist():
-        break
         plt_feature(df, feature)
 
         nan_spalten = df.isna().any()

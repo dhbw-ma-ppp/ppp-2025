@@ -1,36 +1,68 @@
 body {
-    color: white;
-    background-color: black;
-    font-family: 'Orbitron';
-    margin-bottom: 50px;
+  background: #111;
+  color: #eee;
+  font-family: Arial, sans-serif;
+  margin: 0;
 }
 
 header {
-    display: flex;
-    justify-content: center;
-    background-color: #111;
+  padding: 1rem;
+  background: #222;
+  text-align: center;
+}
+/* Features-Bar */
+#features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;              
+  padding: 20px;
+  width: 100%;            
+  box-sizing: border-box;
 }
 
-main{
-    padding-left: 15px;
-    padding-right: 15px;
+/* Feature-Buttons */
+.feature {
+  text-align: center;
+  padding: 16px 20px;     
+  background: #333;
+  border-radius: 8px;
+  cursor: grab;
+  font-size: 1.1rem;      
+  transition: background 0.2s, transform 0.2s;
 }
 
-#footer_div {
-    position: fixed;
-    bottom: 0; 
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 50px; 
-    padding: 10px;
-    background-color: #111; 
-    height: 50px;
+.feature:hover {
+  background: #555;
+  transform: scale(1.05); 
 }
 
-.plot{
-    background-color: #111;
-    font-family: 'Orbitron';
+
+.plot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 16px;
+  padding: 1rem;
+}
+
+.plot-card {
+  background: #222;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.dropzone {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #444;
+  border-radius: 6px;
+  background: #111;
+}
+
+.plot-img, .model-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
 }
