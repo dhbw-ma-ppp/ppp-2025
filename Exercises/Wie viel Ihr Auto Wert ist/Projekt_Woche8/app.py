@@ -11,11 +11,15 @@ from sklearn.tree import export_text
 
 
 
-from RandomForest02 import train_random_forest
-from DecissionTree import train_decision_tree
+#from RandomForest02 import train_random_forest
+#from DecissionTree import train_decision_tree
 # Daten laden
 sys.path.append(os.path.join(os.path.dirname(__file__), "data"))
 from data import df as car_price_data
+
+from DecissionTree import model as decission_tree_model
+from DecissionTree import x_train, x_test, y_test
+from RandomForest import model as random_forest_Model
 
 app = Flask(__name__)
 
@@ -110,8 +114,10 @@ def plot_image():
 
 @app.route('/plot_tree_png')
 def plot_tree_png():
-    dt_model, x_train, x_test, y_train, y_test = train_decision_tree()
-    rf_model, x_train, x_test, y_train, y_test = train_random_forest()
+    #dt_model, x_train, x_test, y_train, y_test = train_decision_tree()
+    #rf_model, x_train, x_test, y_train, y_test = train_random_forest()
+    dt_model = decission_tree_model
+    rf_model = random_forest_Model
     rf_tree = rf_model.estimators_[0]
 
     fig, axes = plt.subplots(1, 2, figsize=(36, 12))
@@ -159,8 +165,10 @@ def plot_tree_png():
 
 @app.route("/plot_predictions")
 def plot_predictions():
-    dt_model, x_train, x_test, y_train, y_test = train_decision_tree()
-    rf_model, x_train, x_test, y_train, y_test = train_random_forest()
+    #dt_model, x_train, x_test, y_train, y_test = train_decision_tree()
+    #rf_model, x_train, x_test, y_train, y_test = train_random_forest()
+    dt_model = decission_tree_model
+    rf_model = random_forest_Model
 
     y_pred_dt = dt_model.predict(x_test)
     y_pred_rf = rf_model.predict(x_test)
