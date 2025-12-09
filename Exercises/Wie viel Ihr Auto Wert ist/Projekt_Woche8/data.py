@@ -16,7 +16,7 @@ def plt_feature(df, feature):
 # load data
 df:pd.DataFrame = pd.read_csv(system_paths[0]+"/car_price_prediction.csv")
 
-df = df[~(df['Price'] > 100_000)]
+df = df[~(df['Price'] > 400_000)]
 df = df[~(df['Price'] < 1000)]
 
 # delete features
@@ -27,22 +27,24 @@ for feature in [
 ]:
     df = df.drop(feature, axis="columns")
 
-# Clean data from exceptions
-# Drop the top 10 most expensive cars from each unique feature values
-indices_to_drop = []
-for feature in df.columns:
-    
-    unique_feature_values = df[feature].unique()
+if False:
+    # Clean data from exceptions
+    # Drop the top 10 most expensive cars from each unique feature values
+    indices_to_drop = []
+    for feature in df.columns:
+        
+        unique_feature_values = df[feature].unique()
 
-    # skip features which have to many unique values
-    if len(unique_feature_values) > 24:
-        continue
+        # skip features which have to many unique values
+        if len(unique_feature_values) > 24:
+            continue
 
-    for unique_feature_value in unique_feature_values:
-        top_entries = df[df[feature] == unique_feature_value].nlargest(10, "Price")
-        indices_to_drop.extend(top_entries.index)
-    
-df = df.dropna()
+        for unique_feature_value in unique_feature_values:
+            top_entries = df[df[feature] == unique_feature_value].nlargest(0, "Price")
+            indices_to_drop.extend(top_entries.index)
+
+    df = df.drop(indices_to_drop)
+    df = df.dropna()
 
 feature_casts = {
     "Leather interior": {"No":0, "Yes":1},
@@ -77,12 +79,15 @@ df = df.groupby('Model').filter(lambda x: len(x) > 5)
 
 feature_value_to_df_value = {}
 
-for unique_feature_value in unique_feature_values:
-    top_entries = df[df[feature] == unique_feature_value].nlargest(10, 'Price')
-    indices_to_drop.extend(top_entries.index)
+#for unique_feature_value in unique_feature_values:
+    #top_entries = df[df[feature] == unique_feature_value].nlargest(10, 'Price')
+    #indices_to_drop.extend(top_entries.index)
 
 #df = df.drop(indices_to_drop)
 df = df.dropna()
+
+df = df[~(df['Prod. year'] < 1985)]
+df = df[~((df['Engine volume'] > 19))]
 
 # multiple values in price order
 features_in_median_order = [
@@ -94,7 +99,7 @@ features_in_median_order = [
     "Wheel",
     "Gear box type",
     "Airbags",
-    "Leather interior"
+    "Leather interior",
 ]
 for feature in features_in_median_order:
     medians = df.groupby(feature)['Price'].median()
@@ -124,8 +129,6 @@ def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bo
         return feature_value, True
 
 
-df = df[~(df['Prod. year'] < 1985)]
-df = df[~((df['Engine volume'] > 19))]
 
 # print(df.info())
 df = df.dropna()
@@ -135,6 +138,8 @@ if __name__ == "__main__":
 
 
     for feature in df.columns.tolist():
+        if feature != "Engine volume":
+            continue
         plt_feature(df, feature)
 
         nan_spalten = df.isna().any()
@@ -144,9 +149,5 @@ if __name__ == "__main__":
 #todo wie wichtig ist petrol?
 
 for feature in [
-    "Wheel",
-    "Drive wheels",
-    "Leather interior",
-    "Cylinders"
 ]:
     df = df.drop(feature, axis="columns")

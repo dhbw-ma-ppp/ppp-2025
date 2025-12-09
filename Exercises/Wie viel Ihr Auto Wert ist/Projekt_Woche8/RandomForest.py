@@ -1,19 +1,19 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from data_selection import x, y
 
 import joblib
 import os
 from sys import path as system_paths
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=42)
 
 MODEL_FILE_PATH = os.path.join(system_paths[0], "Model_Data", 'random_forest_model.pkl')
 
 
-if False and __name__ == "__main__" and os.path.exists(MODEL_FILE_PATH):
+if __name__ == "__main__" and os.path.exists(MODEL_FILE_PATH):
     os.remove(MODEL_FILE_PATH)
 
 if os.path.exists(MODEL_FILE_PATH):
@@ -31,13 +31,13 @@ else:
         'max_features': ['auto', 'sqrt', 'log2']
     }
     param_grid = {
-        'n_estimators': [350], 
+        'n_estimators': [300], 
         'max_depth': [25], 
         'min_samples_split': [2],
         'max_features': ['sqrt']
     }
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1, verbose=2)
-    grid_search.fit(x_train, y_train)
+    grid_search.fit(x_train, y_train.to_numpy().flatten())
 
     print(f"Beste Hyperparameter beim training des RandomForest sind: {grid_search.best_params_}")
     
@@ -51,8 +51,12 @@ feature_importance_df = feature_importance_df.sort_values(by='Importance', ascen
 
 if __name__ == '__main__':
     mse = mean_squared_error(y_test, y_pred)
-    print(f"MSE: {mse:.4f}")
+    print(f"MSE: {mse:.4f}")#9000
     print(f"RMSE: {mse**0.5:.4f}")
+    mae = mean_absolute_error(y_test, y_pred)
+    print(f"MAE: {mae:.4f}")#4800
+    r2 = r2_score(y_test, y_pred)
+    print(f"R2 score: {r2:.4f}") # 0.7x
 
     
     y_pred = model.predict(x_train)
