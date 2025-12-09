@@ -31,8 +31,8 @@ else:
         'max_features': ['auto', 'sqrt', 'log2']
     }
     param_grid = {
-        'n_estimators': [300], 
-        'max_depth': [25], 
+        'n_estimators': [100], 
+        'max_depth': [None], 
         'min_samples_split': [2],
         'max_features': ['sqrt']
     }
@@ -65,4 +65,4 @@ if __name__ == '__main__':
     print(f"MSE(Train): {mse:.4f}")
     print(f"RMSE(Train): {mse**0.5:.4f}")
     
-    print(feature_importance_df)
+    #print(feature_importance_df)
