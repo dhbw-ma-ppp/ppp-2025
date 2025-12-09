@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <title>Preisvorhersage</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+<body>
+  <div class="main-wrapper">
+    <div class="card">
+      <h1>Wie viel ist Ihr Auto wert?</h1>
+
+      <form method="post">
+        {% for f in feature_names %}
+          <div class="field">
+            <label for="{{ f }}">{{ f }}</label>
+
+            {% if select_options and f in select_options %}
+              <select id="{{ f }}" name="{{ f }}">
+                <option value="">-- bitte wählen oder leer lassen --</option>
+                {% for val in select_options[f] %}
+                  {# val ist hier der Wert, der an Flask geschickt wird (z.B. "Automatic") #}
+                  {% set val_str = val|string %}
+
+                  {# Anzeige-Label bauen: Gearbox-Typ "Variator" als "CVT (Variator)" anzeigen #}
+                  {% set label = val_str %}
+                  {% if f == "Gear box type" and val_str == "Variator" %}
+                    {% set label = "CVT (Variator)" %}
+                  {% endif %}
+
+                  <option value="{{ val_str }}"
+                    {% if input_values and input_values.get(f) == val_str %}selected{% endif %}>
+                    {{ label }}
+                  </option>
+                {% endfor %}
+              </select>
+            {% else %}
+              <input
+                type="number"
+                step="any"
+                id="{{ f }}"
+                name="{{ f }}"
+                value="{% if input_values %}{{ input_values.get(f, '') }}{% endif %}">
+            {% endif %}
+
+
+            {% if unknown_flags and unknown_flags.get(f) %}
+              <span class="warning">Standardwert / Median verwendet</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit">Preis berechnen</button>
+      </form>
+
+      {% if pred_price is not none %}
+        <h2>Vorhergesagter Preis: {{ pred_price | round(2) }} €</h2>
+      {% endif %}
+
+      <p><a href="{{ url_for('index') }}">Zurück zur Startseite</a></p>
+    </div>
+  </div>
+</body>
+
+  </body>
+</html>
