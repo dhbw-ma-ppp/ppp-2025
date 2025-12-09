@@ -53,7 +53,7 @@ feature_casts = {
     #("Airbags", lambda txt: (1-int(txt) % 2)*100000), # todo believe in grade airbags
     "Engine volume": lambda txt: float(txt.replace("Turbo","")),
     # sortiert nach automatisierung
-    "Mileage": lambda txt: int(txt[:-2]),
+    "Mileage": lambda txt: int("".join(c for c in str(txt) if c.isdigit())) if str(txt).strip() != "" else None,
     "Drive wheels": lambda txt: int(txt == "Rear"),
     "Gear box type": {"Automatic":0, "Tiptronic":1, "Manual":2, "Variator":3}
 }
@@ -112,23 +112,42 @@ for feature in features_in_median_order:
     feature_value_to_df_value[feature][None] = medians.median()
 
 
+def feature_value_to_ai_value(feature: str, feature_value: str) -> tuple[float, bool]:
+    if feature not in df.columns:
+        raise RuntimeError(
+            "You can not convert a feature value to an ai value if the feature of this feature value does not exist!"
+        )
 
-def feature_value_to_ai_value(feature:str, feature_value:str) -> tuple[float, bool]:
-    if not feature in df.columns:
-        raise RuntimeError("You can not convert a feature value to an ai value if the feature of this feature value does not exist!")
     # cast if necessary
     if feature in feature_casts:
-        feature_value = feature_casts[feature](feature_value)
-    # 
+        caster = feature_casts[feature]
+
+        # Leerer Wert -> wir überlassen das der aufrufenden Logik (z.B. Median in Flask)
+        if feature_value is None or str(feature_value).strip() == "":
+            feature_value = None
+        else:
+            # dict-Mapping (z.B. Leather interior, Wheel, Gear box type)
+            if isinstance(caster, dict):
+                feature_value = caster.get(feature_value, None)
+            else:
+                # Funktion (int, lambda ...)
+                feature_value = caster(feature_value)
+
+    # Kategorie-Features, die über Median-Mapping laufen
     if feature in features_in_median_order:
         if feature_value in feature_value_to_df_value[feature]:
             return feature_value_to_df_value[feature][feature_value], True
         else:
+            # Fallback: globaler Median dieser Kategorie
             return feature_value_to_df_value[feature][None], False
     else:
+        # Numerische oder sonstige Features → direkt nutzen
         return feature_value, True
 
 
+
+df = df[~(df['Prod. year'] < 1985)]
+df = df[~((df['Engine volume'] > 19))]
 
 # print(df.info())
 df = df.dropna()
