@@ -8,7 +8,13 @@ import joblib
 import os
 from sys import path as system_paths
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=42)
+test_size = 0.05
+# size -> RMSE
+# 0.07 -> 5775.5982
+# 0.06 -> 5670.0744
+# 0.04 -> 5283.0084
+print(f"The test size is {test_size}")
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=42)
 
 MODEL_FILE_PATH = os.path.join(system_paths[0], "Model_Data", 'random_forest_model.pkl')
 
