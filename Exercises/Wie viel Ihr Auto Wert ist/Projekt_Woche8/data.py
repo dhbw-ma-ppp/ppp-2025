@@ -27,25 +27,6 @@ for feature in [
 ]:
     df = df.drop(feature, axis="columns")
 
-if False:
-    # Clean data from exceptions
-    # Drop the top 10 most expensive cars from each unique feature values
-    indices_to_drop = []
-    for feature in df.columns:
-        
-        unique_feature_values = df[feature].unique()
-
-        # skip features which have to many unique values
-        if len(unique_feature_values) > 24:
-            continue
-
-        for unique_feature_value in unique_feature_values:
-            top_entries = df[df[feature] == unique_feature_value].nlargest(0, "Price")
-            indices_to_drop.extend(top_entries.index)
-
-    df = df.drop(indices_to_drop)
-    df = df.dropna()
-
 feature_casts = {
     "Leather interior": {"No":0, "Yes":1},
     "Wheel": {"Left wheel":0, "Right-hand drive":1},
@@ -78,10 +59,6 @@ for feature, map in [
 df = df.groupby('Model').filter(lambda x: len(x) > 5)
 
 feature_value_to_df_value = {}
-
-#for unique_feature_value in unique_feature_values:
-    #top_entries = df[df[feature] == unique_feature_value].nlargest(10, 'Price')
-    #indices_to_drop.extend(top_entries.index)
 
 #df = df.drop(indices_to_drop)
 df = df.dropna()
@@ -149,7 +126,7 @@ def feature_value_to_ai_value(feature: str, feature_value: str) -> tuple[float, 
 df = df[~(df['Prod. year'] < 1985)]
 df = df[~((df['Engine volume'] > 19))]
 
-# print(df.info())
+
 df = df.dropna()
 if __name__ == "__main__":
     print(df.head())

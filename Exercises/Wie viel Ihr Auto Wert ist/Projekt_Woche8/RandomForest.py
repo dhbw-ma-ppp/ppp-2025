@@ -57,12 +57,12 @@ feature_importance_df = feature_importance_df.sort_values(by='Importance', ascen
 
 if __name__ == '__main__':
     mse = mean_squared_error(y_test, y_pred)
-    print(f"MSE: {mse:.4f}")#9000
+    print(f"MSE: {mse:.4f}")
     print(f"RMSE: {mse**0.5:.4f}")
     mae = mean_absolute_error(y_test, y_pred)
-    print(f"MAE: {mae:.4f}")#4800
+    print(f"MAE: {mae:.4f}")
     r2 = r2_score(y_test, y_pred)
-    print(f"R2 score: {r2:.4f}") # 0.7x
+    print(f"R2 score: {r2:.4f}")
 
     
     y_pred = model.predict(x_train)
