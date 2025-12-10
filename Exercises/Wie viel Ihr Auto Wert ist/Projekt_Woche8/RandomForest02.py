@@ -9,9 +9,9 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 def train_random_forest():
     model = RandomForestRegressor(random_state=42)
     param_grid = {
-        'n_estimators': [210, 220, 230, 240, 250], 
+        'n_estimators': [240, 250, 330], 
         'max_depth': [24,25,26], 
-        'min_samples_split': [2, 3, 4],
+        'min_samples_split': [2],
         'max_features': ['sqrt']
     }
     grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=5, n_jobs=-1, verbose=0)
