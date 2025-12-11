@@ -221,7 +221,7 @@ screen_array = np.zeros((max_y + 1, max_x + 1), dtype=int)
 for (x, y), tile in screen_map.items():
     screen_array[y, x] = tile
 
-visualize_game(screen_array)
+#visualize_game(screen_array)
 
 # COMPLETE INT COMPUTER
 # This is only relevant if you decide to extend your own implementation with the necessary features.
