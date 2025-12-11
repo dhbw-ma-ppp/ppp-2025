@@ -45,11 +45,33 @@
 #
 # BONUS: (no extra points, just for fun)
 # make a movie of playing the game :)
+#
+#
+# COMPLETE INT COMPUTER
+# This is only relevant if you decide to extend your own implementation with the necessary features.
+# If you decide to use my implementation you can ignore this part.
+#
+#
+# - The computer needs to implement memory much /larger/ than the set of initial commands.
+#   Any memory address not part of the initial commands can be assumed to be initialized to 0.
+#   (only positive addresses are valid).
+# - You need to support a new parameter mode, 'relative mode', denoted as mode 2 in the 'mode' part
+#   of the instructions.
+#   Relative mode is similar to position mode (the first access mode you implemented). However, 
+#   parameters in relative mode count not from 0, but from a value called 'relative offset'. 
+#   When the computer is initialized, the relative offset is initialized to 0, and as long as it remains
+#   0 relative mode and position mode are identical.
+#   In general though parameters in relative mode address the memory location at 'relative offset + parameter value'.
+#   EXAMPLE: if the relative offset is 50, the mode is 2, and the value you read from memory is 7 you should 
+#     retrieve data from the memory address 57.
+#     Equally, if you read -7, you should retrieve data from the memory address 43.
+#   This applies to both read- and write operations.
+# - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
+#   the offset increases by the value of the parameter (or decreases if that value is negative).
 
 
 import operator
-from matplotlib import pyplot as plt
-import numpy as np
+
 
 class IntComputer:
     def __init__(self, input_getter, output_collector):
@@ -137,110 +159,143 @@ class IntComputer:
             opcode_function = self.function_map[opcode]
             opcode_function(modes)
 
-def output_collector(value):
-    output_values.append(value)
 
-output_buffer = []
-game_state = {
-    'score': 0,
-    'paddle_x': 0,
-    'ball_x': 0,
+
+
+import operator
+import numpy as np
+from matplotlib import pyplot as plt
+from pathlib import Path
+from matplotlib.patches import Rectangle
+import time
+
+script_path = Path(__file__).resolve()
+script_dir = script_path.parent
+file_path = script_dir / 'breakout_commands.txt'
+
+
+part1_commands = []
+with open(file_path) as file:
+        for line in file:
+            part1_commands.append(int(line.strip()))
+
+
+
+#--- Part 1 ---
+
+output = []
+
+def get_output(x):
+    output.append(x)
+
+ic = IntComputer(lambda: 0, get_output)
+ic.run(part1_commands)
+
+x_coordinates = output[0::3]
+y_coordinates = output[1::3]
+tile_type_coordinates = output[2::3]
+
+
+width = len(x_coordinates) + 1
+height = len(y_coordinates) +1
+
+root = np.zeros((height, width), dtype= int)
+
+
+fig, ax = plt.subplots(figsize=(8, 8))
+
+
+color_map = {
+    0: "black",
+    1: "white",
+    2: "grey",
+    3: "pink",
+    4: "green"
 }
-def output_collector02(value):
-    global output_buffer
-    output_buffer.append(value)
 
+tile_size_x = 2
+tile_size_y = 1
+
+
+for x, y, t in zip(x_coordinates, y_coordinates, tile_type_coordinates):
+    rect = Rectangle((x, y), tile_size_x, tile_size_y, color=color_map[t])
+    ax.add_patch(rect)
+
+
+ax.set_xlim(0, max(x_coordinates) + 1)
+ax.set_ylim(0, max(y_coordinates) + 1)
+ax.set_aspect("equal")
+ax.invert_yaxis()   
+ax.axis("off")
+
+plt.show()
+
+
+# --- Part 2 ---
+
+part2_commands = part1_commands.copy()
+part2_commands[0] = 2
+
+ball_x = 0
+paddle_x = 0
+
+board = {}
+score = 0
+
+ball_x = paddle_x = 0
+output_buffer = []
+
+def moveing():
+    while ball_x < paddle_x:
+        return -1
+    while ball_x > paddle_x:
+        return 1
+    while ball_x == paddle_x:
+        return 0 
+    
+
+
+def output_collector(value):
+    global output_buffer, board, score, ball_x, paddle_x
+    output_buffer.append(value)
     if len(output_buffer) == 3:
-        x, y, tile_type = output_buffer
+        x, y, tile = output_buffer
         output_buffer = []
 
-        if x == - 1 and y == 0:
-            game_state['score'] = tile_type
+        
+        if x == -1 and y == 0:
+            score = tile
+            return
 
-        elif tile_type == 3:
-            game_state['paddle_x'] = x
-        elif tile_type == 4:
-            game_state['ball_x'] = x
+        
+        board[(x, y)] = tile
 
-def input_getter02():
-    ball_x = game_state['ball_x']
-    paddle_x = game_state['paddle_x']
+        if tile == 3:   
+            paddle_x = x
+        if tile == 4:   
+            ball_x = x
 
-    if ball_x > paddle_x:
-        return 1
-    elif ball_x < paddle_x:
-        return -1
-    else:
-        return 0
 
-def visualize_game(screen_array):
-    colors = ['white', 'gray', 'violet', 'purple', 'pink']
-    cmap = plt.cm.colors.ListedColormap(colors) #a color map
+ic = IntComputer(moveing, output_collector)
+ic.run(part2_commands)
 
-    plt.figure(figsize = (max_x / 10, max_y / 5))
-    plt.imshow(screen_array, cmap = cmap)
-    
-    plt.gca().invert_xaxis() 
-    plt.gca().set_axis_off()
-    plt.grid(False)
-    plt.tight_layout()
-    plt.show()
+def draw_board(board, score):
+    plt.clf()
+    ax = plt.gca()
 
-with open("C:/Users/X1 Yoga/OneDrive/Dokumente/DHBW/Python/Programme/breakout_commands.txt", 'r') as f:
-    commands = [int(x) for x in f.read().split('\n')]
+    for (x, y), t in board.items():
+        rect = Rectangle((x, y), 1, 1, color=color_map[t])
+        ax.add_patch(rect)
 
-output_values = []
+    ax.set_xlim(0, max(x for (x, _) in board) + 1)
+    ax.set_ylim(0, max(y for (_, y) in board) + 1)
+    ax.set_aspect("equal")
+    ax.invert_yaxis()
+    ax.axis("off")
+    plt.title(f"Score: {score}")
+    plt.pause(0.001)
 
-#Part 1
-
-computer01 = IntComputer(None, output_collector)
-computer01.run(commands)
-
-#Part 2
-commands[0] = 2
-
-computer02 = IntComputer(input_getter02, output_collector02)
-computer02.run(commands)
-
-final_score = game_state['score']
-
-print("The final score is:", final_score) #The final score is: 17159
-
-screen_map = {}
-score = 0
-for i in range(0, len(output_values), 3):
-    x, y, tile_type = output_values[i:i+3]
-    
-    screen_map[(x, y)] = tile_type
-
-max_x = max(k[0] for k in screen_map.keys())
-max_y = max(k[1] for k in screen_map.keys())
-
-screen_array = np.zeros((max_y + 1, max_x + 1), dtype=int)
-
-for (x, y), tile in screen_map.items():
-    screen_array[y, x] = tile
-
-#visualize_game(screen_array)
-
-# COMPLETE INT COMPUTER
-# This is only relevant if you decide to extend your own implementation with the necessary features.
-# If you decide to use my implementation you can ignore this part.
-#
-#
-# - The computer needs to implement memory much /larger/ than the set of initial commands.
-#   Any memory address not part of the initial commands can be assumed to be initialized to 0.
-#   (only positive addresses are valid).
-# - You need to support a new parameter mode, 'relative mode', denoted as mode 2 in the 'mode' part
-#   of the instructions.
-#   Relative mode is similar to position mode (the first access mode you implemented). However, 
-#   parameters in relative mode count not from 0, but from a value called 'relative offset'. 
-#   When the computer is initialized, the relative offset is initialized to 0, and as long as it remains
-#   0 relative mode and position mode are identical.
-#   In general though parameters in relative mode address the memory location at 'relative offset + parameter value'.
-#   EXAMPLE: if the relative offset is 50, the mode is 2, and the value you read from memory is 7 you should 
-#     retrieve data from the memory address 57.
-#     Equally, if you read -7, you should retrieve data from the memory address 43.
-#   This applies to both read- and write operations.
-# - You need to implement a new opcode, opcode 9. opcode 9 adjusts the relative offset by the value of its only parameter.
-#   the offset increases by the value of the parameter (or decreases if that value is negative).
+plt.ion()
+draw_board(board, score)
+plt.ioff()
+plt.show()
