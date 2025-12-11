@@ -2,12 +2,12 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Drag & Drop Dashboard</title>
+  <title>Preisvorhersage</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <header>
-    <h1>🚗 Car Price Dashboard</h1>
+    <h1>🚗 Car Price Predictor</h1>
   </header>
 
   <main>
@@ -34,13 +34,6 @@
       </div>
     </section>
 
-    <!-- Modelle -->
-    <section class="models">
-      <h2>Decision Tree & Random Forest</h2>
-      <img src="{{ url_for('plot_tree_png') }}" alt="Trees" class="model-img">
-      <h2>Vorhersagen auf Testdaten</h2>
-      <img src="{{ url_for('plot_predictions') }}" alt="Predictions" class="model-img">
-    </section>
   </main>
 
   <script>
@@ -67,12 +60,21 @@
           }
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
-          zone.innerHTML = `<img src="${url}" alt="${feature} ${plotType}" class="plot-img">`;
+          zone.innerHTML = `<img src="${url}" class="plot-img">`;
         } catch (err) {
           zone.innerHTML = `<p>Fehler beim Laden: ${err}</p>`;
         }
       });
     });
   </script>
+
+  <h1>Tree Plot</h1>
+  <img src="{{ url_for('plot_trees') }}" alt="Trees">
+
+  <h1>Plot des Tree Ergebnisses</h1>
+  <img src="{{ url_for('plot_predictions_tree') }}" alt="Predictions_tree" class="model-img">
+
+  <h1>Plot des Random Forrest Ergebnisses</h1>
+  <img src="{{ url_for('plot_predictions') }}" alt="Predictions" class="model-img">
 </body>
 </html>

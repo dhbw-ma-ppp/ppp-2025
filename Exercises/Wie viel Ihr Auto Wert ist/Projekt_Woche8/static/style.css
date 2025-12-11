@@ -3,6 +3,7 @@ body {
   color: #eee;
   font-family: Arial, sans-serif;
   margin: 0;
+  margin-bottom: 50px;
 }
 
 header {
@@ -134,3 +135,11 @@ button:hover {
     background: #2563eb;
 }
 
+footer{
+  position: fixed;
+  margin-bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+  display: flex;
+  gap: 20%;
+}
