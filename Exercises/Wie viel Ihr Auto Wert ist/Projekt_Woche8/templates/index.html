@@ -6,9 +6,23 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <header>
+  <header id="top">
     <h1>🚗 Car Price Predictor</h1>
   </header>
+
+  <div class="video-sticky">
+  <iframe 
+    src="https://www.youtube.com/embed/TeSRVSqpumo?autoplay=1&mute=1&loop=1&playlist=TeSRVSqpumo" 
+    frameborder="0" 
+    allow="autoplay; encrypted-media" 
+    allowfullscreen>
+  </iframe>
+</div>
+
+<div class="top-left-icons">
+  <a href="#top" title="Zurück nach oben">🏠</a>
+  <a href="http://127.0.0.1:5000/predict" title="Zur Vorhersage">💰</a>
+</div>
 
   <main>
     <!-- Feature Auswahl -->
@@ -77,4 +91,11 @@
   <h1>Plot des Random Forrest Ergebnisses</h1>
   <img src="{{ url_for('plot_predictions') }}" alt="Predictions" class="model-img">
 </body>
+
+  <div class="fixed-bottom">
+  <a href="https://www.tegfcu.com/wp-content/uploads/2019/10/mgn_1280x720_90731c00-mezos1-e1624558370603.jpg">Impressum</a>
+  <a href="https://www.youtube.com/watch?v=SpT7p7QbhxA">Über uns</a>
+  </div>
+
+
 </html>

@@ -11,11 +11,9 @@ from sklearn import tree
 from sklearn.model_selection import train_test_split
 import sys
 
-from data import df as car_price_data
-from data import df as cleaned_df
-
 from data import (
     df as car_price_data,
+    df as cleaned_df,
     feature_value_to_ai_value,
     feature_value_to_df_value,
     features_in_median_order,
@@ -104,7 +102,7 @@ def create_prediction_plot(model, X_test, y_test):
     max_val = max(y_test.max(), y_pred.max())
     ax.plot([min_val, max_val], [min_val, max_val], "r--")
 
-    # gleiche Skalierung für x und y
+    # x und y Achse identisch beschriften
     ax.set_xlim(min_val, max_val)
     ax.set_ylim(min_val, max_val)
 
@@ -121,7 +119,10 @@ def create_prediction_plot(model, X_test, y_test):
 # Daten laden & vorbereiten
 # -----------------------------
 def load_and_prepare_data():
-    """Lädt und bereinigt den Car Price Datensatz."""
+    """
+    Lädt und bereinigt den Car Price Datensatz.
+    """
+
     DATA_PATH = os.path.join(os.path.dirname(__file__), "car_price_prediction.csv")
     df = pd.read_csv(DATA_PATH)
 
@@ -131,7 +132,7 @@ def load_and_prepare_data():
     # Unnötige Spalten löschen
     df = df.drop(columns=["ID", "Levy", "Doors"], errors="ignore")
 
-    # Feature-Casts
+    # Feature-Casts zu Originalwerte
     feature_casts = {
         "Leather interior": {"No": 0, "Yes": 1},
         "Wheel": {"Left wheel": 0, "Right-hand drive": 1},
@@ -154,19 +155,17 @@ def load_and_prepare_data():
     if "Model" in df.columns:
         df = df.groupby("Model").filter(lambda x: len(x) > 5)
 
-    # harte Filter
     if "Prod. year" in df.columns:
         df = df[(df["Prod. year"] >= 1985) & (df["Engine volume"] <= 19)]
 
-    # Fehlende Werte droppen
     df = df.dropna()
 
     return df
 
-# Daten global laden
-print("📊 Lade Daten...")
+
+print("Lade Daten...")
 df = load_and_prepare_data()
-print("✔ Daten geladen.")
+print("Daten geladen.")
 
 # -----------------------------
 # Modell-Ladefunktionen
@@ -195,7 +194,9 @@ def index():
 
 @app.route("/plot_image")
 def plot_image():
-    """Route für Feature-Plots."""
+    """
+    Route für Feature-Plots.
+    """
     feature = request.args.get("feature")
     plot_type = request.args.get("plot_type")
     if not feature or not plot_type:
@@ -208,7 +209,9 @@ def plot_image():
 
 @app.route("/plot_trees")
 def plot_trees():
-    """Route für Decision Tree Plot."""
+    """
+    Route für Decision Tree Plot.
+    """
     try:
         dt = load_decision_tree()
         img = create_tree_plot(dt)
@@ -221,15 +224,15 @@ def plot_predictions():
     try:
         rf = load_random_forest()
 
-        # 👉 Bereinigte Daten verwenden
+        # Bereinigte Daten verwenden
         X = cleaned_df.drop(columns=["Price"])
         y = cleaned_df["Price"]
 
         print("Spalten im X:", X.columns.tolist())  
         print("Erste Zeile:", X.iloc[0].to_dict())  
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42
+        _, X_test, _, y_test = train_test_split(
+            X, y, test_size=0.1, random_state=42
         )
 
         img = create_prediction_plot(rf, X_test, y_test)
@@ -241,11 +244,13 @@ def plot_predictions():
 
 @app.route("/plot_predictions_tree")
 def plot_predictions_tree():
-    """Route für Vorhersagevergleich mit Decision Tree."""
+    """
+    Route für Vorhersagevergleich mit Decision Tree.
+    """
     try:
         dt = load_decision_tree()
 
-        # 👉 Bereinigte Daten verwenden
+        # Bereinigte Daten verwenden
         X = cleaned_df.drop(columns=["Price"])
         y = cleaned_df["Price"]
 
@@ -265,10 +270,11 @@ def plot_predictions_tree():
     except Exception as e:
         print("Fehler in plot_predictions_tree:", e)
         return abort(500, str(e))
-
+# -----------------------------
+# Route zum Predict der Preise für eigengewählte Featurs
+# -----------------------------
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
-    df = car_price_data
     feature_names = [c for c in df.columns if c != "Price"]
 
     DROPDOWN_FEATURES = [
@@ -280,8 +286,7 @@ def predict():
         "Gear box type",
         "Wheel",
         "Leather interior",
-        "Drive wheels",   # ← neu
-        # Airbags bleibt draußen
+        "Drive wheels",   
     ]
 
 
@@ -290,15 +295,12 @@ def predict():
     for f in DROPDOWN_FEATURES:
         options = None
 
-        # Speziell für "Drive wheels": feste Auswahl
         if f == "Drive wheels":
             options = ["Front", "Rear", "4x4"]
 
-        # 1) Für Features, die als dict in feature_casts stehen
         elif f in feature_casts and isinstance(feature_casts[f], dict):
             options = sorted(feature_casts[f].keys())
 
-        # 2) Für andere: Keys aus feature_value_to_df_value
         elif f in feature_value_to_df_value:
             keys = [k for k in feature_value_to_df_value[f].keys() if k is not None]
             options = sorted(keys)
@@ -316,22 +318,18 @@ def predict():
         for f in feature_names:
             raw_val = request.form.get(f)
 
-            # --- Fall 1: Feld leer -> Median-Wert verwenden ---
             if raw_val is None or raw_val.strip() == "":
-                input_values[f] = ""  # Formular bleibt optisch leer
+                input_values[f] = "" 
 
                 if f in features_in_median_order and f in feature_value_to_df_value:
-                    # Kategorie-Feature mit eigenem Median-Mapping
                     ai_val = feature_value_to_df_value[f][None]
                 else:
-                    # Numerisches Feature -> Spaltenmedian
-                    ai_val = df[f].median()
+                    ai_val = car_price_data[f].median()
 
                 ai_values[f] = ai_val
-                unknown_flags[f] = True  # "Standardwert/Median verwendet"
+                unknown_flags[f] = True  
                 continue
 
-            # feature_value_to_ai_value benutzen 
             try:
                 ai_val, known = feature_value_to_ai_value(f, raw_val)
             except Exception as e:
@@ -355,7 +353,7 @@ def predict():
             select_options=select_options,
         )
 
-    # GET: leeres Formular anzeigen
+    # leeres Formular anzeigen
     return render_template(
         "predict.html",
         feature_names=feature_names,

@@ -2,14 +2,14 @@
 <html lang="de">
   <head>
     <meta charset="utf-8">
-    <title>Preisvorhersage</title>
+    <title>www.mittenindiefresse.de</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
 <body>
   <div class="main-wrapper">
     <div class="card">
-      <h1>Wie viel ist Ihr Auto wert?</h1>
+      <h1>Willst du wissen wie viel <strong>DEIN</strong> Auto Wert ist</h1>
 
       <form method="post">
         {% for f in feature_names %}
@@ -57,7 +57,7 @@
         <h2>Vorhergesagter Preis: {{ pred_price | round(2) }} €</h2>
       {% endif %}
 
-      <p><a href="{{ url_for('index') }}">Zurück zur Startseite</a></p>
+      <p><a href="{{ url_for('index') }}">🏠</a></p>
     </div>
   </div>
 </body>

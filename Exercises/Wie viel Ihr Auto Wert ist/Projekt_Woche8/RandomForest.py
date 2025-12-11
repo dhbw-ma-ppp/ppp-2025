@@ -8,7 +8,7 @@ import joblib
 import os
 from sys import path as system_paths
 
-test_size = 0.05
+test_size = 0.1
 # size -> RMSE
 # 0.07 -> 5775.5982
 # 0.06 -> 5670.0744
@@ -21,6 +21,7 @@ MODEL_FILE_PATH = os.path.join(system_paths[0], "Model_Data", 'random_forest_mod
 
 if __name__ == "__main__" and os.path.exists(MODEL_FILE_PATH):
     os.remove(MODEL_FILE_PATH)
+    
 
 if os.path.exists(MODEL_FILE_PATH):
     print(f"Load model from: {MODEL_FILE_PATH}")
