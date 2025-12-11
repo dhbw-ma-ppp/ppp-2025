@@ -1,8 +1,7 @@
-import torch
 from dataset import *
 from transformers import pipeline
-from PIL import Image
 
+print("hey")
 pipeline = pipeline(
     task="document-question-answering",
     model="naver-clova-ix/donut-base-finetuned-docvqa",
@@ -10,7 +9,7 @@ pipeline = pipeline(
     dtype=None
 )
 question = "Was ist die Summe?"
-print("hey")
+
 
 def get_amount(image):
     image_rgb = image.convert("RGB")
