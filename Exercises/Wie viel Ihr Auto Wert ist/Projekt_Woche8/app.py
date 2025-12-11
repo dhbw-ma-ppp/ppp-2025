@@ -14,7 +14,21 @@ import sys
 from data import df as car_price_data
 from data import df as cleaned_df
 
+from data import (
+    df as car_price_data,
+    feature_value_to_ai_value,
+    feature_value_to_df_value,
+    features_in_median_order,
+    feature_casts,   
+)
 
+
+from DecissionTree import model as decission_tree_model
+from DecissionTree import x_train, x_test, y_test
+from RandomForest import model as random_forest_Model
+
+rf_model = random_forest_Model
+dt_model = decission_tree_model
 
 # Flask App
 app = Flask(__name__)
@@ -252,6 +266,104 @@ def plot_predictions_tree():
         print("Fehler in plot_predictions_tree:", e)
         return abort(500, str(e))
 
+@app.route("/predict", methods=["GET", "POST"])
+def predict():
+    df = car_price_data
+    feature_names = [c for c in df.columns if c != "Price"]
+
+    DROPDOWN_FEATURES = [
+        "Manufacturer",
+        "Model",
+        "Category",
+        "Color",
+        "Fuel type",
+        "Gear box type",
+        "Wheel",
+        "Leather interior",
+        "Drive wheels",   # ← neu
+        # Airbags bleibt draußen
+    ]
+
+
+    select_options: dict[str, list[str]] = {}
+
+    for f in DROPDOWN_FEATURES:
+        options = None
+
+        # Speziell für "Drive wheels": feste Auswahl
+        if f == "Drive wheels":
+            options = ["Front", "Rear", "4x4"]
+
+        # 1) Für Features, die als dict in feature_casts stehen
+        elif f in feature_casts and isinstance(feature_casts[f], dict):
+            options = sorted(feature_casts[f].keys())
+
+        # 2) Für andere: Keys aus feature_value_to_df_value
+        elif f in feature_value_to_df_value:
+            keys = [k for k in feature_value_to_df_value[f].keys() if k is not None]
+            options = sorted(keys)
+
+        if options:
+            select_options[f] = options
+
+
+
+    if request.method == "POST":
+        input_values: dict[str, str] = {}
+        ai_values: dict[str, float] = {}
+        unknown_flags: dict[str, bool] = {}
+
+        for f in feature_names:
+            raw_val = request.form.get(f)
+
+            # --- Fall 1: Feld leer -> Median-Wert verwenden ---
+            if raw_val is None or raw_val.strip() == "":
+                input_values[f] = ""  # Formular bleibt optisch leer
+
+                if f in features_in_median_order and f in feature_value_to_df_value:
+                    # Kategorie-Feature mit eigenem Median-Mapping
+                    ai_val = feature_value_to_df_value[f][None]
+                else:
+                    # Numerisches Feature -> Spaltenmedian
+                    ai_val = df[f].median()
+
+                ai_values[f] = ai_val
+                unknown_flags[f] = True  # "Standardwert/Median verwendet"
+                continue
+
+            # feature_value_to_ai_value benutzen 
+            try:
+                ai_val, known = feature_value_to_ai_value(f, raw_val)
+            except Exception as e:
+                return abort(400, description=f"Fehler beim Konvertieren von {f}: {e}")
+
+            input_values[f] = raw_val
+            ai_values[f] = ai_val
+            unknown_flags[f] = not known  
+
+        X_new = pd.DataFrame([ai_values], columns=feature_names)
+
+
+        pred_price = rf_model.predict(X_new)[0]
+
+        return render_template(
+            "predict.html",
+            feature_names=feature_names,
+            input_values=input_values,
+            unknown_flags=unknown_flags,
+            pred_price=pred_price,
+            select_options=select_options,
+        )
+
+    # GET: leeres Formular anzeigen
+    return render_template(
+        "predict.html",
+        feature_names=feature_names,
+        input_values=None,
+        unknown_flags=None,
+        pred_price=None,
+        select_options=select_options,
+    )
 
 
 # -----------------------------
