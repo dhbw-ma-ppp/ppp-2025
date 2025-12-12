@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -8,10 +7,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import r2_score, mean_squared_error
 import joblib
 
-# --- 1. Daten laden ---
+#Daten laden
 data = pd.read_csv('StudentPerformanceFactors.csv')
 
-# --- 2. Datenvorverarbeitung (wie in MachineLearning.py) ---
+#Datenvorverarbeitung
 
 # String-Werte mit LabelEncoder umwandeln
 string_columns = data.select_dtypes(include=["object"]).columns
@@ -19,25 +18,25 @@ label_encoders = {} # Dictionary zum Speichern der Encoder
 for col in string_columns:
     le = LabelEncoder()
     data[col] = le.fit_transform(data[col])
-    label_encoders[col] = le # Den trainierten Encoder speichern
+    label_encoders[col] = le
 
-# Fehlende Werte behandeln (Zeilen entfernen)
+# Fehlende Werte behandeln entfernen
 data.dropna(inplace=True)
 
-# --- 3. Features und Zielvariable definieren ---
+#Features und Zielvariable definieren
 X = data.drop('Exam_Score', axis=1)
 y = data['Exam_Score']
 
-# --- 4. Model Evaluation mit Train/Test Split ---
+#Model in Trainings- und Testdaten aufteilen
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=8)
 
-# --- 5. Pipeline erstellen (Scaler + LinearRegression) ---
+#Pipeline erstellen
 model_pipeline = Pipeline(steps=[
     ('scaler', StandardScaler()),
     ('regressor', LinearRegression())
 ])
 
-# --- 6. Modell trainieren und evaluieren ---
+#Modell trainieren und evaluieren
 model_pipeline.fit(X_train, y_train)
 y_pred = model_pipeline.predict(X_test)
 

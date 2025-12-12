@@ -12,13 +12,13 @@ from sklearn.svm import SVR
 from sklearn.pipeline import Pipeline
 import time
 
-# --- 1. Daten laden und erste Übersicht ---
+#Daten laden und erste Übersicht
 data = pd.read_csv('StudentPerformanceFactors.csv')
 print("Daten-Dimensionen:", data.shape)
 print("Erste Zeilen der Daten:")
 print(data.head())
 
-# --- 2. String-Werte in Integer-Werte umwandeln ---
+#String-Werte in Integer-Werte umwandeln
 string_columns = data.select_dtypes(include=["object"]).columns
 label_encoders = {}
 
@@ -30,24 +30,19 @@ for col in string_columns:
 print("Daten nach Umwandlung von String-Werten:")
 print(data.head())
 
-# --- 3. Fehlende Werte behandeln ---
+#Fehlende Werte behandeln
 print("Anzahl fehlender Werte pro Spalte:")
 print(data.isnull().sum())
 data = data.dropna()  # schnelle Behandlung: Zeilen entfernen
 
-# Optional: wenn Datensatz sehr groß ist, kann Subsampling die Suche beschleunigen
-# if len(data) > 20000:
-#     data = data.sample(n=20000, random_state=42)
 
-# --- 4. Features und Zielvariable definieren ---
 x = data.drop(columns=["Exam_Score"])
 y = data["Exam_Score"]
 
-# --- 5. Daten in Trainings- und Testdaten aufteilen ---
+#Daten in Trainings- und Testdaten aufteilen
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, random_state=8)
 
-# --- 6. Modelle und (schnellere) Hyperparameter-Suchen definieren ---
-# Verwende Pipeline mit StandardScaler + Modell (wichtig für SVR)
+#Modell Vergleich mit Hyperparameter-Suche
 models = {
     "LinearRegression": {
         "pipeline": Pipeline([("scaler", StandardScaler()), ("lr", LinearRegression())]),
@@ -75,7 +70,7 @@ models = {
     }
 }
 
-# --- 7. RandomizedSearch/fit für jedes Modell (schneller, parallel) ---
+#RandomizedSearch/fit für jedes Modell
 best_models = {}
 start_all = time.time()
 for name, info in models.items():
@@ -119,9 +114,7 @@ for name, info in models.items():
 end_all = time.time()
 print(f"Gesamte Suchdauer: {end_all - start_all:.1f}s")
 
-# --- 8. Ergebnisse des besten Modells testen ---
-# Wähle das Modell mit dem besten (höchsten) neg MSE (d.h. am wenigsten MSE)
-# Falls None (z.B. LinearRegression ohne score) berücksichtigen
+
 valid_models = {k: v for k, v in best_models.items() if v["best_score"] is not None}
 if valid_models:
     best_model_name = max(valid_models, key=lambda name: valid_models[name]["best_score"])
