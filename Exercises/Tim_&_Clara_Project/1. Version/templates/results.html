@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse Ergebnisse</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --success-bg: #d4edda;
+            --success-text: #155724;
+            --danger-bg: #fadbd8;
+            --danger-text: #922b21;
+            --neutral-bg: #e2e3e5;
+            --neutral-text: #383d41;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --info-bg: #e3f2fd;  /* NEU: Blau für Info */
+            --info-border: #bbdefb;
+            --info-text: #0d47a1;
+        }
+    
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px;
+            line-height: 1.6;
+        }
+    
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    
+        h1 {
+            text-align: center;
+            color: var(--text-main);
+            margin-bottom: 40px;
+            font-weight: 300;
+            font-size: 2.5rem;
+        }
+    
+        /* --- HAUPTKARTE --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+    
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* --- NEU: INFO BANNER --- */
+        .info-banner {
+            background-color: var(--info-bg);
+            border: 1px solid var(--info-border);
+            color: var(--info-text);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+    
+        /* --- MODELL VERGLEICH LAYOUT --- */
+        .model-comparison {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+    
+        .model-box {
+            flex: 1;
+            min-width: 250px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+    
+        .model-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+    
+        .model-title {
+            font-weight: bold;
+            margin-bottom: 5px; /* Reduziert für Feature-Text */
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .feature-count {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            display: block;
+        }
+    
+        /* --- STATUS BADGES --- */
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 80%;
+        }
+    
+        .status-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid #c3e6cb;
+        }
+    
+        .status-danger {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1px solid #f5c6cb;
+            animation: pulse 2s infinite;
+        }
+    
+        .status-neutral {
+            background-color: var(--neutral-bg);
+            color: var(--neutral-text);
+            border: 1px solid #d6d8db;
+            font-style: italic;
+        }
+    
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+    
+        /* --- DEBUG TABLE STYLES --- */
+        details {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+        }
+        
+        summary {
+            padding: 15px;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-weight: bold;
+            color: #555;
+            border-bottom: 1px solid #eee;
+            outline: none;
+        }
+    
+        .debug-content { padding: 20px; }
+    
+        .debug-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+    
+        .debug-table th { background: #e9ecef; text-align: left; padding: 10px; }
+        .debug-table td { border-bottom: 1px solid #eee; padding: 8px; }
+        
+        /* Zeilen hervorheben, die für V2 ignoriert werden (Semester 2) */
+        .ignored-row { color: #aaa; background: #f9f9f9; }
+        .highlight-row { background-color: #fff3cd; color: #856404; font-weight: bold; }
+    
+        /* --- ACTION BUTTON --- */
+        .btn-back {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+            background-color: #2980b9;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 30px;
+            transition: background 0.2s;
+        }
+        .btn-back:hover { background-color: #1c5980; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Analyse Ergebnisse</h1>
+
+        <div class="info-banner">
+            Gewählter Fortschritt: 
+            <strong>
+                {% if progress == 1 %} 
+                    Nur 1. Semester (Daten für 2. Semester ignoriert)
+                {% else %} 
+                    1. & 2. Semester abgeschlossen
+                {% endif %}
+            </strong>
+        </div>
+
+        <div class="card">
+            <h2>Modell Vergleich</h2>
+            
+            <div class="model-comparison">
+                
+                {% for model_name in ['v1', 'v2'] %}
+                <div class="model-box">
+                    <span class="model-title">Modell {{ model_name | upper }}</span>
+                    
+                    <span class="feature-count">
+                        Basis: {{ results[model_name].get('n_features', '?') }} Features
+                    </span>
+
+                    {% if results[model_name]['status'] == 1 %}
+                        <div class="status-badge status-danger">
+                            ⚠️ DURCHGEFALLEN<br>
+                            <span style="font-size:0.8em; font-weight:normal;">(Dropout Risk)</span>
+                        </div>
+                        <div style="margin-top:10px; font-family:monospace; color:#c0392b;">
+                            Raw Score: <strong>{{ results[model_name]['raw_score'] }}</strong><br>
+                            (Limit: &ge; 0.5)
+                        </div>
+
+                    {% elif results[model_name]['status'] == 0 %}
+                        <div class="status-badge status-success">
+                            🎓 BESTANDEN<br>
+                            <span style="font-size:0.8em; font-weight:normal;">(Graduate Likely)</span>
+                        </div>
+                        <div style="margin-top:10px; font-family:monospace; color:#155724;">
+                            Raw Score: <strong>{{ results[model_name]['raw_score'] }}</strong><br>
+                            (Limit: &le; 0.49)
+                        </div>
+
+                    {% else %}
+                        <div class="status-badge status-neutral">
+                            ⛔ ERROR<br>
+                            <span style="font-size:0.7em;">{{ results[model_name].get('error', 'N/A') }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <details>
+            <summary>🛠 DEVELOPER DEBUG INFO (Hier klicken)</summary>
+            <div class="debug-content">
+                
+                <h3>System Status</h3>
+                <p>Modus: 
+                    {% if mode == 'RISK' %}
+                        <strong style="color:red">RISKANT</strong> (User hat negative Daten eingegeben -> Lücken werden schlecht aufgefüllt)
+                    {% else %}
+                        <strong style="color:green">GUT</strong> (User ist unauffällig -> Lücken werden positiv aufgefüllt)
+                    {% endif %}
+                </p>
+
+                <h3>Input Vektor Daten</h3>
+                <p>Modell V2 ignoriert alles ab Index 26 (2. Semester & Makroökonomie).</p>
+                
+                <table class="debug-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Feature Name</th>
+                            <th>Wert</th>
+                            <th>Genutzt von</th> </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in debug_features %}
+                        <tr class="{% if item.index >= 26 %}ignored-row{% elif 'Debtor' in item.name or 'Grade' in item.name %}highlight-row{% endif %}">
+                            <td>{{ item.index }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.value }}</td>
+                            <td>
+                                {% if item.index < 26 %}
+                                    <span style="color:green; font-weight:bold;">V1 & V2</span>
+                                {% else %}
+                                    <span style="color:blue;">Nur V1</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </details>
+
+        <a href="/" class="btn-back">Neue Analyse starten</a>
+    </div>
+</body>
+</html>
