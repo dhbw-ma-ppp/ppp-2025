@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interaktive Vorhersage: Studienabbruch</title>
+    <style>
+      :root {
+        --primary: #2980b9;
+        --success: #27ae60;
+        --bg-sidebar: #eef2f5;
+        --bg-main: #ffffff;
+        --border: #ddd;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+        color: #333;
+      }
+
+      /* --- LINKES MENÜ (Sidebar) --- */
+      .sidebar {
+        width: 400px; /* Etwas breiter für mehr Inhalt */
+        background-color: var(--bg-sidebar);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .sidebar h2 {
+        font-size: 1.2rem;
+        margin-top: 0;
+        color: #2c3e50;
+      }
+
+      .features-container {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 5px;
+      }
+
+      .search-box {
+        margin-bottom: 15px;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      /* --- RECHTER BEREICH (Drop Zone) --- */
+      .main-content {
+        flex: 1;
+        background-color: var(--bg-main);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      /* --- NEU: PFLICHTFELD STYLE --- */
+      .mandatory-section {
+        grid-column: 1 / -1; /* Über die volle Breite im Grid */
+        background-color: #fff8e1; /* Helles Gelb */
+        border: 1px solid #ffe0b2; /* Dunklerer Rand */
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      }
+
+      .mandatory-section h3 {
+        margin-top: 0;
+        color: #f57c00; /* Orange-Ton für Überschrift */
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+
+      .mandatory-row {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+      }
+
+      .mandatory-col {
+        flex: 1;
+      }
+
+      .drop-zone-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 40px;
+        background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+
+      form {
+        max-width: 900px;
+        margin: 0 auto;
+        min-height: 300px;
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: border-color 0.3s, background 0.3s;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 15px;
+        align-content: start;
+      }
+
+      form.drag-over {
+        border-color: var(--primary);
+        background: #eaf4fb;
+      }
+
+      /* Platzhalter Text */
+      .empty-message {
+        grid-column: 1 / -1;
+        text-align: center;
+        color: #888;
+        margin-top: 50px;
+        pointer-events: none;
+      }
+
+      form:not(:empty) .empty-message {
+        display: none;
+      }
+
+      /* --- DRAGGABLE CARDS --- */
+      .feature-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        margin-bottom: 10px;
+        padding: 10px 15px;
+        cursor: grab;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .feature-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .feature-card:active {
+        cursor: grabbing;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 5px;
+      }
+
+      .drag-icon {
+        color: #aaa;
+        font-size: 1.2em;
+      }
+
+      /* Inhalt verstecken, wenn in Sidebar */
+      .sidebar .feature-content {
+        display: none;
+      }
+
+      /* Inhalt anzeigen, wenn im Formular */
+      form .feature-card {
+        cursor: default;
+        transform: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid var(--primary);
+        margin-bottom: 0;
+        height: fit-content;
+      }
+
+      form .feature-card:hover {
+        transform: none;
+      }
+
+      form .feature-content {
+        display: block;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      form .drag-icon {
+        display: none;
+      }
+
+      /* Löschen Button */
+      .remove-btn {
+        display: none;
+        color: #e74c3c;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      form .remove-btn {
+        display: block;
+      }
+
+      /* Inputs Styling */
+      label {
+        display: block;
+        margin-bottom: 3px;
+        margin-top: 8px;
+        font-size: 0.9em;
+        font-weight: 500;
+        color: #555;
+      }
+      select,
+      input[type="number"],
+      input[type="text"] {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 0.9em;
+      }
+      .radio-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 2px;
+        font-size: 0.9em;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 10px;
+      }
+      .input-row > div {
+        flex: 1;
+      }
+
+      /* Footer Action Bar */
+      .action-bar {
+        padding: 20px;
+        background: white;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      button.submit-btn {
+        padding: 12px 30px;
+        background-color: var(--success);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        opacity: 0.5;
+        pointer-events: none;
+        transition: 0.3s;
+      }
+
+      button.submit-btn.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .category-tag {
+        font-size: 0.65em;
+        text-transform: uppercase;
+        color: #7f8c8d;
+        background: #eee;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <h2>Verfügbare Datenmodule</h2>
+      <div class="search-box">
+        <input
+          type="text"
+          id="search"
+          placeholder="Suche (z.B. Noten, Eltern...)"
+          onkeyup="filterFeatures()"
+        />
+      </div>
+        <div class="features-container" id="source-container"><div class="feature-card" draggable="true" id="card-demographics">
+          <div class="card-header">
+            <span><span class="category-tag">Person</span>Demografie</span>
+            <span class="drag-icon">☰</span>
+            <span class="remove-btn" onclick="removeFeature('card-demographics')">×</span>
+          </div>
+          <div class="feature-content">
+            <div class="input-row">
+              <div>
+                <label>Alter (Immatrikulation)</label>
+                <input type="number" name="age" value="18" min="16" max="80" />
+              </div>
+              <div>
+                <label>Geschlecht</label>
+                <select name="gender">
+                  <option value="1">Männlich</option>
+                  <option value="0">Weiblich</option>
+                </select>
+              </div>
+            </div>
+
+            <label>Familienstand</label>
+            <select name="marital_status">
+              <option value="1">Ledig (Single)</option>
+              <option value="2">Verheiratet</option>
+              <option value="4">Geschieden</option>
+            </select>
+
+            <div class="radio-group" style="margin-top: 10px">
+              <label><input type="checkbox" name="international" value="1" /> Internationaler Student</label>
+            </div>
+            <div class="radio-group">
+              <label><input type="checkbox" name="displaced" value="1" /> Umgezogen (Displaced)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" draggable="true" id="card-application">
+          <div class="card-header">
+            <span
+              ><span class="category-tag">Bewerbung</span>Kurs & Bewerbung</span
+            >
+            <span class="drag-icon">☰</span>
+            <span class="remove-btn" onclick="removeFeature('card-application')"
+              >×</span
+            >
+          </div>
+          <div class="feature-content">
+            <label>Studiengang</label>
+            <select name="course">
+              <option value="33">Biotreibstoff-Produktionstechnologien</option>
+              <option value="171">Animation und Multimedia Design</option>
+              <option value="8014">
+                Soziale Arbeit (Abendstudium/Abendunterricht)
+              </option>
+              <option value="9070">Kommunikationsdesign</option>
+              <option value="9085">
+                Tiermedizinische Assistenz (oder Veterinärmedizinische Pflege)
+              </option>
+              <option value="9119">Informatik-Ingenieurwesen</option>
+              <option value="9130">
+                Pferdewirtschaft (oder Pferdezucht/Pferdehaltung)
+              </option>
+              <option value="9147">Management</option>
+              <option value="9238">Sozialdienst</option>
+              <option value="9254">Tourismus</option>
+              <option value="9500">Pflege (oder Pflegewissenschaft)</option>
+              <option value="9556">Mundhygiene (oder Dentalhygiene)</option>
+              <option value="9670">Werbung & Marketing</option>
+              <option value="9773">Journalismus</option>
+              <option value="9853">Grundschullehramt</option>
+              <option value="9991">
+                Management (Abendstudium/Abendunterricht)
+              </option>
+            </select>
+
+            <label>Bewerbungsmodus</label>
+            <select name="application_mode">
+              <option value="1">1. Phase - Allgemeines Kontingent</option>
+              <option value="2">Verordnung Nr. 612/93</option>
+              <option value="5">1. Phase - Sonderkontingent (Azoren)</option>
+              <option value="7">Inhaber anderer Hochschulabschlüsse</option>
+              <option value="10">Verordnung Nr. 854-B/99</option>
+              <option value="15">Internationaler Student (Bachelor)</option>
+              <option value="16">1. Phase - Sonderkontingent (Madeira)</option>
+              <option value="17">2. Phase - Allgemeines Kontingent</option>
+              <option value="18">3. Phase - Allgemeines Kontingent</option>
+              <option value="26">
+                Verordnung Nr. 533-A/99, Punkt b2 (Anderer Plan)
+              </option>
+              <option value="27">
+                Verordnung Nr. 533-A/99, Punkt b3 (Andere Institution)
+              </option>
+              <option value="39">Über 23 Jahre alt</option>
+              <option value="42">Transfer</option>
+              <option value="43">Studiengangswechsel</option>
+              <option value="44">
+                Inhaber eines technologischen Spezialisierungsdiploms
+              </option>
+              <option value="51">
+                Wechsel der Institution/des Studiengangs
+              </option>
+              <option value="53">Inhaber eines Kurzzeit-Diploms</option>
+              <option value="57">
+                Wechsel der Institution/des Studiengangs (International)
+              </option>
+            </select>
+
+            <div class="input-row">
+              <div>
+                <label>Welche Wahl war deine Uni? (0 = erst Wahl - 9 besser als nichts)</label>
+                <input
+                  type="number"
+                  name="application_order"
+                  min="0"
+                  max="9"
+                  value="1"
+                />
+              </div>
+              <div>
+                <label>Zeitmodell d. Uni</label>
+                <select name="daytime_evening">
+                  <option value="1">Tag (Normal)</option>
+                  <option value="0">Abendschule</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" draggable="true" id="card-background">
+          <div class="card-header">
+            <span
+              ><span class="category-tag">Hintergrund</span>Schulbildung</span
+            >
+            <span class="drag-icon">☰</span>
+            <span class="remove-btn" onclick="removeFeature('card-background')"
+              >×</span
+            >
+          </div>
+          <div class="feature-content">
+            <label>Vorherige Qualifikation</label>
+            <select name="previous_qualification">
+              <option value="1">Sekundarstufe</option>
+              <option value="2">Hochschulbildung - Bachelor</option>
+              <option value="3">Hochschulbildung - Abschluss (Degree)</option>
+              <option value="4">Hochschulbildung - Master</option>
+              <option value="5">Hochschulbildung - Doktorat</option>
+              <option value="6">Besuch einer Hochschule</option>
+              <option value="9">12. Schuljahr - nicht abgeschlossen</option>
+              <option value="10">11. Schuljahr - nicht abgeschlossen</option>
+              <option value="12">Sonstige - 11. Schuljahr</option>
+              <option value="14">10. Schuljahr</option>
+              <option value="15">10. Schuljahr - nicht abgeschlossen</option>
+              <option value="19">
+                Basisbildung 3. Zyklus (9./10./11. Jahr) oder Äquiv.
+              </option>
+              <option value="38">
+                Basisbildung 2. Zyklus (6./7./8. Jahr) oder Äquiv.
+              </option>
+              <option value="39">Technologischer Spezialisierungskurs</option>
+              <option value="40">
+                Hochschulbildung - Abschluss (1. Zyklus)
+              </option>
+              <option value="42">
+                Berufsbildender höherer technischer Kurs
+              </option>
+              <option value="43">Hochschulbildung - Master (2. Zyklus)</option>
+            </select>
+
+            <div class="input-row">
+              <div>
+                <label>Note Vorqualifikation (1.0-6.0)</label>
+                <input
+                  type="number"
+                  name="previous_qualification_grade"
+                  value="2.5"
+                  min="1.0"
+                  max="6.0"
+                  step="0.1"
+                />
+              </div>
+              <div>
+                <label>Zulassungsnote (1.0-6.0)</label>
+                <input type="number" name="admission_grade" value="2.5" min="1.0" max="6.0" step="0.1" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" draggable="true" id="card-financial">
+          <div class="card-header">
+            <span
+              ><span class="category-tag">Sozioökonomisch</span>Finanzen</span
+            >
+            <span class="drag-icon">☰</span>
+            <span class="remove-btn" onclick="removeFeature('card-financial')"
+              >×</span
+            >
+          </div>
+          <div class="feature-content">
+            <div class="radio-group" style="margin-bottom: 8px">
+              <label style="margin: 0">Stipendiat?</label>
+              <input type="radio" name="scholarship" value="1" /> Ja
+              <input type="radio" name="scholarship" value="0" checked /> Nein
+            </div>
+            <div class="radio-group" style="margin-bottom: 8px">
+              <label style="margin: 0">Studiengebühren bezahlt?</label>
+              <input type="radio" name="tuition_fees" value="1" checked /> Ja
+              <input type="radio" name="tuition_fees" value="0" /> Nein
+            </div>
+            <div class="radio-group">
+              <label style="margin: 0">Schulden beim Institut?</label>
+              <input type="radio" name="debtor" value="1" /> Ja
+              <input type="radio" name="debtor" value="0" checked /> Nein
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" draggable="true" id="card-parents">
+          <div class="card-header">
+            <span><span class="category-tag">Hintergrund</span>Eltern</span>
+            <span class="drag-icon">☰</span>
+            <span class="remove-btn" onclick="removeFeature('card-parents')"
+              >×</span
+            >
+          </div>
+          <div class="feature-content">
+            <label><strong>Mutter</strong></label>
+            <div class="input-row">
+              <div>
+                <label>Ausbildung</label>
+                <select name="mother_qualification">
+                  <option value="1">
+                    Sekundarstufe - 12. Jahr oder Äquivalent
+                  </option>
+                  <option value="1">Abitur/Matura</option>
+                  <option value="2">Hochschule - Bachelor</option>
+                  <option value="3">Hochschule - Abschluss</option>
+                  <option value="4">Hochschule - Master</option>
+                  <option value="5">Hochschule - Doktorat</option>
+                  <option value="6">Hochschulbesuchshäufigkeit</option>
+                  <option value="9">12.Schuljahr nicht abgeschlossen</option>
+                  <option value="10">11.Schuljahr nicht abgeschlossen</option>
+                  <option value="11">7.Schuljahr</option>
+                  <option value="12">Sonstiges - 11.Schuljahr</option>
+                  <option value="14">Realschulabschluss</option>
+                  <option value="18">Allgemeinre Handelskurs</option>
+                  <option value="22">Technisch-beruflicher Kurs</option>
+                  <option value="26">7.Schuljahr</option>
+                  <option value="27">
+                    2. Zyklus des allgemeinen Gymnasiualkurses
+                  </option>
+                  <option value="29">9.Schuljahr - nicht abgeschlossen</option>
+                  <option value="30">8.Schuljahr</option>
+                  <option value="37">
+                    Basisbildung 1. Zyklus (4./5. Jahr)
+                  </option>
+                  <option value="38">
+                    Basisbildung 2. Zyklus (6./7./8. Jahr)
+                  </option>
+                  <option value="19">
+                    Basisbildung 3. Zyklus (9.-11. Jahr)
+                  </option>
+                  <option value="39">
+                    Kurs zur technologischen Spezialisierung
+                  </option>
+                  <option value="40">
+                    Hochschulbildung - Bachelor (1.Zyklus)
+                  </option>
+                  <option value="43">
+                    Hochschulbildung - Master (2.Zyklus)
+                  </option>
+                  <option value="44">
+                    Hochschulbildung - Doktorant (3.Zyklus)
+                  </option>
+                  <option value="41">Spezialisierter Hochschulkurs</option>
+                  <option value="42">
+                    Beruflicher höherer technischer Kurs
+                  </option>
+                  <option value="35">Kann weder lesen noch schreiben</option>
+                  <option value="34">Unbekannt</option>
+                </select>
+              </div>
+              <div>
+                <label>Beruf</label>
+                <select name="mother_occupation">
+                  <option value="0">Studierende</option>
+                  <option value="1">
+                    Vertreter der Legislative und Exekutive, Direktoren,
+                    Geschäftsführer und leitende Manager
+                  </option>
+                  <option value="2">
+                    Spezialisten für intellektuelle und wissenschaftliche
+                    Tätigkeiten
+                  </option>
+                  <option value="3">
+                    Fachkräfte und Berufe auf mittlerer Ebene (Intermediate
+                    Level Technicians)
+                  </option>
+                  <option value="4">
+                    Verwaltungsangestellte (Administrative staff)
+                  </option>
+                  <option value="5">
+                    Dienstleistungspersonal, Sicherheitskräfte und Verkäufer
+                  </option>
+                  <option value="6">
+                    Landwirte und Facharbeiter in Landwirtschaft, Fischerei und
+                    Forstwirtschaft
+                  </option>
+                  <option value="7">
+                    Facharbeiter in Industrie, Bauwesen und Handwerk
+                  </option>
+                  <option value="8">
+                    Anlagen- und Maschinenbediener sowie Montagearbeiter
+                  </option>
+                  <option value="9">Ungelernte Arbeitskräfte</option>
+                  <option value="10">
+                    Berufe bei den Streitkräften (Armed Forces Professions)
+                  </option>
+                  <option value="90">Sonstige Situation</option>
+                  <option value="122">Gesunheitsfachkräfte</option>
+                  <option value="123">Lehrer/Pädagogen</option>
+                  <option value="125">
+                    Spezialisten für Informations- und
+                    Kommunikationstechnologien (IKT)
+                  </option>
+                  <option value="131">
+                    Techniker und Berufe auf mittlerer Ebene in Wissenschaft und
+                    Ingenieurwesen
+                  </option>
+                  <option value="132">
+                    Techniker und Berufe auf mittlerer Ebene im Gesundheitswesen
+                  </option>
+                  <option value="134">
+                    Techniker auf mittlerer Ebene in Rechts-, Sozial-, Sport-,
+                    Kultur- und ähnlichen Dienstleistungen
+                  </option>
+                  <option value="141">
+                    Büroangestellte, Sekretäre und Datenerfassungsoperatoren
+                  </option>
+                  <option value="143">
+                    Bediener in der Datenverarbeitung, Buchhaltung, Statistik,
+                    Finanzdienstleistungen und Registratur
+                  </option>
+                  <option value="144">
+                    Sonstiges administratives Unterstützungspersonal
+                  </option>
+                  <option value="151">Dienstleistungspersonal</option>
+                  <option value="152">Verkäufer</option>
+                  <option value="153">
+                    Pflegekräfte und ähnliche Berufe in der Körperpflege
+                  </option>
+                  <option value="171">
+                    Qualifizierte Bauarbeiter und dergleichen, außer Elektrikern
+                  </option>
+                  <option value="173">
+                    Qualifizierte Arbeiter in Druckereien,
+                    Präzisionsinstrumentenbau, Juweliere, Handwerker und
+                    dergleichen
+                  </option>
+                  <option value="175">
+                    Arbeiter in der Lebensmittelverarbeitung, Holzverarbeitung,
+                    Bekleidungs- und anderen Industrien und im Handwerk
+                  </option>
+                  <option value="191">Reinigungskräfte</option>
+                  <option value="192">
+                    Ungelernte Arbeitskräfte in Landwirtschaft, Tierproduktion,
+                    Fischerei und Forstwirtschaft
+                  </option>
+                  <option value="193">
+                    Ungelernte Arbeitskräfte in der Gewinnungsindustrie, im
+                    Bauwesen, im verarbeitenden Gewerbe und im Transportwesen
+                  </option>
+                  <option value="194">
+                    Assistenten bei der Essenszubereitung (Küchenhilfen)
+                  </option>
+                  <option value="99">Keine Angabe</option>
+                </select>
+              </div>
+            </div>
+
+            <label style="margin-top: 10px"><strong>Vater</strong></label>
+            <div class="input-row">
+              <div>
+                <label>Ausbildung</label>
+                <select name="father_qualification">
+                  <option value="1">
+                    Sekundarbildung – 12. Schuljahr oder Äquivalent
+                  </option>
+                  <option value="2">Höhere Bildung – Bachelor-Abschluss</option>
+                  <option value="3">
+                    Höhere Bildung – Diplom/Akademischer Grad (Lizenziat)
+                  </option>
+                  <option value="4">Höhere Bildung – Master</option>
+                  <option value="5">Höhere Bildung – Doktorat/Promotion</option>
+                  <option value="6">
+                    Häufigkeit der Hochschulbildung (Besuchshäufigkeit)
+                  </option>
+                  <option value="9">12. Schuljahr – Nicht abgeschlossen</option>
+                  <option value="10">
+                    11. Schuljahr – Nicht abgeschlossen
+                  </option>
+                  <option value="11">7. Schuljahr (Altes System)</option>
+                  <option value="12">Sonstiges – 11. Schuljahr</option>
+                  <option value="13">
+                    2. Jahr des ergänzenden Gymnasialkurses
+                  </option>
+                  <option value="14">10. Schuljahr</option>
+                  <option value="18">Allgemeiner Handelskurs</option>
+                  <option value="19">
+                    Grundbildung 3. Zyklus (9./10./11. Jahr) oder Äquivalent
+                  </option>
+                  <option value="20">Ergänzender Gymnasialkurs</option>
+                  <option value="22">Technisch-beruflicher Kurs</option>
+                  <option value="25">
+                    Ergänzender Gymnasialkurs – Nicht abgeschlossen
+                  </option>
+                  <option value="26">7. Schuljahr</option>
+                  <option value="27">
+                    2. Zyklus des allgemeinen Gymnasialkurses
+                  </option>
+                  <option value="29">9. Schuljahr – Nicht abgeschlossen</option>
+                  <option value="30">8. Schuljahr</option>
+                  <option value="31">
+                    Allgemeiner Kurs für Verwaltung und Handel
+                  </option>
+                  <option value="33">
+                    Ergänzende Buchhaltung und Verwaltung
+                  </option>
+                  <option value="34">Unbekannt</option>
+                  <option value="35">
+                    Kann nicht lesen oder schreiben (Analphabet)
+                  </option>
+                  <option value="36">
+                    Kann lesen, ohne das 4. Schuljahr abgeschlossen zu haben
+                  </option>
+                  <option value="37">
+                    Grundbildung 1. Zyklus (4./5. Jahr) oder Äquivalent
+                  </option>
+                  <option value="38">
+                    Grundbildung 2. Zyklus (6./7./8. Jahr) oder Äquivalent
+                  </option>
+                  <option value="39">
+                    Kurs zur technologischen Spezialisierung
+                  </option>
+                  <option value="40">
+                    Höhere Bildung – Akademischer Grad (1. Zyklus, z.B.
+                    Bachelor)
+                  </option>
+                  <option value="41">Spezialisierter Hochschulkurs</option>
+                  <option value="42">
+                    Beruflicher höherer technischer Kurs
+                  </option>
+                  <option value="43">
+                    Höhere Bildung – Master (2. Zyklus)
+                  </option>
+                  <option value="44">
+                    Höhere Bildung – Doktorat/Promotion (3. Zyklus)
+                  </option>
+                </select>
+              </div>
+              <div>
+                <label>Beruf</label>
+                <select name="father_occupation">
+                  <option value="" disabled selected>
+                    Bitte Beruf des Vaters wählen
+                  </option>
+                  <option value="0">Studierende</option>
+                  <option value="1">
+                    Vertreter der Legislative und Exekutive, Direktoren,
+                    Geschäftsführer und leitende Manager
+                  </option>
+                  <option value="2">
+                    Spezialisten für intellektuelle und wissenschaftliche
+                    Tätigkeiten
+                  </option>
+                  <option value="3">
+                    Fachkräfte und Berufe auf mittlerer Ebene
+                  </option>
+                  <option value="4">Verwaltungsangestellte</option>
+                  <option value="5">
+                    Dienstleistungspersonal, Sicherheitskräfte und Verkäufer
+                  </option>
+                  <option value="6">
+                    Landwirte und Facharbeiter in Landwirtschaft, Fischerei und
+                    Forstwirtschaft
+                  </option>
+                  <option value="7">
+                    Facharbeiter in Industrie, Bauwesen und Handwerk
+                  </option>
+                  <option value="8">
+                    Anlagen- und Maschinenbediener sowie Montagearbeiter
+                  </option>
+                  <option value="9">Ungelernte Arbeitskräfte</option>
+                  <option value="10">Berufe bei den Streitkräften</option>
+                  <option value="90">Sonstige Situation</option>
+                  <option value="99">(Leer/Nicht angegeben)</option>
+                  <option value="101">Offiziere der Streitkräfte</option>
+                  <option value="102">Unteroffiziere der Streitkräfte</option>
+                  <option value="103">
+                    Sonstiges Personal der Streitkräfte
+                  </option>
+                  <option value="112">
+                    Direktoren von Verwaltungs- und kaufmännischen
+                    Dienstleistungen
+                  </option>
+                  <option value="114">
+                    Direktoren in Hotel, Gastronomie, Handel und sonstigen
+                    Dienstleistungen
+                  </option>
+                  <option value="121">
+                    Spezialisten in Naturwissenschaften, Mathematik,
+                    Ingenieurwesen und verwandten Bereichen
+                  </option>
+                  <option value="122">Gesundheitsfachkräfte</option>
+                  <option value="123">Lehrer/Pädagogen</option>
+                  <option value="124">
+                    Spezialisten für Finanzen, Rechnungswesen,
+                    Verwaltungsorganisation, Öffentlichkeitsarbeit und
+                    Geschäftsbeziehungen
+                  </option>
+                  <option value="131">
+                    Techniker und Berufe auf mittlerer Ebene in Wissenschaft und
+                    Ingenieurwesen
+                  </option>
+                  <option value="132">
+                    Techniker und Berufe auf mittlerer Ebene im Gesundheitswesen
+                  </option>
+                  <option value="134">
+                    Techniker auf mittlerer Ebene in Rechts-, Sozial-, Sport-,
+                    Kultur- und ähnlichen Dienstleistungen
+                  </option>
+                  <option value="135">
+                    Informations- und Kommunikationstechnologie-Techniker
+                  </option>
+                  <option value="141">
+                    Büroangestellte, Sekretäre und Datenerfassungsoperatoren
+                  </option>
+                  <option value="143">
+                    Bediener in der Datenverarbeitung, Buchhaltung, Statistik,
+                    Finanzdienstleistungen und Registratur
+                  </option>
+                  <option value="144">
+                    Sonstiges administratives Unterstützungspersonal
+                  </option>
+                  <option value="151">Dienstleistungspersonal</option>
+                  <option value="152">Verkäufer</option>
+                  <option value="153">
+                    Pflegekräfte und ähnliche Berufe in der Körperpflege
+                  </option>
+                  <option value="154">
+                    Personal für Schutz- und Sicherheitsdienste
+                  </option>
+                  <option value="161">
+                    Marktorientierte Landwirte und qualifizierte Arbeitskräfte
+                    in der Agrar- und Tierproduktion
+                  </option>
+                  <option value="163">
+                    Landwirte, Viehzüchter, Fischer, Jäger und Sammler zur
+                    Subsistenzwirtschaft (Selbstversorgung)
+                  </option>
+                  <option value="171">
+                    Qualifizierte Bauarbeiter und dergleichen, außer Elektrikern
+                  </option>
+                  <option value="172">
+                    Qualifizierte Arbeiter in Metallurgie, Metallverarbeitung
+                    und ähnlichem
+                  </option>
+                  <option value="174">
+                    Qualifizierte Arbeiter in Elektrizität und Elektronik
+                  </option>
+                  <option value="175">
+                    Arbeiter in Lebensmittelverarbeitung, Holzverarbeitung,
+                    Bekleidung und anderen Industrien/im Handwerk
+                  </option>
+                  <option value="181">
+                    Bediener von stationären Anlagen und Maschinen
+                  </option>
+                  <option value="182">Montagearbeiter</option>
+                  <option value="183">
+                    Fahrer von Fahrzeugen und mobilen Geräten
+                  </option>
+                  <option value="192">
+                    Ungelernte Arbeitskräfte in Landwirtschaft, Tierproduktion,
+                    Fischerei und Forstwirtschaft
+                  </option>
+                  <option value="193">
+                    Ungelernte Arbeitskräfte in der Gewinnungsindustrie, im
+                    Bauwesen, im verarbeitenden Gewerbe und im Transportwesen
+                  </option>
+                  <option value="194">
+                    Assistenten bei der Essenszubereitung (Küchenhilfen)
+                  </option>
+                  <option value="195">
+                    Straßenverkäufer (außer Lebensmittel) und Anbieter von
+                    Straßendienstleistungen
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" draggable="true" id="card-sem1">
+          <div class="card-header">
+            <span><span class="category-tag">Noten</span>1. Semester</span>
+            <span class="drag-icon">☰</span>
+            <span class="remove-btn" onclick="removeFeature('card-sem1')"
+              >×</span
+            >
+          </div>
+          <div class="feature-content">
+            <div class="input-row">
+              <div>
+                <label>Anzahl der Kurse</label>
+                <input type="number" name="cur_1_enrolled" value="6" />
+              </div>
+              <div>
+                <label>Anzahl der Bewerteten Module</label>
+                <input type="number" name="cur_1_evaluations" value="6" />
+              </div>
+            </div>
+            <div class="input-row">
+              <div>
+                <label>Anzahl bestandene Kurse</label>
+                <input type="number" name="cur_1_approved" value="5" />
+              </div>
+              <div>
+                <label>Tatsächline Note (Ø)</label>
+                <input
+                  type="number"
+                  name="cur_1_grade"
+                  value="2.5"
+                  step="0.1"
+                  max="6"
+                />
+              </div>
+            </div>
+            <div class="input-row">
+              <div>
+                <label>Anzahl anerkannten Kurse</label>
+                <input type="number" name="cur_1_credited" value="5" />
+              </div>
+              <div>
+                <label>Anzahl der nicht Bewerteten Module</label>
+                <input type="number" name="cur_1_without_eval" value="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" draggable="true" id="card-sem2">
+          <div class="card-header">
+            <span><span class="category-tag">Noten</span>2. Semester</span>
+            <span class="drag-icon">☰</span>
+            <span class="remove-btn" onclick="removeFeature('card-sem2')"
+              >×</span
+            >
+          </div>
+          <div class="feature-content">
+            <div class="input-row">
+              <div>
+                <label>Anzahl der Kurse</label>
+                <input type="number" name="cur_2_enrolled" value="6" />
+              </div>
+              <div>
+                <label>Anzahl der gewerteten Kurse</label>
+                <input type="number" name="cur_2_evaluations" value="6" />
+              </div>
+            </div>
+            <div class="input-row">
+              <div>
+                <label>Anzahl bestandene Kurse</label>
+                <input type="number" name="cur_2_approved" value="5" />
+              </div>
+              <div>
+                <label>Endnote (Ø)</label>
+                <input
+                  type="number"
+                  name="cur_2_grade"
+                  value="2.5"
+                  step="0.1"
+                  max="6"
+                />
+              </div>
+            </div>
+            <div class="input-row">
+              <div>
+                <label>Anzahl anerkannten Kurse</label>
+                <input type="number" name="cur_2_credited" value="0" />
+              </div>
+              <div>
+                <label>Anzahl nicht anerkannten Kurse</label>
+                <input type="number" name="cur_2_without_eval" value="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="drop-zone-container">
+        <h1>Analyse Konfigurator</h1>
+        <p>
+          Ziehen Sie die relevanten Faktoren aus dem linken Menü in das Feld
+          unten, um die Studienabbruchs-Vorhersage zu konfigurieren.
+        </p>
+
+        <form id="prediction-form" action="/predict" method="POST" ondrop="drop(event)" ondragover="allowDrop(event)">
+            
+            <div class="mandatory-section">
+                <h3>⚙️ Konfiguration (Pflichtangaben)</h3>
+                
+                <div class="mandatory-row">
+                    <div class="mandatory-col">
+                        <label style="margin-top:0">1. Nationalität / Campus:</label>
+                        <select name="user_nationality" style="width: 100%; padding: 8px; background: white;">
+                            <option value="DE">Deutschland (GDP: 1.9%, Infl: 5.0%, Arbeitslosenquote: 6,4%)</option>
+                            <option value="USA">USA (GDP: 2.5%, Infl: 3.5%, Arbeitslosenquote: 4,2%)</option>
+                            <option value="PT">Portugal (Standard)</option>
+                        </select>
+                    </div>
+
+                    <div class="mandatory-col">
+                        <label style="margin-top:0">2. Studienfortschritt:</label>
+                        <select name="semester_progress" style="width: 100%; padding: 8px; background: white;">
+                            <option value="1">Nur 1. Semester abgeschlossen (Nutzt Modell V2)</option>
+                            <option value="2">1. und 2. Semester abgeschlossen (Nutzt Modell V1)</option>
+                        </select>
+                    </div>
+                </div>
+                <p style="font-size: 0.85em; color: #888; margin-bottom: 0; margin-top: 10px;">
+                    ℹ️ <strong>Hinweis:</strong> Wähle "Nur 1. Semester", wenn noch keine Noten für das 2. Semester vorliegen. Das System schaltet dann automatisch auf das passende KI-Modell um.
+                </p>
+            </div>
+            <div class="empty-message">
+                Hier Datenmodule ablegen<br />
+                <span style="font-size: 2em; opacity: 0.5">+</span>
+            </div>
+
+        </form>
+      </div>
+
+      <div class="action-bar">
+        <span id="status-text">0 Module ausgewählt</span>
+        <button
+          type="submit"
+          form="prediction-form"
+          class="submit-btn"
+          id="submit-btn"
+        >
+          Vorhersage starten
+        </button>
+      </div>
+    </main>
+
+    <script>
+      const draggables = document.querySelectorAll(".feature-card");
+      const containers = document.querySelectorAll(".features-container");
+      const form = document.getElementById("prediction-form");
+      const sourceContainer = document.getElementById("source-container");
+      const submitBtn = document.getElementById("submit-btn");
+      const statusText = document.getElementById("status-text");
+
+      // Drag Start Event für alle Karten
+      draggables.forEach((draggable) => {
+        draggable.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", draggable.id);
+          draggable.classList.add("dragging");
+        });
+
+        draggable.addEventListener("dragend", () => {
+          draggable.classList.remove("dragging");
+        });
+      });
+
+      function allowDrop(e) {
+        e.preventDefault();
+        form.classList.add("drag-over");
+      }
+
+      // Drop Event Handler
+      function drop(e) {
+        e.preventDefault();
+        form.classList.remove("drag-over");
+
+        const id = e.dataTransfer.getData("text/plain");
+        const draggable = document.getElementById(id);
+
+        // Nur wenn das Element existiert
+        if (draggable) {
+          form.appendChild(draggable); // Element physisch in das Formular verschieben
+          updateUIState();
+        }
+      }
+
+      // Feature zurück in die Sidebar schieben
+      function removeFeature(id) {
+        const item = document.getElementById(id);
+        if (item) {
+          sourceContainer.appendChild(item); // Zurückschieben
+          updateUIState();
+        }
+      }
+
+      // UI Status (Button und Zähler) aktualisieren
+      function updateUIState() {
+        const count = form.querySelectorAll(".feature-card").length;
+        statusText.textContent = `${count} Modul${
+          count !== 1 ? "e" : ""
+        } ausgewählt`;
+
+        if (count > 0) {
+          submitBtn.classList.add("active");
+        } else {
+          submitBtn.classList.remove("active");
+        }
+      }
+
+      // Suche in der Sidebar
+      function filterFeatures() {
+        const input = document.getElementById("search");
+        const filter = input.value.toLowerCase();
+        const nodes = sourceContainer.getElementsByClassName("feature-card");
+
+        for (let i = 0; i < nodes.length; i++) {
+          let txtValue = nodes[i].textContent || nodes[i].innerText;
+          if (txtValue.toLowerCase().indexOf(filter) > -1) {
+            nodes[i].style.display = "";
+          } else {
+            nodes[i].style.display = "none";
+          }
+        }
+      }
+
+      form.addEventListener("dragleave", (e) => {
+        if (e.relatedTarget && !form.contains(e.relatedTarget)) {
+          form.classList.remove("drag-over");
+        }
+      });
+    </script>
+  </body>
+</html>

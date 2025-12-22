@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studienabbruch Vorhersage</title>
+    <style>
+      /* --- CSS BLEIBT IDENTISCH ZUM VORHERIGEN CODE --- */
+      :root { --primary: #2980b9; --success: #27ae60; --bg-sidebar: #f4f7f6; --bg-main: #ffffff; }
+      body { font-family: "Segoe UI", sans-serif; margin: 0; height: 100vh; display: flex; overflow: hidden; }
+      
+      .sidebar { width: 380px; background: var(--bg-sidebar); border-right: 1px solid #ccc; display: flex; flex-direction: column; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.05); z-index: 10; }
+      .features-wrapper { flex: 1; overflow-y: auto; padding-right: 5px; }
+      
+      .category-title { font-size: 0.85em; text-transform: uppercase; color: #7f8c8d; margin-top: 20px; border-bottom: 1px solid #ddd; font-weight: bold; }
+      
+      /* Feature Card Styles */
+      .feature-card { background: white; border: 1px solid #dfe6e9; border-radius: 6px; margin-bottom: 8px; padding: 10px; cursor: grab; display: flex; flex-direction: column; }
+      .feature-card:hover { box-shadow: 0 3px 6px rgba(0,0,0,0.1); border-color: var(--primary); }
+      
+      .card-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.95rem; }
+      .feature-content { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+      
+      /* Inputs */
+      select, input { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+      
+      /* Main Content */
+      .main-content { flex: 1; background: var(--bg-main); padding: 30px; display: flex; flex-direction: column; overflow-y: auto; }
+      
+      .mandatory-section { background: #fff8e1; border: 1px solid #ffe0b2; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+      
+      form#prediction-form { border: 3px dashed #dce4ec; border-radius: 10px; padding: 20px; background: #fdfdfd; min-height: 300px; }
+      form#prediction-form.drag-over { border-color: var(--primary); background: #eaf6ff; }
+      
+      /* Drop Behavior */
+      .drop-placeholder { text-align: center; color: #bdc3c7; margin-top: 80px; pointer-events: none; }
+      form .feature-card { cursor: default; border-left: 5px solid var(--primary); }
+      form .feature-content { display: block; } /* Inhalt zeigen wenn gedroppt */
+      form .drag-icon { display: none; }
+      .remove-btn { color: #e74c3c; cursor: pointer; display: none; font-weight: bold;}
+      form .remove-btn { display: block; }
+
+      .submit-btn { margin-top: 20px; padding: 15px; background: var(--success); color: white; border: none; border-radius: 6px; font-size: 1.2rem; cursor: pointer; width: 100%; }
+    </style>
+  </head>
+  <body>
+
+    <aside class="sidebar">
+      <h2>Daten-Pool</h2>
+      <div class="features-wrapper" id="source-container">
+
+        {% for category, items in feature_groups.items() %}
+            
+            <div class="category-title">{{ category }}</div>
+            
+            {% for item in items %}
+            <div class="feature-card" draggable="true" id="{{ item.id }}">
+                <div class="card-header">
+                    <span>{{ item.label }}</span>
+                    <span class="drag-icon">☰</span>
+                    <span class="remove-btn" onclick="removeFeature('{{ item.id }}')">×</span>
+                </div>
+                
+                <div class="feature-content">
+                    {% if item.hint %}
+                        <small style="color:#888;">{{ item.hint }}</small>
+                    {% endif %}
+
+                    {% if item.type == 'select' %}
+                        <select name="{{ item.name }}">
+                            {% for opt in item.options %}
+                                <option value="{{ opt.v }}">{{ opt.t }}</option>
+                            {% endfor %}
+                        </select>
+                    
+                    {% elif item.type == 'number' %}
+                        <input type="number" name="{{ item.name }}" 
+                               value="{{ item.value }}" 
+                               {% if item.min is defined %}min="{{ item.min }}"{% endif %}
+                               {% if item.max is defined %}max="{{ item.max }}"{% endif %}
+                               {% if item.step is defined %}step="{{ item.step }}"{% endif %}
+                        >
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+        {% endfor %}
+        </div>
+    </aside>
+
+    <main class="main-content">
+      <h1>Analyse Dashboard</h1>
+
+      <form id="prediction-form" action="/predict" method="POST" ondrop="drop(event)" ondragover="allowDrop(event)">
+        
+        <div class="mandatory-section">
+            <h3>Pflichtangaben: Konfiguration</h3>
+            
+            <label>1. Nationalität / Campus:</label>
+            <select name="user_nationality" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+                <option value="DE">Deutschland (GDP: 1.9%, Infl: 5.0%)</option>
+                <option value="USA">USA (GDP: 2.5%, Infl: 3.5%)</option>
+                <option value="PT">Portugal (Standard)</option>
+            </select>
+
+            <label>2. Studienfortschritt:</label>
+            <select name="semester_progress" style="width: 100%; padding: 10px;">
+                <option value="1">Nur 1. Semester abgeschlossen (Nutzt Modell V2)</option>
+                <option value="2">1. und 2. Semester abgeschlossen (Nutzt Modell V1)</option>
+            </select>
+            <p style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                Hinweis: Wähle "Nur 1. Semester", wenn noch keine Noten für das 2. Semester vorliegen.
+            </p>
+        </div>
+
+        <div class="drop-placeholder" id="drop-text">
+            ⬇️ Features aus dem Menü hier ablegen ⬇️
+        </div>
+
+      </form>
+
+      <button type="submit" form="prediction-form" class="submit-btn">Vorhersage starten</button>
+    </main>
+
+    <script>
+      // Drag & Drop Logik
+      const draggables = document.querySelectorAll('.feature-card');
+      const form = document.getElementById('prediction-form');
+      const sidebar = document.getElementById('source-container');
+      const dropText = document.getElementById('drop-text');
+
+      draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', draggable.id);
+          draggable.style.opacity = '0.5';
+        });
+        draggable.addEventListener('dragend', () => { draggable.style.opacity = '1'; });
+      });
+
+      function allowDrop(e) { e.preventDefault(); form.classList.add('drag-over'); }
+
+      function drop(e) {
+        e.preventDefault();
+        form.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const draggable = document.getElementById(id);
+        if (draggable) {
+            form.appendChild(draggable);
+            dropText.style.display = 'none';
+        }
+      }
+
+      function removeFeature(id) {
+        const item = document.getElementById(id);
+        if (item) {
+            // Trick: Das richtige Kategorie-Label finden oder einfach oben einfügen
+            sidebar.insertBefore(item, sidebar.firstChild.nextSibling); 
+            if(form.querySelectorAll('.feature-card').length === 0) dropText.style.display = 'block';
+        }
+      }
+      
+      form.addEventListener('dragleave', (e) => {
+          if(e.relatedTarget && !form.contains(e.relatedTarget)) form.classList.remove('drag-over');
+      });
+    </script>
+  </body>
+</html>
