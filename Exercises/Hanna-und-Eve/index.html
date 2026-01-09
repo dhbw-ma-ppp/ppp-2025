@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Sie zahlen wir zählen</h1>
+
+<video id="video" autoplay playsinline width="400"></video>
+<button id="captureBtn">Frag Lessie</button>
+<canvas id="canvas" width="400" height="300" style="display:none;"></canvas>
+
+<script>
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        document.getElementById("video").srcObject = stream;
+    })
+    .catch(err => console.error("Kamera Fehler:", err));
+
+document.getElementById("captureBtn").onclick = async function () {
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataURL = canvas.toDataURL("image/png");
+
+    const response = await fetch("http://localhost:5000/website", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataURL })
+    });
+
+    const result = await response.json();
+    alert("Lessie sagt: " + result.message);
+};
+</script>
+
+</body>
+</html>
