@@ -1,6 +1,7 @@
 from __future__ import (
     annotations,
 )  # reserach: allows using the class itself as a type hint before it is fully defined
+from decimal import ROUND_DOWN, Decimal
 from typing import Type, Iterator  # research: allows for more "complex" type-hints
 
 
@@ -15,30 +16,40 @@ from typing import Type, Iterator  # research: allows for more "complex" type-hi
 #  Try depositing, withdrawing and transferring amounts and print the balance each time.
 
 
-class BankAccount:
+class BankAccount:  # maybe return errors instead of bool if fail cases get more complex
+    __max_num_decimal: int = 2
+
     def __init__(self) -> None:
-        self._balance: float = 0
+        self._balance: Decimal = Decimal("0.00")
 
     @property
-    def balance(self) -> float:
+    def balance(self) -> Decimal:
         return self._balance
 
-    def get_balance(self) -> float:
+    def get_balance(self) -> Decimal:
         return self._balance
 
-    def deposit(self, amount: float) -> bool:
-        if amount > 0:
-            self._balance += amount
+    def deposit(self, amount: str) -> bool:
+        amount_decimal = Decimal(amount)
+        if (
+            -(amount_decimal.as_tuple().exponent) <= self.__max_num_decimal
+            and amount_decimal > 0
+        ):
+            self._balance += amount_decimal
             return True
         return False
 
-    def withdraw(self, amount: float) -> bool:
-        if 0 < amount <= self._balance:
-            self._balance -= amount
+    def withdraw(self, amount: str) -> bool:
+        amount_decimal = Decimal(amount)
+        if (
+            -(amount_decimal.as_tuple().exponent) <= self.__max_num_decimal
+            and 0 < amount_decimal <= self._balance
+        ):
+            self._balance -= amount_decimal
             return True
         return False
 
-    def transfer(self, other_account: BankAccount, amount: float) -> bool:
+    def transfer(self, other_account: BankAccount, amount: str) -> bool:
         if self.withdraw(amount):
             other_account.deposit(amount)
             return True
@@ -55,15 +66,15 @@ print(
     f"Initial account 2 balance: {account2.balance}"
 )
 
-account1.deposit(100)
-print(f"After depositing 100 into Account 1: {account1.balance}")
+account1.deposit("100")
+print(f"After depositing 100 Euro into Account 1: {account1.balance}")
 
-if account1.withdraw(30):
+if account1.withdraw("30"):
     print(f"After withdrawing 30 from Account 1: {account1.balance}")
 else:
     print("Withdrawal failed")
 
-if account1.transfer(account2, 50):
+if account1.transfer(account2, "50"):
     print(
         "After transferring 50 from Account 1 to Account 2:\n"
         f"Account 1 balance: {account1.balance}\n"
@@ -74,6 +85,12 @@ else:
 
 if not account1.withdraw(100):
     print("Failed to withdraw 100 from Account 1 (insufficient funds)")
+
+account1.deposit("0.1")
+print(f"Deposited 0.1: {account1.balance}")
+
+if not account1.deposit("0.111"):
+    print(f"Depositing 0.111 failed, still at {account1.balance}")
 
 # PART 2:
 # Write a class for a French deck of cards (2-Ace of diamonds, hearts, spades, clubs).
@@ -115,7 +132,9 @@ class FrenchDeck:
 # PART 3:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
-class SkatDeck(FrenchDeck):
+class SkatDeck(
+    FrenchDeck
+):  # Maybe more future proof: inherit from general Deck class, not specialised FrenchDeck. It only takes class variable SUITS and RANKS and generates cards
     ranks = list(range(7, 11)) + list("JQKA")
 
 
